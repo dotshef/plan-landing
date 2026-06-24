@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Star, Share2, AlertTriangle } from 'lucide-react'
+import { Star, Share2 } from 'lucide-react'
 import LoadingOverlay from '@/components/common/LoadingOverlay'
 import StockSidebar from '@/components/screen2/StockSidebar'
 import CandlestickChart from '@/components/screen2/CandlestickChart'
@@ -16,7 +16,8 @@ import ProgramTradeSection from '@/components/screen3/ProgramTradeSection'
 import AiInsightSection from '@/components/screen3/AiInsightSection'
 import FinancialTable from '@/components/screen3/FinancialTable'
 import ReportPreviewSidebar from '@/components/screen3/ReportPreviewSidebar'
-import { SAMSUNG } from '@/data/stocks'
+import { SAMSUNG, getStockMeta } from '@/data/stocks'
+import Image from 'next/image'
 
 type Tab = 'price' | 'analysis'
 const TABS = [
@@ -36,9 +37,17 @@ export default function StockPageContent() {
   const rawTab = searchParams.get('tab')
   const activeTab: Tab = rawTab === 'analysis' ? 'analysis' : 'price'
   const s = SAMSUNG
+  const meta = getStockMeta(s.code)
 
   const [loading, setLoading] = useState(true)
   const [animate, setAnimate] = useState(false)
+  const [watchlisted, setWatchlisted] = useState(false)
+  const [animKey, setAnimKey] = useState(0)
+
+  const toggleWatchlist = () => {
+    setWatchlisted(w => !w)
+    setAnimKey(k => k + 1)
+  }
 
   useEffect(() => {
     const t = setTimeout(() => { setLoading(false); setAnimate(true) }, 1400)
@@ -86,7 +95,15 @@ export default function StockPageContent() {
           <span style={{ fontWeight: 700, color: '#1B6CF2' }}>005930</span>
           <span style={{ fontWeight: 600, color: '#4E5968' }}>삼성전자</span>
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 18 }}>
-            <span style={{ color: '#6B7684', cursor: 'default', display: 'flex', alignItems: 'center', gap: 5 }}><Star size={14} color="#6B7684" /> 관심종목 추가</span>
+            <span
+              onClick={toggleWatchlist}
+              style={{ color: watchlisted ? '#F5C900' : '#6B7684', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'color 0.2s', userSelect: 'none' }}
+            >
+              <span key={animKey} className={animKey > 0 ? 'star-burst' : ''}>
+                <Star size={14} color={watchlisted ? '#F5C900' : '#6B7684'} fill={watchlisted ? '#F5C900' : 'none'} style={{ transition: 'color 0.2s' }} />
+              </span>
+              {watchlisted ? '관심종목 추가됨' : '관심종목 추가'}
+            </span>
             <span style={{ color: '#6B7684', cursor: 'default', display: 'flex', alignItems: 'center', gap: 5 }}><Share2 size={14} color="#6B7684" /> 공유하기</span>
           </div>
         </div>
@@ -94,7 +111,7 @@ export default function StockPageContent() {
         {activeTab === 'price' ? (
           /* ── 화면 2: 3컬럼 그리드 ── */
           <div style={{ display: 'grid', gridTemplateColumns: '236px 1fr 268px', gap: 18, alignItems: 'start' }}>
-            <StockSidebar animate={animate} />
+            <StockSidebar animate={animate} watchlisted={watchlisted} animKey={animKey} onToggleWatchlist={toggleWatchlist} />
 
             {/* 중앙 카드 (탭 + 차트 + 투자자 + 뉴스) */}
             <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: '20px 22px' }}>
@@ -113,7 +130,9 @@ export default function StockPageContent() {
           <div>
             {/* Compact 주가 헤더 */}
             <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 14, padding: '16px 22px', display: 'flex', alignItems: 'center', gap: 16, marginBottom: 18 }}>
-              <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#1428A0', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800, flexShrink: 0 }}>三星</div>
+              <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#fff', border: '1px solid #EEF1F6', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+                {meta && <Image src={meta.image} alt={s.name} width={34} height={34} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />}
+              </div>
               <div style={{ fontSize: 17, fontWeight: 800, color: '#111827' }}>삼성전자</div>
               <span style={{ fontSize: 12, color: '#8B95A1' }}>005930 · KOSPI</span>
               <div style={{ fontSize: 24, fontWeight: 800, color: '#E8342B', marginLeft: 8 }}>{fmt(s.currentPrice)}</div>
@@ -154,10 +173,6 @@ export default function StockPageContent() {
               </div>
             </div>
 
-            {/* 면책 문구 */}
-            <div style={{ marginTop: 16, background: '#FBFAF5', border: '1px solid #F0EAD8', borderRadius: 12, padding: '14px 18px', fontSize: 12.5, color: '#9A8C66', lineHeight: 1.5, display: 'flex', gap: 7, alignItems: 'flex-start' }}>
-              <AlertTriangle size={13} color="#9A8C66" style={{ flexShrink: 0, marginTop: 1 }} /> 본 자료는 투자 권유 목적이 아닙니다. 수익을 보장하지 않으며 투자 결정은 본인 판단에 따릅니다.
-            </div>
           </div>
         )}
       </div>

@@ -2,32 +2,33 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { POPULAR_STOCKS } from '@/data/stocks'
-import { BarChart2, Bot, FileText, Search, Lightbulb, type LucideIcon } from 'lucide-react'
+import Image from 'next/image'
+import { STOCK_LIST, POPULAR_STOCKS } from '@/data/stocks'
+import { BarChart2, Bot, FileText, Search, type LucideIcon } from 'lucide-react'
 
 const FEATURES: { icon: LucideIcon; title: string; desc: string; bg: string }[] = [
   { icon: BarChart2, title: '실시간 시세', desc: '지연 없는 실시간 조회', bg: '#EAF1FE' },
-  { icon: Bot,       title: 'AI 수급 분석', desc: '수급·재무·AI 분석', bg: '#F0F4FF' },
+  { icon: Bot,       title: '종목 분석', desc: '수급·재무·AI 분석', bg: '#F0F4FF' },
   { icon: FileText,  title: '전문가 리포트', desc: '투자 인사이트 무료 제공', bg: '#FFF3E0' },
-]
-
-const SUGGEST = [
-  { initial: '三星', bg: '#1428A0', name: '삼성전자', code: '005930', market: 'KOSPI' },
-  { initial: 'SK',  bg: '#EA0029', name: 'SK하이닉스', code: '000660', market: 'KOSPI' },
-  { initial: 'N',   bg: '#03C75A', name: 'NAVER',    code: '035420', market: 'KOSPI' },
-  { initial: '한',  bg: '#FF6B00', name: '한화에어로스페이스', code: '012450', market: 'KOSPI' },
 ]
 
 export default function HeroSection() {
   const router = useRouter()
   const [query, setQuery]       = useState('')
   const [showDrop, setShowDrop] = useState(false)
+  const [showError, setShowError] = useState(false)
 
   const filtered = query
-    ? SUGGEST.filter((s) => s.name.includes(query) || s.code.includes(query))
-    : SUGGEST
+    ? STOCK_LIST.filter((s) => s.name.includes(query) || s.code.includes(query))
+    : STOCK_LIST
 
-  function go() { router.push('/stock/005930') }
+  function go() {
+    if (!query.trim()) {
+      setShowError(true)
+      return
+    }
+    router.push('/stock/005930')
+  }
 
   return (
     <div style={{ maxWidth: 1320, margin: '0 auto', padding: '52px 28px 30px', display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 56, alignItems: 'start' }}>
@@ -59,7 +60,7 @@ export default function HeroSection() {
       </div>
 
       {/* 우측 — 검색 카드 */}
-      <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 20, padding: 32, boxShadow: '0 8px 30px rgba(17,40,90,.06)' }}>
+      <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 20, padding: '48px 32px', boxShadow: '0 8px 30px rgba(17,40,90,.06)' }}>
         <div style={{ fontSize: 21, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em' }}>
           종목명 또는 종목코드를 입력하고 분석을 시작하세요
         </div>
@@ -71,7 +72,7 @@ export default function HeroSection() {
             <input
               type="text"
               value={query}
-              onChange={(e) => { setQuery(e.target.value); setShowDrop(true) }}
+              onChange={(e) => { setQuery(e.target.value); setShowDrop(true); setShowError(false) }}
               onFocus={() => setShowDrop(true)}
               onBlur={() => setTimeout(() => setShowDrop(false), 150)}
               onKeyDown={(e) => e.key === 'Enter' && go()}
@@ -90,7 +91,9 @@ export default function HeroSection() {
                     onMouseDown={go}
                     style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', cursor: 'pointer', borderBottom: '1px solid #F2F4F6' }}
                   >
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: s.bg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{s.initial}</div>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: '#fff', border: '1px solid #EEF1F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                      <Image src={s.image} alt={s.name} width={30} height={30} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
+                    </div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{s.name}</div>
                     <div style={{ fontSize: 13, color: '#8B95A1' }}>{s.code}</div>
                     <div style={{ marginLeft: 'auto', fontSize: 12, color: '#B0B8C1' }}>{s.market}</div>
@@ -107,6 +110,12 @@ export default function HeroSection() {
           </button>
         </div>
 
+        {showError && (
+          <div style={{ marginTop: 8, fontSize: 13, fontWeight: 600, color: '#E53E3E' }}>
+            종목명이나 종목코드를 입력해주세요
+          </div>
+        )}
+
         {/* 인기 검색어 */}
         <div style={{ marginTop: 20, fontSize: 13, fontWeight: 700, color: '#4E5968' }}>인기 검색어</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
@@ -121,11 +130,6 @@ export default function HeroSection() {
           ))}
         </div>
 
-        {/* 힌트 */}
-        <div style={{ marginTop: 18, display: 'flex', gap: 9, alignItems: 'center', padding: '13px 16px', background: '#F5F8FE', borderRadius: 11, fontSize: 13, color: '#6B7684' }}>
-          <Lightbulb size={14} color="#8B95A1" />
-          예시) <b style={{ color: '#1B6CF2', fontWeight: 700 }}>005930</b> 입력 시 &apos;삼성전자&apos; 분석 화면으로 이동합니다.
-        </div>
       </div>
     </div>
   )

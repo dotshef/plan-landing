@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { TrendingUp, Lock, Check } from 'lucide-react'
+import { TrendingUp, Lock } from 'lucide-react'
 import { REPORT_DETAIL } from '@/data/reports'
 
-type ReportTab = '핵심요약' | '수급분석' | '체크포인트'
-const TABS: ReportTab[] = ['핵심요약', '수급분석', '체크포인트']
+type ReportTab = '핵심요약' | '수급분석'
+const TABS: ReportTab[] = ['핵심요약', '수급분석']
 
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
@@ -117,24 +117,6 @@ export default function ReportContent() {
         </div>
       )}
 
-      {tab === '체크포인트' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 10 }}>2. 주요 체크 포인트</div>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {r.checkpoints.map((pt, i) => (
-                <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: '#4E5968' }}>
-                  <Check size={14} color="#1B6CF2" strokeWidth={2.5} style={{ flexShrink: 0, marginTop: 1 }} />
-                  {pt}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div style={{ fontSize: 11, color: '#B0B8C1', lineHeight: 1.5, borderTop: '1px solid #F2F4F6', paddingTop: 14 }}>
-            {r.legalNotice}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

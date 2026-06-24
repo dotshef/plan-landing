@@ -5,7 +5,7 @@ const rand = seededRng(9012)
 function genSparkline(base: number, count = 30): number[] {
   const arr: number[] = [base]
   for (let i = 1; i < count; i++) {
-    arr.push(arr[i - 1] * (1 + (rand() - 0.49) * 0.008))
+    arr.push(arr[i - 1] * (1 + (rand() - 0.48) * 0.018))
   }
   return arr
 }

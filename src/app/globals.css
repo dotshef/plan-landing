@@ -65,3 +65,16 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+@keyframes star-burst {
+  0%   { transform: scale(1) rotate(0deg); }
+  25%  { transform: scale(1.65) rotate(-15deg); }
+  55%  { transform: scale(0.85) rotate(10deg); }
+  78%  { transform: scale(1.2) rotate(-5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.star-burst {
+  display: inline-flex;
+  animation: star-burst 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}

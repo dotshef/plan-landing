@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { REPORT_CARDS } from '@/data/stocks'
 
 export default function ReportCards() {
@@ -8,14 +9,13 @@ export default function ReportCards() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
           <div style={{ fontSize: 21, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em' }}>오늘의 인기 리포트</div>
           <span style={{ padding: '4px 10px', borderRadius: 7, background: '#EAF1FE', color: '#1B6CF2', fontSize: 12, fontWeight: 700 }}>무료 제공</span>
-          <span style={{ marginLeft: 'auto', fontSize: 13, color: '#8B95A1', cursor: 'default' }}>더보기 ›</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
           {REPORT_CARDS.map((r) => (
             <div key={r.code} style={{ border: '1px solid #EEF1F6', borderRadius: 14, padding: 18, background: '#fff' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: r.bg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>
-                  {r.initial}
+                <div style={{ width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '1px solid #EEF1F6', flexShrink: 0 }}>
+                  <Image src={r.image} alt={r.name} width={40} height={40} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
                 </div>
                 <div style={{ lineHeight: 1.25, flex: 1 }}>
                   <div style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>

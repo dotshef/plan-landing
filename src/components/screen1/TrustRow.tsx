@@ -1,10 +1,10 @@
-import { ShieldCheck, Zap, BarChart2, Gem, type LucideIcon } from 'lucide-react'
+import {ShieldCheck, Gift, User, Clock, type LucideIcon, } from 'lucide-react'
 
 const TRUST_ITEMS: { icon: LucideIcon; title: string; desc: string }[] = [
-  { icon: ShieldCheck, title: '안전한 개인정보 보호', desc: '입력하신 정보는 리포트 발송 목적으로만 사용됩니다.' },
-  { icon: Zap,         title: '실시간 시세 제공', desc: '지연 없는 실시간 주가·수급 데이터를 제공합니다.' },
-  { icon: BarChart2,   title: '전문가 분석 리포트', desc: '검증된 애널리스트의 심층 분석 리포트를 제공합니다.' },
-  { icon: Gem,         title: '완전 무료 제공', desc: '회원가입 없이 누구나 무료로 리포트를 받아보세요.' },
+  { icon: ShieldCheck, title: '신뢰할 수 있는 데이터', desc: '공신력 있는 데이터를 기반으로 분석합니다.' },
+  { icon: Clock,         title: '실시간 시세 제공', desc: '시장 상황을 실시간으로 반영합니다.' },
+  { icon: User,   title: '전문가 분석 리포트', desc: '경험 많은 전문가의 인사이트를 제공합니다.' },
+  { icon: Gift,         title: '모든 리포트 무료 제공', desc: '회원가입 없이 무료로 확인 가능합니다.' },
 ]
 
 export default function TrustRow() {
