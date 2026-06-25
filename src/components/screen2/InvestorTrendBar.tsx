@@ -1,4 +1,6 @@
-import { NET_BUY_SUMMARY, NET_BUY_DATE } from '@/data/stocks/005930/chart'
+'use client'
+
+import { useStockData } from '@/context/StockDataContext'
 
 const fmt = (n: number) => {
   const abs = Math.abs(n)
@@ -12,6 +14,9 @@ const items = [
 ]
 
 export default function InvestorTrendBar() {
+  const { chart } = useStockData()
+  const NET_BUY_SUMMARY = chart.NET_BUY_SUMMARY
+  const NET_BUY_DATE = chart.NET_BUY_DATE
   return (
     <div style={{ borderTop: '1px solid #EEF1F6', marginTop: 14, paddingTop: 14 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>

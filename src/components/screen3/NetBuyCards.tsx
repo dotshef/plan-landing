@@ -1,4 +1,6 @@
-import { NET_BUY_SUMMARY } from '@/data/stocks/005930/chart'
+'use client'
+
+import { useStockData } from '@/context/StockDataContext'
 
 function fmt(n: number) {
   const abs = Math.abs(n).toLocaleString('ko-KR')
@@ -6,12 +8,14 @@ function fmt(n: number) {
 }
 
 const items = [
-  { label: '개인',   key: 'individual'  as const, labelEn: '(매도)', color: '#3182f6' },
-  { label: '외국인', key: 'foreign'     as const, labelEn: '(매수)', color: '#E8342B' },
-  { label: '기관',   key: 'institution' as const, labelEn: '(매수)', color: '#E8342B' },
+  { label: '개인',   key: 'individual'  as const },
+  { label: '외국인', key: 'foreign'     as const },
+  { label: '기관',   key: 'institution' as const },
 ]
 
 export default function NetBuyCards() {
+  const { chart } = useStockData()
+  const NET_BUY_SUMMARY = chart.NET_BUY_SUMMARY
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 14 }}>
       {items.map((item) => {

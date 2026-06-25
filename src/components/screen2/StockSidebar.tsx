@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Star } from 'lucide-react'
 import CountingNumber from '@/components/common/CountingNumber'
-import { STOCK_QUOTE } from '@/data/stocks/005930'
+import { useStockData } from '@/context/StockDataContext'
 import { getStockMeta } from '@/data/registry'
 
 interface Props {
@@ -17,8 +17,11 @@ interface Props {
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
 export default function StockSidebar({ animate, watchlisted, animKey, onToggleWatchlist }: Props) {
-  const s = STOCK_QUOTE
+  const { quote: s } = useStockData()
   const meta = getStockMeta(s.code)
+  const isUp = s.change >= 0
+  const changeColor = isUp ? '#E8342B' : '#3182f6'
+  const changeArrow = isUp ? '▲' : '▼'
   return (
     <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 22 }}>
       {/* 종목 헤더 */}
@@ -33,11 +36,11 @@ export default function StockSidebar({ animate, watchlisted, animKey, onToggleWa
       </div>
 
       {/* 현재가 */}
-      <div style={{ fontSize: 34, fontWeight: 800, color: '#E8342B', letterSpacing: '-0.02em' }}>
+      <div style={{ fontSize: 34, fontWeight: 800, color: changeColor, letterSpacing: '-0.02em' }}>
         {animate ? <CountingNumber target={s.currentPrice} formatter={fmt} /> : fmt(s.currentPrice)}원
       </div>
-      <div style={{ fontSize: 14, fontWeight: 700, color: '#E8342B', marginTop: 2 }}>
-        ▲ {fmt(s.change)} ({s.changeRate.toFixed(2)}%)
+      <div style={{ fontSize: 14, fontWeight: 700, color: changeColor, marginTop: 2 }}>
+        {changeArrow} {fmt(Math.abs(s.change))} ({Math.abs(s.changeRate).toFixed(2)}%)
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10 }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', background: '#3182f6', borderRadius: 6, fontSize: 11, fontWeight: 700, color: '#fff' }}>

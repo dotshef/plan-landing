@@ -1,10 +1,11 @@
 'use client'
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { PROGRAM_TRADE } from '@/data/stocks/005930/chart'
+import { useStockData } from '@/context/StockDataContext'
 
 export default function ProgramTradeSection() {
-  const data = PROGRAM_TRADE.slice(-15).map((d) => ({
+  const { chart } = useStockData()
+  const data = chart.PROGRAM_TRADE.slice(-15).map((d) => ({
     date: d.date.slice(5),
     차익:    d.arbitrage,
     비차익: d.nonArbitrage,

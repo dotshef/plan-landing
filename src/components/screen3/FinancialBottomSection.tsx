@@ -5,11 +5,13 @@ import {
   Tooltip, ResponsiveContainer, Legend,
   BarChart, Cell,
 } from 'recharts'
-import { DIVIDEND_INFO, QUARTERLY_EARNINGS } from '@/data/stocks/005930/financials'
+import { useStockData } from '@/context/StockDataContext'
 
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
 export default function FinancialBottomSection() {
+  const { fin } = useStockData()
+  const { DIVIDEND_INFO, QUARTERLY_EARNINGS } = fin
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14 }}>
 
@@ -40,7 +42,7 @@ export default function FinancialBottomSection() {
           <BarChart data={DIVIDEND_INFO.history} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#F2F4F6" vertical={false} />
             <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#8B95A1' }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: '#8B95A1' }} domain={[0, 2200]} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: '#8B95A1' }} axisLine={false} tickLine={false} />
             <Tooltip
               formatter={(v) => [`${fmt(Number(v))}원`, '주당배당금']}
               contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #E5E8EB' }}

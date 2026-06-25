@@ -1,21 +1,25 @@
-import { FINANCIAL_METRICS, ANNUAL_FINANCIALS } from '@/data/stocks/005930/financials'
+'use client'
+
+import { useStockData } from '@/context/StockDataContext'
 
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
 export default function FinancialTable() {
+  const { quote, fin } = useStockData()
+  const { FINANCIAL_METRICS, ANNUAL_FINANCIALS } = fin
   const metrics = [
-    { label: 'PER',      value: FINANCIAL_METRICS.per.toFixed(1) + '배' },
-    { label: 'PBR',      value: FINANCIAL_METRICS.pbr.toFixed(1) + '배' },
-    { label: 'ROE',      value: FINANCIAL_METRICS.roe.toFixed(1) + '%' },
-    { label: 'EPS',      value: fmt(FINANCIAL_METRICS.eps) + '원' },
-    { label: 'DY',       value: FINANCIAL_METRICS.dividendYield.toFixed(2) + '%' },
-    { label: '시총',     value: '464조' },
+    { label: 'PER',  value: FINANCIAL_METRICS.per.toFixed(1) + '배' },
+    { label: 'PBR',  value: FINANCIAL_METRICS.pbr.toFixed(1) + '배' },
+    { label: 'ROE',  value: FINANCIAL_METRICS.roe.toFixed(1) + '%' },
+    { label: 'EPS',  value: fmt(FINANCIAL_METRICS.eps) + '원' },
+    { label: 'DY',   value: FINANCIAL_METRICS.dividendYield.toFixed(2) + '%' },
+    { label: '시총', value: (quote.marketCap / 1e12).toFixed(0) + '조' },
   ]
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
-        <div style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>주요 재무 지표 <span style={{ color: '#B0B8C1', fontSize: 12 }}></span></div>
+        <div style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>주요 재무 지표</div>
         <span style={{ fontSize: 12, color: '#8B95A1', cursor: 'default' }}>연간 ▾</span>
       </div>
 
@@ -30,7 +34,7 @@ export default function FinancialTable() {
       </div>
 
       {/* 연도별 실적 테이블 */}
-      <div style={{ marginTop: 18, fontSize: 11, color: '#8B95A1', marginBottom: 8 }}>(단위: 억원)</div>
+      <div style={{ marginTop: 18, fontSize: 11, color: '#8B95A1', marginBottom: 8 }}>(단위: 십억원)</div>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
         <thead>
           <tr>
@@ -60,7 +64,6 @@ export default function FinancialTable() {
           ))}
         </tbody>
       </table>
-
     </div>
   )
 }

@@ -1,6 +1,11 @@
-import { DUMMY_NEWS, COMPANY_OVERVIEW } from '@/data/stocks/005930/report'
+'use client'
+
+import { useStockData } from '@/context/StockDataContext'
 
 export default function NewsAndAI() {
+  const { rep } = useStockData()
+  const DUMMY_NEWS = rep.DUMMY_NEWS
+  const COMPANY_OVERVIEW = rep.COMPANY_OVERVIEW
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14 }}>
 

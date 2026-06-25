@@ -1,10 +1,14 @@
+'use client'
+
 import Link from 'next/link'
 import { TrendingUp, Bot, Zap, Search, type LucideIcon } from 'lucide-react'
-import { AI_INSIGHTS, REPORT_DETAIL } from '@/data/stocks/005930/report'
+import { useStockData } from '@/context/StockDataContext'
 
 const INSIGHT_ICONS: LucideIcon[] = [TrendingUp, Bot, Zap, Search]
 
 export default function AiInsightSection() {
+  const { rep } = useStockData()
+  const { AI_INSIGHTS, REPORT_DETAIL } = rep
   return (
     <div>
       <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 14 }}>

@@ -1,7 +1,7 @@
 'use client'
 
 import SparklineChart from '@/components/common/SparklineChart'
-import { TECHNICAL_INDICATORS as INDICATORS } from '@/data/stocks/005930/chart'
+import { useStockData } from '@/context/StockDataContext'
 
 function signalStyle(signalUp: boolean | null): React.CSSProperties {
   if (signalUp === true)  return { color: '#E8342B' }
@@ -10,6 +10,8 @@ function signalStyle(signalUp: boolean | null): React.CSSProperties {
 }
 
 export default function TechnicalIndicators() {
+  const { chart } = useStockData()
+  const INDICATORS = chart.TECHNICAL_INDICATORS
   return (
     <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: '20px 22px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 18 }}>

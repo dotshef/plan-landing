@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Star, Share2 } from 'lucide-react'
 import LoadingOverlay from '@/components/common/LoadingOverlay'
-import { STOCK_QUOTE } from '@/data/stocks/005930'
+import { useStockData } from '@/context/StockDataContext'
 import StockSidebar from '@/components/screen2/StockSidebar'
 import CandlestickChart from '@/components/screen2/CandlestickChart'
 import InvestorTrendBar from '@/components/screen2/InvestorTrendBar'
@@ -29,6 +29,7 @@ const TABS = [
 ] as const
 
 export default function StockPageContent() {
+  const { quote: STOCK_QUOTE } = useStockData()
   const searchParams = useSearchParams()
   const router = useRouter()
   const rawTab = searchParams.get('tab')

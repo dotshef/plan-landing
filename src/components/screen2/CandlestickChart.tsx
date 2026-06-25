@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import type { ISeriesApi } from 'lightweight-charts'
-import { CANDLESTICK_DATA } from '@/data/stocks/005930/chart'
+import { useStockData } from '@/context/StockDataContext'
 
 function calcMA(data: { close: number }[], len: number) {
   return data.map((_, i) => {
@@ -12,6 +12,8 @@ function calcMA(data: { close: number }[], len: number) {
 }
 
 export default function CandlestickChart() {
+  const { chart: chartData } = useStockData()
+  const candleDataRef = useRef(chartData.CANDLESTICK_DATA)
   const containerRef = useRef<HTMLDivElement>(null)
   const candleRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const volumeRef = useRef<ISeriesApi<'Histogram'> | null>(null)
@@ -58,7 +60,7 @@ export default function CandlestickChart() {
       ma20Ref.current = ma20 as never
       ma60Ref.current = ma60 as never
 
-      const raw = CANDLESTICK_DATA['3년']
+      const raw = candleDataRef.current['3년']
       candle.setData(raw.map(d => ({ time: d.time as never, open: d.open, high: d.high, low: d.low, close: d.close })))
       volume.setData(raw.map(d => ({ time: d.time as never, value: d.volume, color: d.close >= d.open ? '#ffc0c5' : '#c0d0ff' })))
       const ma5v  = calcMA(raw, 5)

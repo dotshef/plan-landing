@@ -1,8 +1,12 @@
+'use client'
+
 import Link from 'next/link'
 import { Check } from 'lucide-react'
-import { REPORT_POINTS, REPORT_DETAIL } from '@/data/stocks/005930/report'
+import { useStockData } from '@/context/StockDataContext'
 
 export default function ReportPreviewSidebar() {
+  const { rep } = useStockData()
+  const { REPORT_POINTS, REPORT_DETAIL } = rep
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>

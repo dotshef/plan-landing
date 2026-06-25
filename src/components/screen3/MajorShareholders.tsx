@@ -1,11 +1,12 @@
 'use client'
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
-import { SHAREHOLDERS, SHAREHOLDERS_DATE } from '@/data/stocks/005930/chart'
-
-const foreign = SHAREHOLDERS.find((s) => s.name === '외국인')!
+import { useStockData } from '@/context/StockDataContext'
 
 export default function MajorShareholders() {
+  const { chart } = useStockData()
+  const { SHAREHOLDERS, SHAREHOLDERS_DATE } = chart
+  const foreign = SHAREHOLDERS.find((s) => s.name === '외국인')!
   return (
     <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: '20px 22px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>

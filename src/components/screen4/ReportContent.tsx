@@ -6,9 +6,7 @@ import {
   BarChart, Bar, Cell, ComposedChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
-import { REPORT_DETAIL } from '@/data/stocks/005930/report'
-import { QUARTERLY_EARNINGS } from '@/data/stocks/005930/financials'
-import { STOCK_QUOTE } from '@/data/stocks/005930'
+import { useStockData } from '@/context/StockDataContext'
 
 type ReportTab = '핵심요약' | '수급분석'
 const TABS: ReportTab[] = ['핵심요약', '수급분석']
@@ -17,7 +15,9 @@ const fmt = (n: number) => n.toLocaleString('ko-KR')
 
 export default function ReportContent() {
   const [tab, setTab] = useState<ReportTab>('핵심요약')
-  const r = REPORT_DETAIL
+  const { quote: STOCK_QUOTE, rep, fin } = useStockData()
+  const r = rep.REPORT_DETAIL
+  const QUARTERLY_EARNINGS = fin.QUARTERLY_EARNINGS
 
   return (
     <div>
@@ -102,7 +102,6 @@ export default function ReportContent() {
                   <YAxis
                     tick={{ fontSize: 9, fill: '#8B95A1' }}
                     tickFormatter={(v) => (v / 10000).toFixed(0)}
-                    domain={[0, 1000000]}
                     axisLine={false} tickLine={false}
                   />
                   <Tooltip
@@ -131,7 +130,6 @@ export default function ReportContent() {
                     yAxisId="op"
                     tick={{ fontSize: 9, fill: '#8B95A1' }}
                     tickFormatter={(v) => (v / 10000).toFixed(0)}
-                    domain={[0, 200000]}
                     axisLine={false} tickLine={false}
                   />
                   <YAxis
@@ -139,7 +137,6 @@ export default function ReportContent() {
                     orientation="right"
                     tick={{ fontSize: 9, fill: '#8B95A1' }}
                     tickFormatter={(v) => `${v}%`}
-                    domain={[0, 20]}
                     axisLine={false} tickLine={false}
                   />
                   <Tooltip

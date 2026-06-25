@@ -1,10 +1,11 @@
 'use client'
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { SUPPLY_DEMAND } from '@/data/stocks/005930/chart'
+import { useStockData } from '@/context/StockDataContext'
 
 export default function SupplyDemandChart() {
-  const cumulative = SUPPLY_DEMAND.reduce<{ date: string; foreign: number; institution: number; individual: number }[]>(
+  const { chart } = useStockData()
+  const cumulative = chart.SUPPLY_DEMAND.reduce<{ date: string; foreign: number; institution: number; individual: number }[]>(
     (acc, d) => {
       const prev = acc[acc.length - 1] ?? { foreign: 0, institution: 0, individual: 0 }
       acc.push({
