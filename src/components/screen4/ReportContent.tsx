@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { TrendingUp, Lock } from 'lucide-react'
 import {
   BarChart, Bar, Cell, ComposedChart, Line,
@@ -22,7 +22,7 @@ export default function ReportContent() {
   return (
     <div>
       {/* 헤더 */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+      <div className="responsive-report-header" style={{ display: 'flex', flexDirection: 'var(--report-header-direction, row)' as CSSProperties['flexDirection'], alignItems: 'flex-start', gap: 14 }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: '#6B7684' }}>{r.name}({r.code})</div>
           <h2 style={{ margin: '4px 0 8px', fontSize: 30, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em' }}>
@@ -36,7 +36,7 @@ export default function ReportContent() {
       </div>
 
       {/* 탭 */}
-      <div style={{ display: 'flex', gap: 22, borderBottom: '1px solid #EEF1F6', margin: '22px 0' }}>
+      <div className="responsive-tabs" style={{ display: 'flex', gap: 22, borderBottom: '1px solid #EEF1F6', margin: '22px 0' }}>
         {TABS.map((t) => (
           <button
             key={t}
@@ -58,7 +58,7 @@ export default function ReportContent() {
       {tab === '핵심요약' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* 핵심 카드 4개 */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+          <div className="responsive-report-summary-grid" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(4,1fr))', gap: 12 }}>
             {[
               { label: '투자 의견',           icon: true,  value: r.opinion,                                                   sub: '실적 업황 개선과 AI 수요 증가로 실적 회복 기대', color: r.opinion === '매수' ? '#E8342B' : r.opinion === '매도' ? '#3182f6' : '#F5C900', subColor: '#8B95A1' },
               { label: '현재가',              icon: false, value: fmt(STOCK_QUOTE.currentPrice) + '원',                       sub: `${STOCK_QUOTE.changeRate >= 0 ? '▲' : '▼'} ${Math.abs(STOCK_QUOTE.changeRate).toFixed(2)}% 전일 대비`,  color: '#111827', subColor: '#8B95A1' },
@@ -76,7 +76,7 @@ export default function ReportContent() {
           </div>
 
           {/* 발간일 메타 */}
-          <div style={{ display: 'flex', gap: 20, fontSize: 12, color: '#8B95A1' }}>
+          <div className="responsive-report-meta" style={{ display: 'flex', flexDirection: 'var(--report-meta-direction, row)' as CSSProperties['flexDirection'], gap: 'var(--report-meta-gap, 20px)', fontSize: 12, color: '#8B95A1' }}>
             <span>▤ 리포트 발간일 <strong style={{ color: '#4E5968' }}>{r.publishDate}</strong></span>
             <span>다음 업데이트 <strong style={{ color: '#4E5968' }}>{r.nextUpdateDate}</strong></span>
           </div>
@@ -88,7 +88,7 @@ export default function ReportContent() {
           </div>
 
           {/* 분기 실적 차트 2개 */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, 1fr 1fr)', gap: 16 }}>
 
             {/* 분기별 매출액 추이 */}
             <div>
@@ -163,7 +163,7 @@ export default function ReportContent() {
           {/* 주요 체크 포인트 */}
           <div>
             <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 12 }}>2. 주요 체크 포인트</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 24px' }}>
+            <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, 1fr 1fr)', gap: '8px 24px' }}>
               {r.checkpoints.map((item) => (
                 <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                   <span style={{ color: '#1B6CF2', fontWeight: 700, fontSize: 14, lineHeight: '1.6', flexShrink: 0 }}>✓</span>

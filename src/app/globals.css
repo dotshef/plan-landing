@@ -73,6 +73,131 @@ a {
   text-decoration: none;
 }
 
+.responsive-table-scroll {
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .responsive-home-hero {
+    --home-hero-columns: 1fr;
+    --home-hero-gap: 28px;
+  }
+
+  .responsive-card-grid-4,
+  .responsive-trust-grid,
+  .responsive-report-summary-grid {
+    --grid-columns: repeat(2, 1fr);
+  }
+
+  .responsive-stock-layout,
+  .responsive-report-layout {
+    --layout-columns: 1fr;
+  }
+
+  .responsive-grid-5 {
+    --grid-columns: repeat(2, 1fr);
+  }
+
+  .responsive-grid-2 {
+    --grid-columns: 1fr;
+  }
+
+  .responsive-sticky-panel {
+    --sticky-position: static;
+    --sticky-top: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .responsive-page-shell {
+    --page-padding: 14px 16px 40px;
+  }
+
+  .responsive-header-inner {
+    --header-padding: 14px 16px;
+  }
+
+  .responsive-section-shell {
+    --section-padding: 12px 16px 8px;
+  }
+
+  .responsive-section-card {
+    --card-padding: 18px 16px;
+  }
+
+  .responsive-home-hero {
+    --home-hero-padding: 28px 16px 18px;
+    --home-hero-gap: 22px;
+  }
+
+  .responsive-hero-title {
+    --hero-title-size: 36px;
+  }
+
+  .responsive-home-features {
+    --features-direction: column;
+    --features-gap: 12px;
+  }
+
+  .responsive-search-card {
+    --search-card-padding: 22px 18px;
+  }
+
+  .responsive-search-row {
+    --search-row-direction: column;
+  }
+
+  .responsive-search-row button {
+    width: 100%;
+  }
+
+  .responsive-card-grid-4,
+  .responsive-trust-grid,
+  .responsive-report-summary-grid,
+  .responsive-grid-3 {
+    --grid-columns: 1fr;
+  }
+
+  .responsive-grid-5 {
+    --grid-columns: 1fr;
+  }
+
+  .responsive-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+
+  .responsive-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .responsive-breadcrumb {
+    --breadcrumb-wrap: wrap;
+    --breadcrumb-actions-width: 100%;
+    --breadcrumb-actions-margin-left: 0;
+    --breadcrumb-actions-justify: space-between;
+  }
+
+  .responsive-report-header {
+    --report-header-direction: column;
+  }
+
+  .responsive-report-meta {
+    --report-meta-direction: column;
+    --report-meta-gap: 6px;
+  }
+
+  .responsive-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .responsive-table-scroll table {
+    min-width: 520px;
+  }
+}
+
 @keyframes star-burst {
   0%   { transform: scale(1) rotate(0deg); }
   25%  { transform: scale(1.65) rotate(-15deg); }

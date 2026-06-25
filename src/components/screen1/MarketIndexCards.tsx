@@ -3,8 +3,8 @@ import SparklineChart from '@/components/common/SparklineChart'
 
 export default function MarketIndexCards() {
   return (
-    <div style={{ maxWidth: 1320, margin: '0 auto', padding: '16px 28px 8px' }}>
-      <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18, padding: '26px 28px' }}>
+    <div className="responsive-section-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--section-padding, 16px 28px 8px)' }}>
+      <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18, padding: 'var(--card-padding, 26px 28px)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 18 }}>
           <div style={{ fontSize: 21, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em' }}>주요 시장 지수</div>
           <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#03B26C', fontWeight: 700 }}>
@@ -12,7 +12,7 @@ export default function MarketIndexCards() {
             실시간
           </span>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 }}>
+        <div className="responsive-card-grid-4" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(4,1fr))', gap: 14 }}>
           {MARKET_INDICES.map((ix) => (
             <div key={ix.name} style={{ border: '1px solid #EEF1F6', borderRadius: 13, padding: '15px 15px 0', overflow: 'hidden' }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#6B7684' }}>{ix.name}</div>

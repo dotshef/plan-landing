@@ -13,17 +13,17 @@ export default function FinancialBottomSection() {
   const { fin } = useStockData()
   const { DIVIDEND_INFO, QUARTERLY_EARNINGS } = fin
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14 }}>
+    <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(2, 1fr))', gap: 14 }}>
 
       {/* 배당 정보 */}
-      <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: '20px 22px' }}>
+      <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>배당 정보</span>
           <span style={{ fontSize: 12, color: '#8B95A1', cursor: 'default' }}>더보기 ›</span>
         </div>
 
         {/* 핵심 지표 3개 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
+        <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3, 1fr))', gap: 10, marginBottom: 20 }}>
           {[
             { k: '배당수익률', v: `${DIVIDEND_INFO.yield}%` },
             { k: '주당배당금', v: `${fmt(DIVIDEND_INFO.perShare)}원` },
@@ -57,7 +57,7 @@ export default function FinancialBottomSection() {
       </div>
 
       {/* 분기별 실적 추이 */}
-      <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: '20px 22px' }}>
+      <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
           <div>
             <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>분기별 실적 추이</span>

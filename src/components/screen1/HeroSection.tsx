@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { STOCK_LIST, POPULAR_STOCKS } from '@/data/registry'
@@ -29,20 +29,20 @@ export default function HeroSection() {
   }
 
   return (
-    <div style={{ maxWidth: 1320, margin: '0 auto', padding: '52px 28px 30px', display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 56, alignItems: 'start' }}>
+    <div className="responsive-home-hero" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--home-hero-padding, 52px 28px 30px)', display: 'grid', gridTemplateColumns: 'var(--home-hero-columns, 1fr 1.15fr)', gap: 'var(--home-hero-gap, 56px)', alignItems: 'start' }}>
       {/* 좌측 */}
       <div>
         <div style={{ display: 'inline-block', padding: '6px 13px', borderRadius: 999, background: '#EAF1FE', color: '#1B6CF2', fontSize: 13, fontWeight: 700, marginBottom: 20 }}>
           지금 가장 많이 찾는
         </div>
-        <h1 style={{ margin: 0, fontSize: 50, lineHeight: 1.18, fontWeight: 800, letterSpacing: '-0.03em', color: '#111827' }}>
+        <h1 className="responsive-hero-title" style={{ margin: 0, fontSize: 'var(--hero-title-size, 50px)', lineHeight: 1.18, fontWeight: 800, letterSpacing: '-0.03em', color: '#111827' }}>
           종목 분석하고,<br />
           <span style={{ color: '#1B6CF2' }}>무료 리포트</span> 받아보세요!
         </h1>
         <p style={{ margin: '22px 0 0', fontSize: 18, lineHeight: 1.6, color: '#6B7684', fontWeight: 500 }}>
           실시간 시세, 수급, AI 분석까지 한눈에!<br />전문가 리포트를 무료로 확인하세요.
         </p>
-        <div style={{ display: 'flex', gap: 14, marginTop: 34 }}>
+        <div className="responsive-home-features" style={{ display: 'flex', flexDirection: 'var(--features-direction, row)' as CSSProperties['flexDirection'], gap: 'var(--features-gap, 14px)', marginTop: 34 }}>
           {FEATURES.map((f) => (
             <div key={f.title} style={{ display: 'flex', gap: 11, alignItems: 'center' }}>
               <div style={{ width: 42, height: 42, borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: f.bg }}>
@@ -58,13 +58,13 @@ export default function HeroSection() {
       </div>
 
       {/* 우측 — 검색 카드 */}
-      <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 20, padding: '48px 32px', boxShadow: '0 8px 30px rgba(17,40,90,.06)' }}>
+      <div className="responsive-search-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 20, padding: 'var(--search-card-padding, 48px 32px)', boxShadow: '0 8px 30px rgba(17,40,90,.06)' }}>
         <div style={{ fontSize: 21, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em' }}>
           종목명 또는 종목코드를 입력하고 분석을 시작하세요
         </div>
 
         {/* 검색 인풋 */}
-        <div style={{ display: 'flex', gap: 10, marginTop: 20, position: 'relative' }}>
+        <div className="responsive-search-row" style={{ display: 'flex', flexDirection: 'var(--search-row-direction, row)' as CSSProperties['flexDirection'], gap: 10, marginTop: 20, position: 'relative' }}>
           <div style={{ flex: 1, position: 'relative' }}>
             <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', display: 'flex' }}><Search size={16} color="#1B6CF2" /></span>
             <input

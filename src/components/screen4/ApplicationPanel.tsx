@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Check, Lock, Smartphone, Clock } from 'lucide-react'
 import { POPULAR_STOCKS } from '@/data/registry'
@@ -40,7 +40,7 @@ export default function ApplicationPanel() {
   }
 
   return (
-    <div style={{ position: 'sticky', top: 96 }}>
+    <div className="responsive-sticky-panel" style={{ position: 'var(--sticky-position, sticky)' as CSSProperties['position'], top: 'var(--sticky-top, 96px)' }}>
       <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18, overflow: 'hidden', boxShadow: 'none' }}>
         <AnimatePresence mode="wait">
           {!submitted ? (

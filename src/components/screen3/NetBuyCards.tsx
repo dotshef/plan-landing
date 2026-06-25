@@ -17,7 +17,7 @@ export default function NetBuyCards() {
   const { chart } = useStockData()
   const NET_BUY_SUMMARY = chart.NET_BUY_SUMMARY
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 14 }}>
+    <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3,1fr))', gap: 10, marginBottom: 14 }}>
       {items.map((item) => {
         const val = NET_BUY_SUMMARY[item.key]
         const color = val >= 0 ? '#E8342B' : '#3182f6'

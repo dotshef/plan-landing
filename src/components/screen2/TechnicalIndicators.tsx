@@ -13,12 +13,12 @@ export default function TechnicalIndicators() {
   const { chart } = useStockData()
   const INDICATORS = chart.TECHNICAL_INDICATORS
   return (
-    <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: '20px 22px' }}>
+    <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 18 }}>
         <span style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>기술적 지표</span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 0 }}>
+      <div className="responsive-grid-5" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(5, 1fr))', gap: 0 }}>
         {INDICATORS.map((ind, i) => (
           <div
             key={ind.name}

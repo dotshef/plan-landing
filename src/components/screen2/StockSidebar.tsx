@@ -83,7 +83,7 @@ export default function StockSidebar({ animate, watchlisted, animKey, onToggleWa
         href={`/report/${s.code}`}
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: 46, marginTop: 18, borderRadius: 11, background: '#1B6CF2', color: '#fff', fontSize: 14, fontWeight: 700, textDecoration: 'none' }}
       >
-        무료 리포트 신청하기
+        리포트 보기
       </Link>
       <button
         onClick={onToggleWatchlist}

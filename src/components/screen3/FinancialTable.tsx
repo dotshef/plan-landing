@@ -24,7 +24,7 @@ export default function FinancialTable() {
       </div>
 
       {/* 3×2 지표 카드 */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 9 }}>
+      <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3,1fr))', gap: 9 }}>
         {metrics.map((m) => (
           <div key={m.label} style={{ background: '#F7F8FA', border: '1px solid #EEF1F6', borderRadius: 10, padding: 13, textAlign: 'center' }}>
             <div style={{ fontSize: 12, color: '#8B95A1' }}>{m.label}</div>
@@ -35,35 +35,37 @@ export default function FinancialTable() {
 
       {/* 연도별 실적 테이블 */}
       <div style={{ marginTop: 18, fontSize: 11, color: '#8B95A1', marginBottom: 8 }}>(단위: 십억원)</div>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-        <thead>
-          <tr>
-            <td style={{ padding: '8px 4px', textAlign: 'left' }}></td>
-            {ANNUAL_FINANCIALS.map((f) => (
-              <td key={f.year} style={{ textAlign: 'right', padding: '8px 4px', color: f.year === '2024E' ? '#1B6CF2' : '#8B95A1', fontWeight: f.year === '2024E' ? 700 : 500, fontSize: 13 }}>
-                {f.year}
-              </td>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {[
-            { label: '매출액',   key: 'revenue'         as const },
-            { label: '영업이익', key: 'operatingProfit'  as const },
-            { label: '순이익',   key: 'netProfit'        as const },
-            { label: 'EPS(원)',  key: 'eps'              as const },
-          ].map((row) => (
-            <tr key={row.label} style={{ borderTop: '1px solid #F2F4F6' }}>
-              <td style={{ padding: '11px 4px', color: '#6B7684', fontWeight: 500 }}>{row.label}</td>
+      <div className="responsive-table-scroll">
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr>
+              <td style={{ padding: '8px 4px', textAlign: 'left' }}></td>
               {ANNUAL_FINANCIALS.map((f) => (
-                <td key={f.year} style={{ textAlign: 'right', padding: '11px 4px', color: f.year === '2024E' ? '#111827' : '#4E5968', fontWeight: f.year === '2024E' ? 700 : 400 }}>
-                  {fmt(f[row.key])}
+                <td key={f.year} style={{ textAlign: 'right', padding: '8px 4px', color: f.year === '2024E' ? '#1B6CF2' : '#8B95A1', fontWeight: f.year === '2024E' ? 700 : 500, fontSize: 13 }}>
+                  {f.year}
                 </td>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {[
+              { label: '매출액',   key: 'revenue'         as const },
+              { label: '영업이익', key: 'operatingProfit'  as const },
+              { label: '순이익',   key: 'netProfit'        as const },
+              { label: 'EPS(원)',  key: 'eps'              as const },
+            ].map((row) => (
+              <tr key={row.label} style={{ borderTop: '1px solid #F2F4F6' }}>
+                <td style={{ padding: '11px 4px', color: '#6B7684', fontWeight: 500 }}>{row.label}</td>
+                {ANNUAL_FINANCIALS.map((f) => (
+                  <td key={f.year} style={{ textAlign: 'right', padding: '11px 4px', color: f.year === '2024E' ? '#111827' : '#4E5968', fontWeight: f.year === '2024E' ? 700 : 400 }}>
+                    {fmt(f[row.key])}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

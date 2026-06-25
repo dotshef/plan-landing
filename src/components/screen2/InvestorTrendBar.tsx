@@ -23,7 +23,7 @@ export default function InvestorTrendBar() {
         <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>투자자별 매매 동향</div>
         <div style={{ fontSize: 11, color: '#8B95A1' }}>{NET_BUY_DATE} 기준 (단위 : 주)</div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
+      <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3,1fr))', gap: 12 }}>
         {items.map((item) => {
           const val = NET_BUY_SUMMARY[item.key]
           return (

@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-[var(--border-default)]">
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '14px 28px', display: 'flex', alignItems: 'center', gap: 32 }}>
+      <div className="responsive-header-inner" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--header-padding, 14px 28px)', display: 'flex', alignItems: 'center', gap: 32 }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
           <div style={{
             width: 34, height: 34, borderRadius: 9,

@@ -9,10 +9,10 @@ const TRUST_ITEMS: { icon: LucideIcon; title: string; desc: string }[] = [
 
 export default function TrustRow() {
   return (
-    <div style={{ maxWidth: 1320, margin: '0 auto', padding: '16px 28px 56px' }}>
-      <div style={{
+    <div className="responsive-section-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--section-padding, 16px 28px 56px)' }}>
+      <div className="responsive-trust-grid responsive-section-card" style={{
         background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18,
-        padding: '24px 28px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24
+        padding: 'var(--card-padding, 24px 28px)', display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(4,1fr))', gap: 24
       }}>
         {TRUST_ITEMS.map((tr) => (
           <div key={tr.title} style={{ display: 'flex', gap: 13, alignItems: 'flex-start' }}>

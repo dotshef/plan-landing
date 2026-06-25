@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Star, Share2 } from 'lucide-react'
@@ -59,7 +59,7 @@ export default function StockPageContent() {
   }
 
   const tabsRow = (
-    <div style={{ display: 'flex', borderBottom: '1px solid #EEF1F6', marginBottom: 16 }}>
+    <div className="responsive-tabs" style={{ display: 'flex', borderBottom: '1px solid #EEF1F6', marginBottom: 16 }}>
       {TABS.map((t) => {
         const isActive = t.key === activeTab
         const isDead   = t.key.startsWith('dead')
@@ -106,15 +106,15 @@ export default function StockPageContent() {
   return (
     <>
       <LoadingOverlay show={loading} />
-      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '18px 28px 56px' }}>
+      <div className="responsive-page-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--page-padding, 18px 28px 56px)' }}>
 
         {/* Breadcrumb */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, fontSize: 13 }}>
+        <div className="responsive-breadcrumb" style={{ display: 'flex', alignItems: 'center', flexWrap: 'var(--breadcrumb-wrap, nowrap)' as CSSProperties['flexWrap'], gap: 12, marginBottom: 16, fontSize: 13 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#6B7684', textDecoration: 'none' }}>← 검색 결과</Link>
           <span style={{ color: '#D1D6DB' }}>|</span>
           <span style={{ fontWeight: 700, color: '#1B6CF2' }}>{STOCK_QUOTE.code}</span>
           <span style={{ fontWeight: 600, color: '#4E5968' }}>{STOCK_QUOTE.name}</span>
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: 18 }}>
+          <div style={{ marginLeft: 'var(--breadcrumb-actions-margin-left, auto)', width: 'var(--breadcrumb-actions-width, auto)', display: 'flex', justifyContent: 'var(--breadcrumb-actions-justify, flex-start)' as CSSProperties['justifyContent'], gap: 18 }}>
             <span
               onClick={toggleWatchlist}
               style={{ color: '#6B7684', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, userSelect: 'none' }}
@@ -131,12 +131,12 @@ export default function StockPageContent() {
         </div>
 
         {/* 3컬럼 고정 레이아웃 */}
-        <div style={{ display: 'grid', gridTemplateColumns: '236px 1fr 268px', gap: 18, alignItems: 'start' }}>
+        <div className="responsive-stock-layout" style={{ display: 'grid', gridTemplateColumns: 'var(--layout-columns, 236px 1fr 268px)', gap: 18, alignItems: 'start' }}>
           <StockSidebar animate={animate} watchlisted={watchlisted} animKey={animKey} onToggleWatchlist={toggleWatchlist} />
 
           {/* 중앙 컬럼 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: '20px 22px' }}>
+            <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
               {tabsRow}
               {centerContent[activeTab]}
             </div>
