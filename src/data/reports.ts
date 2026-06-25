@@ -10,10 +10,10 @@ export const REPORT_DETAIL = {
   summary: '반도체 업황 회복과 HBM 수요 증가에 따른 실적 개선 기대. 목표주가 95,000원으로 상향 조정.',
   supplyDemandAnalysis: `최근 20거래일 외국인 순매수 1,246,817주로 수급 개선 확인. 기관은 소폭 매도세이나 외국인 주도 상승 흐름 유지. 공매도 잔고 비율 0.8%로 낮은 수준 유지 중. 주가 변동성(20일 ATR) 2,134원으로 안정적 흐름 형성.`,
   checkpoints: [
-    'HBM3E 양산 본격화 → 고부가 제품 믹스 개선',
-    'DDR5 전환 수요 확대 → 메모리 ASP 상승 기대',
-    '파운드리 수율 개선 진행 중, 2025년 흑자 전환 목표',
-    '배당수익률 2.14% — 안정적 주주 환원 정책 유지',
+    'AI 서버용 고성능 메모리 수요 지속 확대',
+    'HBM 시장 내 점유율 회복 및 고객사 다변화',
+    '파운드리 수율 개선 및 주요 고객사 확보 진행',
+    '스마트폰 및 IT 수요 회복에 따른 세트 사업 실적 개선',
   ],
   legalNotice: '본 리포트는 투자 권유 목적이 아닙니다. 수익을 보장하지 않으며, 투자 결정은 투자자 본인의 판단과 책임 하에 이루어져야 합니다. 과거 수익률이 미래 수익을 보장하지 않습니다.',
 }
@@ -57,12 +57,14 @@ export const DIVIDEND_INFO = {
 }
 
 export const QUARTERLY_EARNINGS = [
-  { quarter: '23.1Q', revenue: 637455, op: 6402  },
-  { quarter: '23.2Q', revenue: 600050, op: 6685  },
-  { quarter: '23.3Q', revenue: 671520, op: 24340 },
-  { quarter: '23.4Q', revenue: 673210, op: 28120 },
-  { quarter: '24.1Q', revenue: 710480, op: 66060 },
-  { quarter: '24.2Q', revenue: 740000, op: 103470 },
+  { quarter: '23.1Q',    revenue: 637455, op: 6402,   opMargin: 1.0  },
+  { quarter: '23.2Q',    revenue: 600050, op: 6685,   opMargin: 1.1  },
+  { quarter: '23.3Q',    revenue: 671520, op: 24340,  opMargin: 3.6  },
+  { quarter: '23.4Q',    revenue: 673210, op: 28120,  opMargin: 4.2  },
+  { quarter: '24.1Q',    revenue: 710480, op: 66060,  opMargin: 9.3  },
+  { quarter: '24.2Q',    revenue: 740000, op: 103470, opMargin: 14.0 },
+  { quarter: '24.3Q(E)', revenue: 800000, op: 120000, opMargin: 15.0 },
+  { quarter: '24.4Q(E)', revenue: 870000, op: 150000, opMargin: 17.2 },
 ]
 
 export const AI_ONE_LINER = '외국인 수급 개선과 반도체 업황 회복이 맞물려 단기 상승 모멘텀 유효, 78,500원 저항선 돌파 시 추가 상승 기대.'

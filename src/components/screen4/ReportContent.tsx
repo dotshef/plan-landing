@@ -2,7 +2,11 @@
 
 import { useState } from 'react'
 import { TrendingUp, Lock } from 'lucide-react'
-import { REPORT_DETAIL } from '@/data/reports'
+import {
+  BarChart, Bar, Cell, ComposedChart, Line,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+} from 'recharts'
+import { REPORT_DETAIL, QUARTERLY_EARNINGS } from '@/data/reports'
 
 type ReportTab = '핵심요약' | '수급분석'
 const TABS: ReportTab[] = ['핵심요약', '수급분석']
@@ -54,19 +58,25 @@ export default function ReportContent() {
           {/* 핵심 카드 4개 */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
             {[
-              { label: '투자 의견',          icon: true,  value: r.opinion,                         sub: '실적 업황 개선과 AI 수요 증가로 실적 회복 기대', color: r.opinion === '매수' ? '#E8342B' : r.opinion === '매도' ? '#3182f6' : '#F5C900' },
-              { label: '◎ 목표 주가 (12개월)', icon: false, value: fmt(r.targetPrice) + '원',        sub: '▲ 13.1% 상승 여력',                            color: '#111827' },
-              { label: '◷ 적정 주가 밴드',    icon: false, value: `${fmt(r.fairValueLow)}~${fmt(r.fairValueHigh)}`, sub: '보수적 ~ 낙관적 시나리오',         color: '#111827' },
-              { label: '▤ 리포트 발간일',     icon: false, value: r.publishDate,                     sub: '다음 업데이트 2024.06.06',                       color: '#111827' },
+              { label: '투자 의견',           icon: true,  value: r.opinion,                                                   sub: '실적 업황 개선과 AI 수요 증가로 실적 회복 기대', color: r.opinion === '매수' ? '#E8342B' : r.opinion === '매도' ? '#3182f6' : '#F5C900', subColor: '#8B95A1' },
+              { label: '현재가',              icon: false, value: fmt(77800) + '원',                                           sub: '▼ 0.51% 전일 대비',                            color: '#111827', subColor: '#8B95A1' },
+              { label: '◎ 목표 주가 (12개월)', icon: false, value: fmt(r.targetPrice) + '원',                                 sub: '▲ 13.1% 상승 여력',                            color: '#111827', subColor: '#E8342B' },
+              { label: '◷ 적정 주가 밴드',    icon: false, value: `${fmt(r.fairValueLow)}~${fmt(r.fairValueHigh)}`,           sub: '보수적 시나리오 ~ 낙관적 시나리오 기준',                      color: '#111827', subColor: '#8B95A1' },
             ].map((card) => (
               <div key={card.label} style={{ border: '1px solid #EEF1F6', borderRadius: 12, padding: 16 }}>
                 <div style={{ fontSize: 12, color: '#8B95A1', display: 'flex', alignItems: 'center', gap: 4 }}>
                   {card.icon && <TrendingUp size={12} color="#8B95A1" />}{card.label}
                 </div>
                 <div style={{ fontSize: 17, fontWeight: 800, color: card.color, marginTop: 6 }}>{card.value}</div>
-                <div style={{ fontSize: 11, color: card.label === '◎ 목표 주가 (12개월)' ? '#E8342B' : '#8B95A1', fontWeight: 700, marginTop: 6 }}>{card.sub}</div>
+                <div style={{ fontSize: 11, color: card.subColor, fontWeight: 700, marginTop: 6 }}>{card.sub}</div>
               </div>
             ))}
+          </div>
+
+          {/* 발간일 메타 */}
+          <div style={{ display: 'flex', gap: 20, fontSize: 12, color: '#8B95A1' }}>
+            <span>▤ 리포트 발간일 <strong style={{ color: '#4E5968' }}>{r.publishDate}</strong></span>
+            <span>다음 업데이트 <strong style={{ color: '#4E5968' }}>2024.06.06</strong></span>
           </div>
 
           {/* 핵심 요약 */}
@@ -75,17 +85,92 @@ export default function ReportContent() {
             <p style={{ fontSize: 13.5, lineHeight: 1.65, color: '#6B7684' }}>{r.summary}</p>
           </div>
 
-          {/* 목표가 레인지 시각화 */}
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#4E5968', marginBottom: 8 }}>목표가 레인지</div>
-            <div style={{ position: 'relative', height: 32, background: '#F2F4F6', borderRadius: 999, overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', height: '100%', background: '#EAF1FE', borderLeft: '2px solid #1B6CF2', borderRight: '2px solid #1B6CF2', left: '20%', width: '45%' }} />
-              <div style={{ position: 'absolute', height: '100%', width: 2, background: '#1B6CF2', left: `${((77800 - 60000) / (100000 - 60000)) * 100}%` }} />
+          {/* 분기 실적 차트 2개 */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+
+            {/* 분기별 매출액 추이 */}
+            <div>
+              <div style={{ fontSize: 12, color: '#4E5968', fontWeight: 600, marginBottom: 8 }}>
+                분기별 매출액 추이 <span style={{ fontWeight: 400, color: '#8B95A1' }}>(단위: 조원)</span>
+              </div>
+              <ResponsiveContainer width="100%" height={160}>
+                <BarChart data={QUARTERLY_EARNINGS} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F2F4F6" vertical={false} />
+                  <XAxis dataKey="quarter" tick={{ fontSize: 9, fill: '#8B95A1' }} axisLine={false} tickLine={false} />
+                  <YAxis
+                    tick={{ fontSize: 9, fill: '#8B95A1' }}
+                    tickFormatter={(v) => (v / 10000).toFixed(0)}
+                    domain={[0, 1000000]}
+                    axisLine={false} tickLine={false}
+                  />
+                  <Tooltip
+                    formatter={(v) => [`${(Number(v) / 10000).toFixed(1)}조원`, '매출액']}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #E5E8EB' }}
+                  />
+                  <Bar dataKey="revenue" radius={[3, 3, 0, 0]}>
+                    {QUARTERLY_EARNINGS.map((d, i) => (
+                      <Cell key={d.quarter} fill={i === QUARTERLY_EARNINGS.length - 1 ? '#1B6CF2' : '#BFDBFE'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#8B95A1', marginTop: 4 }}>
-              <span>{fmt(r.fairValueLow)}원 (하단)</span>
-              <span style={{ color: '#1B6CF2', fontWeight: 600 }}>{fmt(77800)}원 (현재가)</span>
-              <span>{fmt(r.fairValueHigh)}원 (상단)</span>
+
+            {/* 영업이익 추이 */}
+            <div>
+              <div style={{ fontSize: 12, color: '#4E5968', fontWeight: 600, marginBottom: 8 }}>
+                영업이익 추이 <span style={{ fontWeight: 400, color: '#8B95A1' }}>(단위: 조원)</span>
+              </div>
+              <ResponsiveContainer width="100%" height={160}>
+                <ComposedChart data={QUARTERLY_EARNINGS} margin={{ top: 4, right: 28, left: -24, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F2F4F6" vertical={false} />
+                  <XAxis dataKey="quarter" tick={{ fontSize: 9, fill: '#8B95A1' }} axisLine={false} tickLine={false} />
+                  <YAxis
+                    yAxisId="op"
+                    tick={{ fontSize: 9, fill: '#8B95A1' }}
+                    tickFormatter={(v) => (v / 10000).toFixed(0)}
+                    domain={[0, 200000]}
+                    axisLine={false} tickLine={false}
+                  />
+                  <YAxis
+                    yAxisId="margin"
+                    orientation="right"
+                    tick={{ fontSize: 9, fill: '#8B95A1' }}
+                    tickFormatter={(v) => `${v}%`}
+                    domain={[0, 20]}
+                    axisLine={false} tickLine={false}
+                  />
+                  <Tooltip
+                    formatter={(v, name) => [
+                      name === 'op' ? `${(Number(v) / 10000).toFixed(1)}조원` : `${v}%`,
+                      name === 'op' ? '영업이익' : '영업이익률',
+                    ]}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #E5E8EB' }}
+                  />
+                  <Bar yAxisId="op" dataKey="op" fill="#BFDBFE" radius={[3, 3, 0, 0]} />
+                  <Line
+                    yAxisId="margin"
+                    dataKey="opMargin"
+                    stroke="#1B6CF2"
+                    strokeWidth={1.5}
+                    dot={{ r: 3, fill: '#fff', stroke: '#1B6CF2', strokeWidth: 1.5 }}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+
+          </div>
+
+          {/* 주요 체크 포인트 */}
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 12 }}>2. 주요 체크 포인트</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 24px' }}>
+              {r.checkpoints.map((item) => (
+                <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                  <span style={{ color: '#1B6CF2', fontWeight: 700, fontSize: 14, lineHeight: '1.6', flexShrink: 0 }}>✓</span>
+                  <span style={{ fontSize: 13.5, color: '#4E5968', lineHeight: 1.6 }}>{item}</span>
+                </div>
+              ))}
             </div>
           </div>
 

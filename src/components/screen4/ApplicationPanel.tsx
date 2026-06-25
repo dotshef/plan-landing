@@ -38,7 +38,7 @@ export default function ApplicationPanel() {
 
   return (
     <div style={{ position: 'sticky', top: 96 }}>
-      <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18, overflow: 'hidden', boxShadow: '0 8px 30px rgba(17,40,90,.06)' }}>
+      <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18, overflow: 'hidden', boxShadow: 'none' }}>
         <AnimatePresence mode="wait">
           {!submitted ? (
             <motion.div
@@ -117,7 +117,7 @@ export default function ApplicationPanel() {
                   </div>
                   <div style={{ marginTop: 12, padding: 14, background: '#F8FAFC', border: '1px solid #F2F4F6', borderRadius: 10, fontSize: 11.5, color: '#8B95A1', lineHeight: 1.55, maxHeight: 96, overflow: 'hidden' }}>
                     [개인정보 수집·이용 동의]<br />
-                    (주)케이스톡은 무료 리포트 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br />
+                    투자그룹 플랜은 무료 리포트 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.<br />
                     · 수집 항목: 이름, 연락처, 관심 종목<br />
                     · 이용 목적: 무료 리포트 제공 및 투자 정보 안내<br />
                     · 보유 기간: 동의일로부터 1년
