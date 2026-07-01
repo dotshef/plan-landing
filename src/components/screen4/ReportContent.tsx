@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type CSSProperties } from 'react'
+import { type CSSProperties } from 'react'
 import { TrendingUp, Lock } from 'lucide-react'
 import {
   BarChart, Bar, Cell, ComposedChart, Line,
@@ -8,13 +8,9 @@ import {
 } from 'recharts'
 import { useStockData } from '@/context/StockDataContext'
 
-type ReportTab = '핵심요약' | '수급분석'
-const TABS: ReportTab[] = ['핵심요약', '수급분석']
-
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
 export default function ReportContent() {
-  const [tab, setTab] = useState<ReportTab>('핵심요약')
   const { quote: STOCK_QUOTE, rep, fin } = useStockData()
   const r = rep.REPORT_DETAIL
   const QUARTERLY_EARNINGS = fin.QUARTERLY_EARNINGS
@@ -35,35 +31,16 @@ export default function ReportContent() {
         </span>
       </div>
 
-      {/* 탭 */}
-      <div className="responsive-tabs" style={{ display: 'flex', gap: 22, borderBottom: '1px solid #EEF1F6', margin: '22px 0' }}>
-        {TABS.map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            style={{
-              padding: '0 0 12px', fontSize: 14, fontWeight: 700, cursor: 'pointer',
-              background: 'none', border: 'none',
-              borderBottom: `2.5px solid ${tab === t ? '#1B6CF2' : 'transparent'}`,
-              color: tab === t ? '#1B6CF2' : '#8B95A1',
-              marginBottom: -1,
-            }}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
+      <div style={{ marginTop: 22 }} />
 
       {/* 탭 콘텐츠 */}
-      {tab === '핵심요약' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          {/* 핵심 카드 4개 */}
-          <div className="responsive-report-summary-grid" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(4,1fr))', gap: 12 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {/* 핵심 카드 3개 (투자의견 / 현재가 / 목표주가) */}
+          <div className="responsive-report-summary-grid" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3,1fr))', gap: 12 }}>
             {[
-              { label: '투자 의견',           icon: true,  value: r.opinion,                                                   sub: '실적 업황 개선과 AI 수요 증가로 실적 회복 기대', color: r.opinion === '매수' ? '#E8342B' : r.opinion === '매도' ? '#3182f6' : '#F5C900', subColor: '#8B95A1' },
+              { label: '투자 의견',           icon: true,  value: r.opinion,                                                   sub: '국내 증권사 종합 투자의견', color: r.opinion === '매수' ? '#E8342B' : r.opinion === '매도' ? '#3182f6' : '#F5C900', subColor: '#8B95A1' },
               { label: '현재가',              icon: false, value: fmt(STOCK_QUOTE.currentPrice) + '원',                       sub: `${STOCK_QUOTE.changeRate >= 0 ? '▲' : '▼'} ${Math.abs(STOCK_QUOTE.changeRate).toFixed(2)}% 전일 대비`,  color: '#111827', subColor: '#8B95A1' },
               { label: '◎ 목표 주가 (12개월)', icon: false, value: fmt(r.targetPrice) + '원',                                 sub: `▲ ${((r.targetPrice / STOCK_QUOTE.currentPrice - 1) * 100).toFixed(1)}% 상승 여력`,  color: '#111827', subColor: '#E8342B' },
-              { label: '◷ 적정 주가 밴드',    icon: false, value: `${fmt(r.fairValueLow)}~${fmt(r.fairValueHigh)}`,           sub: '보수적 시나리오 ~ 낙관적 시나리오 기준',                      color: '#111827', subColor: '#8B95A1' },
             ].map((card) => (
               <div key={card.label} style={{ border: '1px solid #EEF1F6', borderRadius: 12, padding: 16 }}>
                 <div style={{ fontSize: 12, color: '#8B95A1', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -79,12 +56,6 @@ export default function ReportContent() {
           <div className="responsive-report-meta" style={{ display: 'flex', flexDirection: 'var(--report-meta-direction, row)' as CSSProperties['flexDirection'], gap: 'var(--report-meta-gap, 20px)', fontSize: 12, color: '#8B95A1' }}>
             <span>▤ 리포트 발간일 <strong style={{ color: '#4E5968' }}>{r.publishDate}</strong></span>
             <span>다음 업데이트 <strong style={{ color: '#4E5968' }}>{r.nextUpdateDate}</strong></span>
-          </div>
-
-          {/* 핵심 요약 */}
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 8 }}>1. 최근 실적 및 전망</div>
-            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: '#6B7684' }}>{r.summary}</p>
           </div>
 
           {/* 분기 실적 차트 2개 */}
@@ -160,19 +131,6 @@ export default function ReportContent() {
 
           </div>
 
-          {/* 주요 체크 포인트 */}
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 12 }}>2. 주요 체크 포인트</div>
-            <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, 1fr 1fr)', gap: '8px 24px' }}>
-              {r.checkpoints.map((item) => (
-                <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                  <span style={{ color: '#1B6CF2', fontWeight: 700, fontSize: 14, lineHeight: '1.6', flexShrink: 0 }}>✓</span>
-                  <span style={{ fontSize: 13.5, color: '#4E5968', lineHeight: 1.6 }}>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* 잠금 안내 */}
           <div style={{ padding: '16px 18px', background: '#F5F8FE', borderRadius: 12, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
             <Lock size={16} color="#1B6CF2" style={{ flexShrink: 0, marginTop: 1 }} />
@@ -186,20 +144,7 @@ export default function ReportContent() {
           <div style={{ fontSize: 11, color: '#B0B8C1', lineHeight: 1.5, borderTop: '1px solid #F2F4F6', paddingTop: 14 }}>
             {r.legalNotice}
           </div>
-        </div>
-      )}
-
-      {tab === '수급분석' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{ background: '#F9FAFB', borderRadius: 12, padding: 20 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 10 }}>주요 수급 및 변동성 분석</div>
-            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: '#6B7684' }}>{r.supplyDemandAnalysis}</p>
-          </div>
-          <div style={{ fontSize: 11, color: '#B0B8C1', lineHeight: 1.5, borderTop: '1px solid #F2F4F6', paddingTop: 14 }}>
-            {r.legalNotice}
-          </div>
-        </div>
-      )}
+      </div>
 
     </div>
   )

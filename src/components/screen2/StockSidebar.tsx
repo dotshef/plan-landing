@@ -1,22 +1,17 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
-import { Star } from 'lucide-react'
 import CountingNumber from '@/components/common/CountingNumber'
 import { useStockData } from '@/context/StockDataContext'
 import { getStockMeta } from '@/data/registry'
 
 interface Props {
   animate: boolean
-  watchlisted: boolean
-  animKey: number
-  onToggleWatchlist: () => void
 }
 
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
-export default function StockSidebar({ animate, watchlisted, animKey, onToggleWatchlist }: Props) {
+export default function StockSidebar({ animate }: Props) {
   const { quote: s } = useStockData()
   const meta = getStockMeta(s.code)
   const isUp = s.change >= 0
@@ -26,9 +21,7 @@ export default function StockSidebar({ animate, watchlisted, animKey, onToggleWa
     <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 22 }}>
       {/* 종목 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-        <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#fff', border: '1px solid #EEF1F6', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
-          {meta && <Image src={meta.image} alt={s.name} width={40} height={40} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />}
-        </div>
+        <div style={{ width: 40, height: 40, borderRadius: '50%', background: meta?.color ?? '#EEF1F6', flexShrink: 0 }} />
         <div>
           <div style={{ fontSize: 18, fontWeight: 800, color: '#111827' }}>{s.name}</div>
           <div style={{ fontSize: 12, color: '#8B95A1' }}>{s.code} · KOSPI</div>
@@ -85,23 +78,6 @@ export default function StockSidebar({ animate, watchlisted, animKey, onToggleWa
       >
         리포트 보기
       </Link>
-      <button
-        onClick={onToggleWatchlist}
-        style={{
-          width: '100%', height: 44, marginTop: 9,
-          border: `1px solid ${watchlisted ? '#F5C900' : '#E5E8EB'}`,
-          borderRadius: 11, background: watchlisted ? '#FFFBEA' : '#fff',
-          color: '#4E5968',
-          fontSize: 13.5, fontWeight: 600, cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          transition: 'all 0.2s',
-        }}
-      >
-        <span key={animKey} className={animKey > 0 ? 'star-burst' : ''}>
-          <Star size={14} color={watchlisted ? '#F5C900' : '#4E5968'} fill={watchlisted ? '#F5C900' : 'none'} />
-        </span>
-        {watchlisted ? '관심종목 추가됨' : '관심종목 추가'}
-      </button>
     </div>
   )
 }

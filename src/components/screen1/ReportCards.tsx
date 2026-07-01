@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { REPORT_CARDS } from '@/data/registry'
 
 export default function ReportCards() {
@@ -14,9 +13,7 @@ export default function ReportCards() {
           {REPORT_CARDS.map((r) => (
             <div key={r.code} style={{ border: '1px solid #EEF1F6', borderRadius: 14, padding: 18, background: '#fff' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '1px solid #EEF1F6', flexShrink: 0 }}>
-                  <Image src={r.image} alt={r.name} width={40} height={40} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
-                </div>
+                <div style={{ width: 40, height: 40, borderRadius: '50%', background: r.color, flexShrink: 0 }} />
                 <div style={{ lineHeight: 1.25, flex: 1 }}>
                   <div style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>
                     {r.name} <span style={{ fontSize: 12, color: '#8B95A1', fontWeight: 500 }}>{r.code}</span>

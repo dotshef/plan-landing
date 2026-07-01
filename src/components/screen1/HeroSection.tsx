@@ -2,7 +2,6 @@
 
 import { useState, type CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { STOCK_LIST, POPULAR_STOCKS } from '@/data/registry'
 import { BarChart2, Bot, FileText, Search, type LucideIcon } from 'lucide-react'
 
@@ -89,9 +88,7 @@ export default function HeroSection() {
                     onMouseDown={() => go(s.code)}
                     style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', cursor: 'pointer', borderBottom: '1px solid #F2F4F6' }}
                   >
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: '#fff', border: '1px solid #EEF1F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-                      <Image src={s.image} alt={s.name} width={30} height={30} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
-                    </div>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: s.color, flexShrink: 0 }} />
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{s.name}</div>
                     <div style={{ fontSize: 13, color: '#8B95A1' }}>{s.code}</div>
                     <div style={{ marginLeft: 'auto', fontSize: 12, color: '#B0B8C1' }}>{s.market}</div>

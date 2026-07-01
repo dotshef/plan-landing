@@ -42,10 +42,6 @@ export default function TechnicalIndicators() {
           </div>
         ))}
       </div>
-
-      <button style={{ width: '100%', height: 40, marginTop: 18, border: '1px solid #E5E8EB', borderRadius: 10, background: '#fff', color: '#1B6CF2', fontSize: 13, fontWeight: 700, cursor: 'default' }}>
-        기술적 지표 상세 보기 ›
-      </button>
     </div>
   )
 }

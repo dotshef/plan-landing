@@ -3,7 +3,7 @@
 import { useEffect, useState, type CSSProperties } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Star, Share2 } from 'lucide-react'
+import { Share2 } from 'lucide-react'
 import LoadingOverlay from '@/components/common/LoadingOverlay'
 import { useStockData } from '@/context/StockDataContext'
 import StockSidebar from '@/components/screen2/StockSidebar'
@@ -24,7 +24,6 @@ const TABS = [
   { key: 'overview',  label: '종합' },
   { key: 'chart',     label: '차트' },
   { key: 'financial', label: '재무' },
-  { key: 'dead',      label: '뉴스' },
   { key: 'supply',    label: '수급' },
 ] as const
 
@@ -38,12 +37,8 @@ export default function StockPageContent() {
     rawTab === 'financial' ? 'financial' :
     rawTab === 'supply'    ? 'supply'    : 'overview'
 
-  const [loading, setLoading]       = useState(true)
-  const [animate, setAnimate]       = useState(false)
-  const [watchlisted, setWatchlisted] = useState(false)
-  const [animKey, setAnimKey]       = useState(0)
-
-  const toggleWatchlist = () => { setWatchlisted(w => !w); setAnimKey(k => k + 1) }
+  const [loading, setLoading] = useState(true)
+  const [animate, setAnimate] = useState(false)
 
   useEffect(() => {
     const t = setTimeout(() => { setLoading(false); setAnimate(true) }, 1400)
@@ -115,15 +110,6 @@ export default function StockPageContent() {
           <span style={{ fontWeight: 700, color: '#1B6CF2' }}>{STOCK_QUOTE.code}</span>
           <span style={{ fontWeight: 600, color: '#4E5968' }}>{STOCK_QUOTE.name}</span>
           <div style={{ marginLeft: 'var(--breadcrumb-actions-margin-left, auto)', width: 'var(--breadcrumb-actions-width, auto)', display: 'flex', justifyContent: 'var(--breadcrumb-actions-justify, flex-start)' as CSSProperties['justifyContent'], gap: 18 }}>
-            <span
-              onClick={toggleWatchlist}
-              style={{ color: '#6B7684', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, userSelect: 'none' }}
-            >
-              <span key={animKey} className={animKey > 0 ? 'star-burst' : ''}>
-                <Star size={14} color={watchlisted ? '#F5C900' : '#6B7684'} fill={watchlisted ? '#F5C900' : 'none'} style={{ transition: 'color 0.2s' }} />
-              </span>
-              {watchlisted ? '관심종목 추가됨' : '관심종목 추가'}
-            </span>
             <span style={{ color: '#6B7684', cursor: 'default', display: 'flex', alignItems: 'center', gap: 5 }}>
               <Share2 size={14} color="#6B7684" /> 공유하기
             </span>
@@ -132,7 +118,7 @@ export default function StockPageContent() {
 
         {/* 3컬럼 고정 레이아웃 */}
         <div className="responsive-stock-layout" style={{ display: 'grid', gridTemplateColumns: 'var(--layout-columns, 236px 1fr 268px)', gap: 18, alignItems: 'start' }}>
-          <StockSidebar animate={animate} watchlisted={watchlisted} animKey={animKey} onToggleWatchlist={toggleWatchlist} />
+          <StockSidebar animate={animate} />
 
           {/* 중앙 컬럼 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
