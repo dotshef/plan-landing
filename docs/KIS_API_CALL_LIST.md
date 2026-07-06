@@ -2,7 +2,7 @@
 
 ## 1. 화면별 필요 API 요약
 
-> "화면 1~4" 번호는 [reference/](reference/) 시안 PNG 기준. 실제 라우트는 3개이며, **화면 3은 별도 페이지가 아니라 종목 상세(`/stock/[code]`)의 재무/수급 탭**으로 구현되어 있음.
+> "화면 1~4" 번호는 [reference/](../reference/) 시안 PNG 기준. 실제 라우트는 3개이며, **화면 3은 별도 페이지가 아니라 종목 상세(`/stock/[code]`)의 재무/수급 탭**으로 구현되어 있음.
 >
 > | 시안 | 실제 라우트 |
 > |---|---|
@@ -17,7 +17,15 @@
 |---|---|---|---|
 | MarketIndexCards | KOSPI / KOSDAQ 지수 | 국내지수 `FHPUP02100000` | 2 |
 | MarketIndexCards | NASDAQ / S&P500 지수 + sparkline | 해외지수 `FHKST03030100` | 2 |
-| ReportCards | 종목 카드 시세 (현재가·등락률) | 현재가 `FHKST01010100` | 종목 수만큼 (현재 4) |
+| ReportCards | 인기 종목 카드 4개 — **HTS 조회상위 20종목 중 최상위 4종목**으로 선정, 1위에 "가장 많이 조회" 배지 | HTS조회상위 `HHMCM000100C0` | 1 |
+
+**ReportCards 선정 로직 (실측 2026-07-06)**
+- `hts-top-view` 응답은 20건이며 필드가 `mrkt_div_cls_code`(J/Q) + `mksc_shrn_iscd`(종목코드) **2개뿐** → 종목명은 종목마스터(ST 필터, [KIS_SUPPORTED_STOCKS.md](KIS_SUPPORTED_STOCKS.md)) 캐시에서 매핑.
+- 상위 20에 **ETF·우선주도 섞여 나옴** (실측 시 4위 005935 삼성전자우, 5위 069500 KODEX 200) → **보통주만 남기고** 순위순 상위 4종목 채택 (정책 확정 2026-07-06).
+  - ETF/ETN 등 제외: 종목마스터 그룹코드 `ST`(주권)만 통과
+  - 우선주 제외: 단축코드 끝자리가 `0`이 아닌 종목 제외 (예: 005935 삼성전자우) — 종목명 `~우`/`~우B` 접미 필터로 보강 가능
+- 카드에 현재가·등락률을 표기할 경우에만 현재가 `FHKST01010100` × 4 추가.
+- 카드 요약문(summary)은 KIS 데이터 아님 — 자체 생성 유지.
 
 ### 화면 2 — 종목 상세, 종합/차트 탭 (`/stock/[code]`)
 
@@ -62,7 +70,7 @@
 
 ---
 
-## 2. API별 상세 (총 12개)
+## 2. API별 상세 (총 13개)
 
 ### 종목 단위 (10개)
 
@@ -86,6 +94,7 @@
 |---|---|---|---|---|---|
 | 11 | 국내 지수 | `FHPUP02100000` | `GET /uapi/domestic-stock/v1/quotations/inquire-index-price` | `FID_COND_MRKT_DIV_CODE=U`, `FID_INPUT_ISCD=0001`(KOSPI)/`1001`(KOSDAQ) | 1 |
 | 12 | 해외 지수 | `FHKST03030100` | `GET /uapi/overseas-price/v1/quotations/inquire-daily-chartprice` | `FID_COND_MRKT_DIV_CODE=N`, `FID_INPUT_ISCD=COMP`(NASDAQ)/`SPX`(S&P500), 기간, `D` | 1 |
+| 13 | HTS 조회상위 20종목 | `HHMCM000100C0` | `GET /uapi/domestic-stock/v1/ranking/hts-top-view` | 쿼리 파라미터 없음. **헤더에 `custtype: P` 필요** | 1 |
 
 ---
 

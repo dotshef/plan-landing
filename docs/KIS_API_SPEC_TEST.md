@@ -5,7 +5,7 @@
 
 ---
 
-## 호출 가능 API (7개)
+## 호출 가능 API (8개)
 
 ### ✅ 주식현재가 시세
 
@@ -154,6 +154,26 @@ cpfn (자본금): undefined
 mket_id_cd (시장구분): STK
 [전체키] pdno, prdt_type_cd, mket_id_cd, scty_grp_id_cd, excg_dvsn_cd, setl_mmdd, lstg_stqt, lstg_cptl_amt, cpta, papr, issu_pric, kospi200_item_yn, scts_mket_lstg_dt, scts_mket_lstg_abol_dt, kosdaq_mket_lstg_dt, kosdaq_mket_lstg_abol_dt, frbd_mket_lstg_dt, frbd_mket_lstg_abol_dt, reits_kind_cd, etf_dvsn_cd, oilf_fund_yn, idx_bztp_lcls_cd, idx_bztp_mcls_cd, idx_bztp_scls_cd, stck_kind_cd, mfnd_opng_dt, mfnd_end_dt, dpsi_erlm_cncl_dt, etf_cu_qty, prdt_name, prdt_name120, prdt_abrv_name, std_pdno, prdt_eng_name, prdt_eng_name120, prdt_eng_abrv_name, dpsi_aptm_erlm_yn, etf_txtn_type_cd, etf_type_cd, lstg_abol_dt, nwst_odst_dvsn_cd, sbst_pric, thco_sbst_pric, thco_sbst_pric_chng_dt, tr_stop_yn, admn_item_yn, thdt_clpr, bfdy_clpr, clpr_chng_dt, std_idst_clsf_cd, std_idst_clsf_cd_name, idx_bztp_lcls_cd_name, idx_bztp_mcls_cd_name, idx_bztp_scls_cd_name, ocr_no, crfd_item_yn, elec_scty_yn, issu_istt_cd, etf_chas_erng_rt_dbnb, etf_etn_ivst_heed_item_yn, stln_int_rt_dvsn_cd, frnr_psnl_lmt_rt, lstg_rqsr_issu_istt_cd, lstg_rqsr_item_cd, trst_istt_issu_istt_cd, nxt_tr_stop_yn, cptt_trad_tr_psbl_yn
 ```
+
+### ✅ HTS 조회상위 20종목
+
+- **tr_id**: `HHMCM000100C0`
+- **endpoint**: `GET /uapi/domestic-stock/v1/ranking/hts-top-view`
+- **파라미터**: 쿼리 파라미터 없음
+- **주의**: 헤더에 `custtype: P` (개인 고객 구분) 필수 — 공통 헬퍼([scripts/api.js](../scripts/api.js))에는 이 헤더가 없으므로 구현 시 추가 필요
+
+**응답 필드 (실측 2026-07-06)**
+
+```
+수신 건수: 20 (조회 순위순)
+mrkt_div_cls_code (시장구분): J (코스피) | Q (코스닥)
+mksc_shrn_iscd (종목코드): 005930
+[전체키] mrkt_div_cls_code, mksc_shrn_iscd
+[실측 상위 5건] 005930 삼성전자 → 000660 SK하이닉스 → 365660(Q) → 005935 삼성전자우 → 069500 KODEX 200(ETF)
+```
+
+- 응답에 **종목명·시세 없음** → 종목명은 종목마스터 캐시에서 매핑, 시세는 현재가 API 별도 호출
+- **ETF·우선주도 순위에 포함**됨 → 상장사 주권만 쓰려면 종목마스터 그룹코드 `ST` 필터 필요
 
 ---
 
