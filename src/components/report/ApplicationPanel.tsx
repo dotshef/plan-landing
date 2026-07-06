@@ -16,7 +16,6 @@ export default function ApplicationPanel() {
     const e: Record<string, string> = {}
     if (!form.name.trim()) e.name = '이름을 입력해주세요'
     if (!form.phone.trim()) e.phone = '연락처를 입력해주세요'
-    if (!form.agree) e.agree = '개인정보 수집에 동의해주세요'
     return e
   }
 
@@ -115,15 +114,35 @@ export default function ApplicationPanel() {
                       border: `1px solid ${form.agree ? '#1B6CF2' : '#D1D6DB'}`,
                     }}><Check size={12} color="#fff" strokeWidth={3} /></div>
                     <span style={{ fontSize: 13, fontWeight: 600, color: '#4E5968' }}>
-                      개인정보 수집·이용 동의 <span style={{ color: '#1B6CF2' }}>(필수)</span>
+                      마케팅 정보 수신 동의
                     </span>
                   </div>
-                  <div style={{ marginTop: 12, padding: 14, background: '#F8FAFC', border: '1px solid #F2F4F6', borderRadius: 10, fontSize: 11.5, color: '#8B95A1', lineHeight: 1.55, maxHeight: 96, overflow: 'hidden' }}>
-                    [개인정보 수집·이용 동의]<br />
-                    투자그룹 플랜은 무료 리포트 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.<br />
-                    · 수집 항목: 이름, 연락처, 관심 종목<br />
-                    · 이용 목적: 무료 리포트 제공 및 투자 정보 안내<br />
-                    · 보유 기간: 동의일로부터 1년
+                  <div style={{ marginTop: 12, padding: 14, background: '#F8FAFC', border: '1px solid #F2F4F6', borderRadius: 10, fontSize: 11.5, color: '#8B95A1', lineHeight: 1.55, maxHeight: 96, overflow: 'auto' }}>
+                    [마케팅 정보 수신 동의] <br />
+                    <br />
+                    회사는 무료 리포트, 투자정보, 시장 브리핑, 이벤트 및 신규 서비스 안내를 위해 아래와 같이 마케팅 정보를 제공합니다.<br />
+                    <br />
+                    1. 수신 항목<br />
+                    · 문자(SMS/LMS)<br />
+                    · 전화<br />
+                    · 카카오톡<br />
+                    <br />
+                    2. 이용 목적<br />
+                    · 무료 리포트 제공<br />
+                    · 투자 관련 정보 및 시장 브리핑 안내<br />
+                    · 이벤트 및 프로모션 안내<br />
+                    · 신규 서비스 및 콘텐츠 안내<br />
+                    <br />
+                    3. 보유 및 이용 기간<br />
+                    동의 철회 시까지<br />
+                    <br />
+                    ※ 귀하는 마케팅 정보 수신에 대한 동의를 거부할 권리가 있으며, 동의하지 않으셔도 서비스 이용에는 제한이 없습니다.<br />
+                    <br />
+                    고객센터<br />
+                    대표번호 : 1877-4260<br />
+                    운영시간 : 평일 09:00 ~ 18:00 (주말 및 공휴일 휴무)<br />
+                    <br />
+                    문의사항은 고객센터를 통해 접수해 주시기 바랍니다
                   </div>
                   {errors.agree && <p style={{ fontSize: 12, color: '#E8342B', marginTop: 4 }}>{errors.agree}</p>}
                 </div>
