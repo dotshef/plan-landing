@@ -23,7 +23,7 @@ export default async function ReportPage({ params }: { params: Promise<{ code: s
           <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18, padding: 'var(--card-padding, 30px)' }}>
             <ReportContent />
           </div>
-          <ApplicationPanel />
+          <ApplicationPanel defaultStock={`${quote.name}(${quote.code})`} />
         </div>
       </div>
     </StockDataProvider>
