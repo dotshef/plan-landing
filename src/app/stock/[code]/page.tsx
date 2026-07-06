@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { getStockData } from '@/data/loader'
 import { StockDataProvider } from '@/context/StockDataContext'
-import StockPageContent from '@/components/screen2/StockPageContent'
+import StockPageContent from '@/components/stock/StockPageContent'
 
 export default async function StockPage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params

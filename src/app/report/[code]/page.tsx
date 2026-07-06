@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { getStockData } from '@/data/loader'
 import { StockDataProvider } from '@/context/StockDataContext'
-import ReportContent from '@/components/screen4/ReportContent'
-import ApplicationPanel from '@/components/screen4/ApplicationPanel'
+import ReportContent from '@/components/report/ReportContent'
+import ApplicationPanel from '@/components/report/ApplicationPanel'
 
 export default async function ReportPage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params

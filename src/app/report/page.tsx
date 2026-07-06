@@ -1,4 +1,4 @@
-import ApplicationPanel from '@/components/screen4/ApplicationPanel'
+import ApplicationPanel from '@/components/report/ApplicationPanel'
 
 export default function ReportPage() {
   return (

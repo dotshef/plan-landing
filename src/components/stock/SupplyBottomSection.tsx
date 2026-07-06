@@ -1,4 +1,4 @@
-import ProgramTradeSection from '@/components/screen3/ProgramTradeSection'
+import ProgramTradeSection from '@/components/stock/ProgramTradeSection'
 
 export default function SupplyBottomSection() {
   return (

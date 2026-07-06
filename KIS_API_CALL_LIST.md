@@ -45,7 +45,7 @@
 | InvestorTrendBar | 개인/외국인/기관 순매수 | 투자자동향 `FHKST01010900` | 1 |
 | NewsAndAI | 뉴스 제목·출처·시각 | 뉴스 `FHKST01011800` | 1 |
 | NewsAndAI (기업개요) | 업종명 / 상장주식수·상장일 | 현재가 응답 재사용 / 기본정보 `CTPF1002R` | 0~1 |
-| Screen2RightSidebar | 52주 고저·외국인보유율 / 1년 추이 | 현재가·기간별시세 응답 재사용 | 0 |
+| StockRightSidebar | 52주 고저·외국인보유율 / 1년 추이 | 현재가·기간별시세 응답 재사용 | 0 |
 
 *배당수익률 = ksdinfo/dividend의 주당배당금 + 현재가로 계산 (화면 3에서 함께 호출 시 재사용)
 
@@ -64,8 +64,8 @@
 | FinancialBottomSection | 주당배당금·배당 히스토리·배당성향 | 예탁원 배당 `HHKDB669102C0` | 1 |
 | NetBuyCards / SupplyDemandChart | 투자자별 순매수·누적 수급 | 투자자동향 응답 재사용 | 0 |
 | ProgramTradeSection | 프로그램매매 일별 순매수 | 프로그램매매 `FHPPG04650201` | 1 |
-| ~~MajorShareholders~~ | 주주구성 세부 비율 | ❌ KIS 미제공 — **현재 미사용 컴포넌트** (어디서도 import 안 됨) | — |
-| ~~AiInsightSection~~ | AI 인사이트 | KIS 데이터 아님 — **현재 미사용 컴포넌트** | — |
+| ~~MajorShareholders~~ | 주주구성 세부 비율 | ❌ KIS 미제공 — 2026-07-06 리팩토링으로 컴포넌트 삭제 | — |
+| ~~AiInsightSection~~ | AI 인사이트 | KIS 데이터 아님 — 2026-07-06 리팩토링으로 컴포넌트 삭제 (ReportPreviewSidebar도 함께 삭제) | — |
 
 **화면 3 신규 호출: 5건** (재무 탭 4건 + 수급 탭 1건)
 

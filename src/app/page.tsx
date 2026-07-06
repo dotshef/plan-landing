@@ -1,7 +1,7 @@
-import HeroSection from '@/components/screen1/HeroSection'
-import ReportCards from '@/components/screen1/ReportCards'
-import MarketIndexCards from '@/components/screen1/MarketIndexCards'
-import TrustRow from '@/components/screen1/TrustRow'
+import HeroSection from '@/components/landing/HeroSection'
+import ReportCards from '@/components/landing/ReportCards'
+import MarketIndexCards from '@/components/landing/MarketIndexCards'
+import TrustRow from '@/components/landing/TrustRow'
 
 export default function HomePage() {
   return (

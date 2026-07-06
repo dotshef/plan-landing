@@ -1,16 +1,7 @@
 import { seededRng } from '../../_rng'
-import { STOCK_QUOTE } from './index'
+import type { CandleData, DailySupplyDemand, ProgramTradeDay, TechnicalIndicator } from '../../types'
 
 // ─── Candlestick ──────────────────────────────────────────────────────────────
-
-export interface CandleData {
-  time: string | number
-  open: number
-  high: number
-  low: number
-  close: number
-  volume: number
-}
 
 const candleRand = seededRng(2345)
 
@@ -77,13 +68,6 @@ export const CANDLESTICK_DATA: Record<string, CandleData[]> = {
 
 // ─── Supply & Demand ──────────────────────────────────────────────────────────
 
-export interface DailySupplyDemand {
-  date: string
-  foreign: number
-  institution: number
-  individual: number
-}
-
 const supplyRand = seededRng(6789)
 
 function genDate(daysAgo: number): string {
@@ -107,7 +91,7 @@ export const NET_BUY_SUMMARY = {
   individual:  -4_242_357,
 }
 
-export const PROGRAM_TRADE = Array.from({ length: 30 }, (_, i) => ({
+export const PROGRAM_TRADE: ProgramTradeDay[] = Array.from({ length: 30 }, (_, i) => ({
   date:         genDate(29 - i),
   arbitrage:    Math.round((supplyRand() - 0.5) * 150_000),
   nonArbitrage: Math.round((supplyRand() - 0.5) * 250_000),
@@ -115,12 +99,12 @@ export const PROGRAM_TRADE = Array.from({ length: 30 }, (_, i) => ({
 
 // ─── Technical Indicators ─────────────────────────────────────────────────────
 
-export const TECHNICAL_INDICATORS = [
+export const TECHNICAL_INDICATORS: TechnicalIndicator[] = [
   {
     name: '이동평균선',
     value: '정배열',
     signal: '매수',
-    signalUp: true as boolean | null,
+    signalUp: true,
     sub: '5 > 20 > 60 > 120',
     data: [155, 160, 165, 168, 172, 175, 178, 182, 185, 188, 190],
     isRise: true,
@@ -129,8 +113,8 @@ export const TECHNICAL_INDICATORS = [
     name: 'RSI (14)',
     value: '62.18',
     signal: '중립',
-    signalUp: null as boolean | null,
-    sub: null as string | null,
+    signalUp: null,
+    sub: null,
     data: [55, 58, 60, 57, 63, 61, 65, 62, 64, 63, 62],
     isRise: true,
   },
@@ -138,8 +122,8 @@ export const TECHNICAL_INDICATORS = [
     name: 'MACD',
     value: '+3,412.80',
     signal: '매수',
-    signalUp: true as boolean | null,
-    sub: null as string | null,
+    signalUp: true,
+    sub: null,
     data: [800, 1200, 1800, 1500, 2200, 2700, 2500, 3100, 3300, 3400, 3413],
     isRise: true,
   },
@@ -147,8 +131,8 @@ export const TECHNICAL_INDICATORS = [
     name: 'Stochastic',
     value: '68.54',
     signal: '중립',
-    signalUp: null as boolean | null,
-    sub: null as string | null,
+    signalUp: null,
+    sub: null,
     data: [60, 65, 63, 70, 67, 72, 68, 74, 69, 67, 69],
     isRise: true,
   },
@@ -156,20 +140,9 @@ export const TECHNICAL_INDICATORS = [
     name: 'BB %b',
     value: '0.62',
     signal: '중립',
-    signalUp: null as boolean | null,
-    sub: null as string | null,
+    signalUp: null,
+    sub: null,
     data: [0.40, 0.48, 0.44, 0.55, 0.52, 0.60, 0.56, 0.62, 0.58, 0.61, 0.62],
     isRise: true,
   },
 ]
-
-// ─── Shareholders ─────────────────────────────────────────────────────────────
-
-export const SHAREHOLDERS = [
-  { name: '외국인', value: STOCK_QUOTE.foreignOwnership, color: '#3182f6' },
-  { name: '기관',   value: 24.36,                        color: '#8B95A1' },
-  { name: '개인',   value: 22.18,                        color: '#E8342B' },
-  { name: '기타',   value:  1.32,                        color: '#D1D6DB' },
-]
-
-export const SHAREHOLDERS_DATE = '2024.06.24'

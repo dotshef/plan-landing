@@ -6,17 +6,17 @@ import Link from 'next/link'
 import { Share2 } from 'lucide-react'
 import LoadingOverlay from '@/components/common/LoadingOverlay'
 import { useStockData } from '@/context/StockDataContext'
-import StockSidebar from '@/components/screen2/StockSidebar'
-import CandlestickChart from '@/components/screen2/CandlestickChart'
-import InvestorTrendBar from '@/components/screen2/InvestorTrendBar'
-import NewsAndAI from '@/components/screen2/NewsAndAI'
-import TechnicalIndicators from '@/components/screen2/TechnicalIndicators'
-import Screen2RightSidebar from '@/components/screen2/Screen2RightSidebar'
-import SupplyDemandChart from '@/components/screen3/SupplyDemandChart'
-import NetBuyCards from '@/components/screen3/NetBuyCards'
-import FinancialTable from '@/components/screen3/FinancialTable'
-import SupplyBottomSection from '@/components/screen3/SupplyBottomSection'
-import FinancialBottomSection from '@/components/screen3/FinancialBottomSection'
+import StockSidebar from '@/components/stock/StockSidebar'
+import CandlestickChart from '@/components/stock/CandlestickChart'
+import InvestorTrendBar from '@/components/stock/InvestorTrendBar'
+import NewsAndAI from '@/components/stock/NewsAndAI'
+import TechnicalIndicators from '@/components/stock/TechnicalIndicators'
+import StockRightSidebar from '@/components/stock/StockRightSidebar'
+import SupplyDemandChart from '@/components/stock/SupplyDemandChart'
+import NetBuyCards from '@/components/stock/NetBuyCards'
+import FinancialTable from '@/components/stock/FinancialTable'
+import SupplyBottomSection from '@/components/stock/SupplyBottomSection'
+import FinancialBottomSection from '@/components/stock/FinancialBottomSection'
 
 type Tab = 'overview' | 'chart' | 'financial' | 'supply'
 
@@ -57,16 +57,15 @@ export default function StockPageContent() {
     <div className="responsive-tabs" style={{ display: 'flex', borderBottom: '1px solid #EEF1F6', marginBottom: 16 }}>
       {TABS.map((t) => {
         const isActive = t.key === activeTab
-        const isDead   = t.key.startsWith('dead')
         return (
           <button
             key={t.key}
             onClick={() => handleTabClick(t.key)}
             style={{
               padding: '0 0 13px', marginRight: 24, fontSize: 15, fontWeight: 700,
-              cursor: isDead ? 'default' : 'pointer', background: 'none', border: 'none',
+              cursor: 'pointer', background: 'none', border: 'none',
               borderBottom: `2.5px solid ${isActive ? '#1B6CF2' : 'transparent'}`,
-              color: isActive ? '#1B6CF2' : isDead ? '#D1D6DB' : '#4E5968',
+              color: isActive ? '#1B6CF2' : '#4E5968',
               marginBottom: -1,
             }}
           >
@@ -132,7 +131,7 @@ export default function StockPageContent() {
              <NewsAndAI />}
           </div>
 
-          <Screen2RightSidebar />
+          <StockRightSidebar />
         </div>
 
       </div>

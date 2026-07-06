@@ -1,4 +1,6 @@
-export const STOCK_QUOTE = {
+import type { StockQuote } from '../../types'
+
+export const STOCK_QUOTE: StockQuote = {
   code: '035420',
   name: 'NAVER',
   currentPrice: 185000,

@@ -5,7 +5,7 @@ import SparklineChart from '@/components/common/SparklineChart'
 
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
-export default function Screen2RightSidebar() {
+export default function StockRightSidebar() {
   const { quote: s, chart } = useStockData()
   const yearClose = chart.CANDLESTICK_DATA['1년'].map((d) => d.close)
   const isUp = s.change >= 0
