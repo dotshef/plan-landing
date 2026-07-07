@@ -6,7 +6,7 @@ import ApplicationPanel from '@/components/report/ApplicationPanel'
 
 export default async function ReportPage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params
-  const data = getStockData(code)
+  const data = await getStockData(code)
   const { quote } = data
   return (
     <StockDataProvider data={data}>

@@ -1,50 +1,66 @@
-export interface StockMeta {
+import { db } from '@/lib/db/server'
+import { stockColor } from './stock-color'
+
+export interface ReportCard {
   code: string
   name: string
   color: string
-  market: string
   hot: boolean
   summary: string
 }
 
-export const STOCK_LIST: StockMeta[] = [
-  {
-    code: '005930',
-    name: '삼성전자',
-    color: '#1428A0',
-    market: 'KOSPI',
-    hot: true,
-    summary: '외국인 순매수 전환, 반도체 업황 회복 기대감으로 상승 모멘텀 유지 중.',
-  },
-  {
-    code: '000660',
-    name: 'SK하이닉스',
-    color: '#EA002C',
-    market: 'KOSPI',
-    hot: false,
-    summary: 'HBM 수요 확대 수혜 지속, 단기 차익 실현 압력으로 소폭 조정 중.',
-  },
-  {
-    code: '035420',
-    name: 'NAVER',
-    color: '#03C75A',
-    market: 'KOSPI',
-    hot: false,
-    summary: 'AI 검색 광고 매출 성장 본격화, 클라우드 부문 흑자 전환 기대.',
-  },
-  {
-    code: '012450',
-    name: '한화에어로스페이스',
-    color: '#F58220',
-    market: 'KOSPI',
-    hot: false,
-    summary: '방산 수출 호조 및 우주 사업 성장, 연간 실적 상향 조정 가능성 높음.',
-  },
-]
-
-export function getStockMeta(code: string): StockMeta | undefined {
-  return STOCK_LIST.find((s) => s.code === code)
+export interface PopularStock {
+  code: string
+  name: string
+  market: string
+  color: string
 }
 
-export const POPULAR_STOCKS = STOCK_LIST.map(({ name, code }) => ({ name, code }))
-export const REPORT_CARDS = STOCK_LIST.map(({ code, name, color, hot, summary }) => ({ code, name, color, hot, summary }))
+function marketLabel(m: unknown): string {
+  return m === 'Q' ? 'KOSDAQ' : 'KOSPI'
+}
+
+interface TopViewRow {
+  rank: number
+  code: string
+  stock: { name: string; market: string; industry: string | null } | null
+}
+
+async function fetchTopView(limit: number): Promise<TopViewRow[]> {
+  const { data } = await db()
+    .from('top_view')
+    .select('rank, code, stock(name, market, industry)')
+    .order('rank', { ascending: true })
+    .limit(limit)
+  // Supabase 임베드는 배열/객체로 올 수 있어 정규화
+  return (data ?? []).map((r) => ({
+    rank: r.rank as number,
+    code: r.code as string,
+    stock: (Array.isArray(r.stock) ? r.stock[0] : r.stock) ?? null,
+  }))
+}
+
+// 랜딩 인기 리포트 카드 (조회상위 → 보통주 상위 4).
+export async function getReportCards(): Promise<ReportCard[]> {
+  const rows = await fetchTopView(4)
+  return rows.map((r) => ({
+    code: r.code,
+    name: r.stock?.name ?? r.code,
+    color: stockColor(r.code),
+    hot: r.rank === 1,
+    summary: r.stock?.industry
+      ? `${r.stock.industry} 업종 · 전문가 주가 전망 리포트를 무료로 확인하세요.`
+      : '전문가 주가 전망 리포트를 무료로 확인하세요.',
+  }))
+}
+
+// 검색/인기 종목 리스트 (조회상위 상위 N).
+export async function getPopularStocks(limit = 8): Promise<PopularStock[]> {
+  const rows = await fetchTopView(limit)
+  return rows.map((r) => ({
+    code: r.code,
+    name: r.stock?.name ?? r.code,
+    market: marketLabel(r.stock?.market),
+    color: stockColor(r.code),
+  }))
+}

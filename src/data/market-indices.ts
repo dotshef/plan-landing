@@ -1,46 +1,34 @@
-import { seededRng } from './_rng'
+import { db } from '@/lib/db/server'
 
-const rand = seededRng(9012)
-
-function genSparkline(base: number, count = 30): number[] {
-  const arr: number[] = [base]
-  for (let i = 1; i < count; i++) {
-    arr.push(arr[i - 1] * (1 + (rand() - 0.48) * 0.018))
-  }
-  return arr
+export interface MarketIndex {
+  name: string
+  value: number
+  change: number
+  changeRate: number
+  isRise: boolean
+  sparkline: number[]
 }
 
-export const MARKET_INDICES = [
-  {
-    name: 'KOSPI',
-    value: 2569.32,
-    change: 12.45,
-    changeRate: 0.49,
-    isRise: true,
-    sparkline: genSparkline(2500),
-  },
-  {
-    name: 'KOSDAQ',
-    value: 805.04,
-    change: -3.21,
-    changeRate: -0.40,
-    isRise: false,
-    sparkline: genSparkline(820),
-  },
-  {
-    name: 'NASDAQ',
-    value: 19752.02,
-    change: 98.41,
-    changeRate: 0.50,
-    isRise: true,
-    sparkline: genSparkline(19200),
-  },
-  {
-    name: 'S&P500',
-    value: 5278.00,
-    change: -11.09,
-    changeRate: -0.21,
-    isRise: false,
-    sparkline: genSparkline(5300),
-  },
-]
+const ORDER = ['0001', '1001', 'COMP', 'SPX'] // KOSPI, KOSDAQ, NASDAQ, S&P500
+
+const n = (v: unknown): number => {
+  const x = Number(v)
+  return Number.isFinite(x) ? x : 0
+}
+
+export async function getMarketIndices(): Promise<MarketIndex[]> {
+  const { data } = await db().from('market_index').select('*')
+  const bySymbol = new Map((data ?? []).map((r) => [r.symbol as string, r]))
+  return ORDER.flatMap((sym) => {
+    const r = bySymbol.get(sym)
+    if (!r) return []
+    return [{
+      name: r.name as string,
+      value: n(r.value),
+      change: n(r.change),
+      changeRate: n(r.change_rate),
+      isRise: r.is_rise ?? n(r.change) >= 0,
+      sparkline: Array.isArray(r.sparkline) ? (r.sparkline as number[]) : [],
+    }]
+  })
+}

@@ -1,7 +1,8 @@
 import Link from 'next/link'
-import { REPORT_CARDS } from '@/data/registry'
+import { getReportCards } from '@/data/registry'
 
-export default function ReportCards() {
+export default async function ReportCards() {
+  const cards = await getReportCards()
   return (
     <div className="responsive-section-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--section-padding, 24px 28px 8px)' }}>
       <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18, padding: 'var(--card-padding, 26px 28px)' }}>
@@ -10,7 +11,7 @@ export default function ReportCards() {
           <span style={{ padding: '4px 10px', borderRadius: 7, background: '#EAF1FE', color: '#1B6CF2', fontSize: 12, fontWeight: 700 }}>무료 제공</span>
         </div>
         <div className="responsive-card-grid-4" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(4,1fr))', gap: 16 }}>
-          {REPORT_CARDS.map((r) => (
+          {cards.map((r) => (
             <div key={r.code} style={{ border: '1px solid #EEF1F6', borderRadius: 14, padding: 18, background: '#fff' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 40, height: 40, borderRadius: '50%', background: r.color, flexShrink: 0 }} />

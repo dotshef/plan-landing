@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "tsx scripts/seed-stock.ts",
+    "backfill": "tsx scripts/backfill-price.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.0",
     "@tailwindcss/postcss": "^4.3.1",
     "lightweight-charts": "^5.2.0",
     "lucide-react": "^1.21.0",
@@ -26,6 +29,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "tsx": "^4.23.0",
     "typescript": "^5"
   }
 }

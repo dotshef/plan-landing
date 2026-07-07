@@ -2,7 +2,7 @@
 
 import { useState, type CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
-import { STOCK_LIST, POPULAR_STOCKS } from '@/data/registry'
+import type { PopularStock } from '@/data/registry'
 import { BarChart2, Bot, FileText, Search, type LucideIcon } from 'lucide-react'
 
 const FEATURES: { icon: LucideIcon; title: string; desc: string; bg: string }[] = [
@@ -11,19 +11,21 @@ const FEATURES: { icon: LucideIcon; title: string; desc: string; bg: string }[] 
   { icon: FileText,  title: '전문가 리포트', desc: '투자 인사이트 무료 제공', bg: '#FFF3E0' },
 ]
 
-export default function HeroSection() {
+export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
   const router = useRouter()
   const [query, setQuery]       = useState('')
   const [showDrop, setShowDrop] = useState(false)
   const [showError, setShowError] = useState(false)
 
   const filtered = query
-    ? STOCK_LIST.filter((s) => s.name.includes(query) || s.code.includes(query))
+    ? stocks.filter((s) => s.name.includes(query) || s.code.includes(query))
     : []
 
   function go(code?: string) {
     if (!query.trim()) { setShowError(true); return }
-    const target = code ?? STOCK_LIST.find((s) => s.name === query || s.code === query)?.code ?? STOCK_LIST[0].code
+    const target =
+      code ?? stocks.find((s) => s.name === query || s.code === query)?.code ?? stocks[0]?.code
+    if (!target) { setShowError(true); return }
     router.push(`/stock/${target}`)
   }
 
@@ -114,7 +116,7 @@ export default function HeroSection() {
         {/* 인기 검색어 */}
         <div style={{ marginTop: 20, fontSize: 13, fontWeight: 700, color: '#4E5968' }}>인기 검색어</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
-          {POPULAR_STOCKS.map((s) => (
+          {stocks.map((s) => (
             <span
               key={s.code}
               onClick={() => router.push(`/stock/${s.code}`)}

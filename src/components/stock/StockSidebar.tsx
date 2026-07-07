@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import CountingNumber from '@/components/common/CountingNumber'
 import { useStockData } from '@/context/StockDataContext'
-import { getStockMeta } from '@/data/registry'
+import { stockColor } from '@/data/stock-color'
 
 interface Props {
   animate: boolean
@@ -13,7 +13,7 @@ const fmt = (n: number) => n.toLocaleString('ko-KR')
 
 export default function StockSidebar({ animate }: Props) {
   const { quote: s } = useStockData()
-  const meta = getStockMeta(s.code)
+  const color = stockColor(s.code)
   const isUp = s.change >= 0
   const changeColor = isUp ? '#E8342B' : '#3182f6'
   const changeArrow = isUp ? '▲' : '▼'
@@ -21,7 +21,7 @@ export default function StockSidebar({ animate }: Props) {
     <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 22 }}>
       {/* 종목 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-        <div style={{ width: 40, height: 40, borderRadius: '50%', background: meta?.color ?? '#EEF1F6', flexShrink: 0 }} />
+        <div style={{ width: 40, height: 40, borderRadius: '50%', background: color, flexShrink: 0 }} />
         <div>
           <div style={{ fontSize: 18, fontWeight: 800, color: '#111827' }}>{s.name}</div>
           <div style={{ fontSize: 12, color: '#8B95A1' }}>{s.code} · KOSPI</div>
