@@ -92,9 +92,8 @@ export const NET_BUY_SUMMARY = {
 }
 
 export const PROGRAM_TRADE: ProgramTradeDay[] = Array.from({ length: 30 }, (_, i) => ({
-  date:         genDate(29 - i),
-  arbitrage:    Math.round((supplyRand() - 0.5) * 60_000),
-  nonArbitrage: Math.round((supplyRand() - 0.5) * 100_000),
+  date:   genDate(29 - i),
+  netBuy: Math.round((supplyRand() - 0.5) * 160_000),
 }))
 
 // ─── Technical Indicators ─────────────────────────────────────────────────────

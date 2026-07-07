@@ -20,7 +20,6 @@ export interface StockQuote {
   week52High: number
   week52Low: number
   foreignOwnership: number
-  beta1Y: number
   lastUpdated: string
 }
 
@@ -45,8 +44,7 @@ export interface DailySupplyDemand {
 
 export interface ProgramTradeDay {
   date: string
-  arbitrage: number
-  nonArbitrage: number
+  netBuy: number                 // 전체 순매수 (KIS 종목별 프로그램매매는 차익/비차익 분리 없음 — whol_smtn_ntby_qty)
 }
 
 export interface TechnicalIndicator {

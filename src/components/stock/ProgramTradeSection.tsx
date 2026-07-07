@@ -7,7 +7,7 @@ export default function ProgramTradeSection() {
   const { chart } = useStockData()
   const data = chart.PROGRAM_TRADE.slice(-15).map((d) => ({
     date: d.date.slice(5),
-    순매수: d.arbitrage + d.nonArbitrage,
+    순매수: d.netBuy,
   }))
 
   return (

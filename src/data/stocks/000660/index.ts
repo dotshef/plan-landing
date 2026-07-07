@@ -18,6 +18,5 @@ export const STOCK_QUOTE: StockQuote = {
   week52High: 229000,
   week52Low: 87600,
   foreignOwnership: 52.14,
-  beta1Y: 1.32,
   lastUpdated: '2024.06.24 10:15',
 }
