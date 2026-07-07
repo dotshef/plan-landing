@@ -160,7 +160,7 @@ mket_id_cd (시장구분): STK
 - **tr_id**: `HHMCM000100C0`
 - **endpoint**: `GET /uapi/domestic-stock/v1/ranking/hts-top-view`
 - **파라미터**: 쿼리 파라미터 없음
-- **주의**: 헤더에 `custtype: P` (개인 고객 구분) 필수 — 공통 헬퍼([scripts/api.js](../scripts/api.js))에는 이 헤더가 없으므로 구현 시 추가 필요
+- **주의**: 헤더에 `custtype: P` (개인 고객 구분) 필수 — 시세 API와 달리 이 헤더가 없으면 조회 실패
 
 **응답 필드 (실측 2026-07-06)**
 
@@ -179,18 +179,9 @@ mksc_shrn_iscd (종목코드): 005930
 
 ## 호출 불가 / 미제공 데이터
 
-아래는 KIS REST API로 제공되지 않는 데이터입니다.
-
-| 데이터 | 사유 |
-|--------|------|
-| 현금흐름표 | KIS REST 미제공 — 엔드포인트 없음 |
-| 배당 히스토리 / 주당배당금 / 배당성향 | KIS REST 미제공 — 별도 API 없음 (inquire-price에 배당수익률 없음 확인 필요) |
-| 1년 베타(Beta) | KIS REST 직접 제공 필드 없음 — OHLCV로 앱 내 계산 가능 |
-| 뉴스 | KIS REST 범위 밖 |
-| AI 인사이트 / 한줄 분석 | KIS API 데이터 아님 |
-| 증권사 리포트 / 목표주가 | KIS API 범위 밖 |
-| 주주구성 세부 비율 (개인/기관/기타 보유율) | KIS 미제공 — 외국인보유율(hts_frgn_ehrt)만 inquire-price에서 제공 |
-| 종목별 프로그램 매매 종합 | WebSocket 전용 — REST API 없음 |
+> ⚠️ 이 문서 초판(2026-07-02, 8개 API 기준)에 있던 "호출 불가" 표는 폐기됨.
+> 이후 실측(2026-07-06)에서 **뉴스(`FHKST01011800`)·배당(`HHKDB669102C0`)·종목별 프로그램매매(`FHPPG04650201`)·투자의견(`FHKST663300C0`)이 호출 가능**으로 확인되어 내용이 틀렸다.
+> 최신 "호출 가능/불가"는 [KIS_API_SCREEN_MAP.md](KIS_API_SCREEN_MAP.md) §2 참조.
 
 ---
 

@@ -1,7 +1,7 @@
 # KIS 연동 DB 스키마 (Supabase / Postgres)
 
 KIS 실데이터 저장용 **DB 테이블 정의**. 수집 파이프라인·정책·운영(cron 등)은 [KIS_INGESTION.md](KIS_INGESTION.md) 참고.
-API·화면 매핑은 [KIS_API_CALL_LIST.md](KIS_API_CALL_LIST.md), 실측 스펙은 [KIS_API_SPEC_TEST.md](KIS_API_SPEC_TEST.md).
+API·화면 매핑은 [KIS_API_CALL_LIST.md](../reference/KIS_API_CALL_LIST.md), 실측 스펙은 [KIS_API_SPEC_TEST.md](../reference/KIS_API_SPEC_TEST.md).
 
 ---
 
