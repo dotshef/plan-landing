@@ -14,6 +14,8 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
     const e: Record<string, string> = {}
     if (!form.name.trim()) e.name = '이름을 입력해주세요'
     if (!form.phone.trim()) e.phone = '연락처를 입력해주세요'
+    else if (!/^\d{10,11}$/.test(form.phone)) e.phone = '올바른 연락처를 입력해주세요'
+    if (!form.agree) e.agree = '마케팅 정보 수신에 동의해주세요'
     return e
   }
 
@@ -99,10 +101,11 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                   <input
                     type="tel"
                     value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 11) })}
                     onFocus={() => setFocusedField('phone')}
                     onBlur={() => setFocusedField(null)}
                     placeholder="- 없이 숫자만 입력해주세요"
+                    maxLength={11}
                     style={inputStyle('phone')}
                   />
                   <div style={{ fontSize: 11, color: '#B0B8C1', marginTop: 5 }}>예) 01012345678</div>
@@ -173,8 +176,8 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
 
                 <button
                   type="submit"
-                  disabled={submitting}
-                  style={{ width: '100%', height: 54, marginTop: 2, border: 'none', borderRadius: 13, background: submitting ? '#8B95A1' : '#1B6CF2', color: '#fff', fontSize: 16, fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer' }}
+                  disabled={submitting || !form.agree}
+                  style={{ width: '100%', height: 54, marginTop: 2, border: 'none', borderRadius: 13, background: submitting || !form.agree ? '#B0B8C1' : '#1B6CF2', color: '#fff', fontSize: 16, fontWeight: 700, cursor: submitting || !form.agree ? 'not-allowed' : 'pointer' }}
                 >
                   {submitting ? '신청 내용을 전송 중입니다' : '무료 리포트 신청하기'}
                 </button>
