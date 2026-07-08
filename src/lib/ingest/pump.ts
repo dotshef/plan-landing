@@ -3,7 +3,7 @@ import { STOCK_DATASETS } from '@/lib/kis/datasets/stock'
 import { MARKET_DATASETS } from '@/lib/kis/datasets/market'
 import { MARKET_CODE, type DatasetResult } from '@/lib/kis/datasets/shared'
 import { renewLock } from './lock'
-import { ALL_MARKER, isMarketFresh, selectStaleStocks } from './cursor'
+import { ALL_MARKER, isMarketDatasetFresh, selectStaleStocks } from './cursor'
 
 // 단일 Cron 펌프. 청크(150종목)를 순차 수집 → 멱등 upsert → ingest_state 갱신.
 // KIS_INGESTION.md §3.
@@ -67,21 +67,20 @@ export async function runBatch({ lockName, owner, lockTtlMs }: BatchArgs) {
   const start = Date.now()
   const stats: Stats = {}
 
-  // 시장 데이터셋은 야간 1회만(락 소유자가 담당).
-  if (!(await isMarketFresh())) {
-    for (const ds of MARKET_DATASETS) {
-      try {
-        const result = await ds.run()
-        await recordState(MARKET_CODE, ds.key, result)
-        bump(stats, ds.key, result)
-      } catch (e) {
-        const msg = e instanceof Error ? e.message : String(e)
-        await recordState(MARKET_CODE, ds.key, 'error', msg)
-        bump(stats, ds.key, 'error')
-        console.error(`[ingest] _MARKET_/${ds.key} error: ${msg}`)
-      }
-      await renewLock(lockName, owner, lockTtlMs)
+  // 시장 데이터셋은 데이터셋별로 야간 1회만(성공 기준). 실패/미수집이면 다음 실행이 재시도.
+  for (const ds of MARKET_DATASETS) {
+    if (await isMarketDatasetFresh(ds.key)) continue
+    try {
+      const result = await ds.run()
+      await recordState(MARKET_CODE, ds.key, result)
+      bump(stats, ds.key, result)
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      await recordState(MARKET_CODE, ds.key, 'error', msg)
+      bump(stats, ds.key, 'error')
+      console.error(`[ingest] _MARKET_/${ds.key} error: ${msg}`)
     }
+    await renewLock(lockName, owner, lockTtlMs)
   }
 
   const codes = await selectStaleStocks(CHUNK_SIZE)

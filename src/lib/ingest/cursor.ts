@@ -26,13 +26,15 @@ export async function selectStaleStocks(limit: number): Promise<string[]> {
   return (st ?? []).map((r) => r.code).filter((c) => !freshSet.has(c)).slice(0, limit)
 }
 
-// 시장 데이터셋(indices/top_view)이 이번 배치에서 이미 갱신됐는지.
-export async function isMarketFresh(): Promise<boolean> {
+// 특정 시장 데이터셋이 이번 배치에서 이미 성공(ok) 갱신됐는지.
+// status='ok'만 신선으로 침 → 실패/unavailable이면 다음 실행이 자동 재시도(자가 치유).
+export async function isMarketDatasetFresh(dataset: string): Promise<boolean> {
   const { data } = await db()
     .from('ingest_state')
     .select('fetched_at')
     .eq('code', MARKET_CODE)
-    .eq('dataset', 'indices')
+    .eq('dataset', dataset)
+    .eq('status', 'ok')
     .gte('fetched_at', freshSince())
     .maybeSingle()
   return !!data

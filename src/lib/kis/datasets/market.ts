@@ -99,7 +99,8 @@ const topView: MarketDataset = {
       'HHMCM000100C0',
       { custtype: 'P' },
     )
-    const list = (res.output ?? []) as Record<string, string>[]
+    // HHMCM000100C0는 배열을 output1로 반환(실측)
+    const list = (res.output1 ?? res.output ?? []) as Record<string, string>[]
     const codes = list.map((r) => String(r.mksc_shrn_iscd ?? '').trim()).filter(Boolean)
     if (codes.length === 0) return 'unavailable'
 
