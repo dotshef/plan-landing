@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, type CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
 import type { PopularStock } from '@/data/registry'
+import type { SearchHit } from '@/app/api/search/route'
+import { stockColor } from '@/data/stock-color'
 import { BarChart2, Bot, FileText, Search, type LucideIcon } from 'lucide-react'
 
 const FEATURES: { icon: LucideIcon; title: string; desc: string; bg: string }[] = [
@@ -16,15 +18,29 @@ export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
   const [query, setQuery]       = useState('')
   const [showDrop, setShowDrop] = useState(false)
   const [showError, setShowError] = useState(false)
+  const [results, setResults]   = useState<SearchHit[]>([])
 
-  const filtered = query
-    ? stocks.filter((s) => s.name.includes(query) || s.code.includes(query))
-    : []
+  // 전 주권(ST) 검색 API에 디바운스 질의 (top_view 인기목록과 별개)
+  useEffect(() => {
+    const q = query.trim()
+    if (!q) { setResults([]); return }
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`)
+        if (res.ok) setResults(await res.json())
+      } catch { /* 무시 */ }
+    }, 200)
+    return () => clearTimeout(t)
+  }, [query])
 
   function go(code?: string) {
-    if (!query.trim()) { setShowError(true); return }
+    const q = query.trim()
+    if (!q) { setShowError(true); return }
     const target =
-      code ?? stocks.find((s) => s.name === query || s.code === query)?.code ?? stocks[0]?.code
+      code
+      ?? results.find((s) => s.name === q || s.code === q)?.code
+      ?? results[0]?.code
+      ?? (/^[0-9A-Za-z]{6}$/.test(q) ? q.toUpperCase() : undefined) // 6자리면 코드로 직접 이동
     if (!target) { setShowError(true); return }
     router.push(`/stock/${target}`)
   }
@@ -82,15 +98,15 @@ export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
                 fontFamily: 'inherit', outline: 'none', color: '#111827'
               }}
             />
-            {showDrop && filtered.length > 0 && (
+            {showDrop && results.length > 0 && (
               <div style={{ position: 'absolute', top: 64, left: 0, right: 0, background: '#fff', border: '1px solid #E5E8EB', borderRadius: 13, boxShadow: '0 12px 28px rgba(17,40,90,.14)', overflow: 'hidden', zIndex: 30 }}>
-                {filtered.map((s) => (
+                {results.map((s) => (
                   <div
                     key={s.code}
                     onMouseDown={() => go(s.code)}
                     style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', cursor: 'pointer', borderBottom: '1px solid #F2F4F6' }}
                   >
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: s.color, flexShrink: 0 }} />
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: stockColor(s.code), flexShrink: 0 }} />
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{s.name}</div>
                     <div style={{ fontSize: 13, color: '#8B95A1' }}>{s.code}</div>
                     <div style={{ marginLeft: 'auto', fontSize: 12, color: '#B0B8C1' }}>{s.market}</div>
