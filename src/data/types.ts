@@ -94,6 +94,12 @@ export interface StockReport {
     checkpoints: string[]
     legalNotice: string
   }
+  // 증권사 투자의견 컨센서스 (invest_opinion 증권사별 최신 1건 집계). total=집계 증권사 수(N).
+  OPINION_CONSENSUS: {
+    total: number
+    buy: number; hold: number; sell: number             // 각 비율(%), 합계 100
+    buyCount: number; holdCount: number; sellCount: number
+  }
   DUMMY_NEWS: { title: string; source: string; time: string }[]
   COMPANY_OVERVIEW: { description: string; ceo: string; founded: string; employees: string; industry: string }
 }

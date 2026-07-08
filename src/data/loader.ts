@@ -3,7 +3,7 @@ import type {
   CandleData, StockChart, StockData, StockFinancials, StockQuote, StockReport,
 } from './types'
 import {
-  buildTechnicalIndicators, changeFromCloses, dividendYield, opinionKo, payoutRatio,
+  buildTechnicalIndicators, changeFromCloses, dividendYield, opinionKo, payoutRatio, pctDist,
 } from './derive'
 
 export type { StockData } from './types'
@@ -176,6 +176,23 @@ export async function getStockData(code: string): Promise<StockData> {
   // ── report ──
   const opinions = opinionR.data ?? []
   const topOpinion = opinions[0]
+
+  // 투자의견 컨센서스: 증권사별 최신 1건으로 dedup 후 등급 분포.
+  // opinionR은 opinion_date desc 정렬 → 각 firm의 첫 등장이 최신 의견.
+  const latestByFirm = new Map<string, string>()
+  for (const o of opinions) {
+    const firm = String(o.firm ?? '').trim()
+    if (!firm || latestByFirm.has(firm)) continue
+    latestByFirm.set(firm, opinionKo(o.opinion))
+  }
+  let buyCount = 0, holdCount = 0, sellCount = 0
+  for (const grade of latestByFirm.values()) {
+    if (grade === '매수') buyCount++
+    else if (grade === '매도') sellCount++
+    else holdCount++
+  }
+  const consensusTotal = latestByFirm.size
+  const [buyPct, holdPct, sellPct] = pctDist([buyCount, holdCount, sellCount])
   const rep: StockReport = {
     REPORT_DETAIL: {
       code,
@@ -191,6 +208,11 @@ export async function getStockData(code: string): Promise<StockData> {
       supplyDemandAnalysis: '',
       checkpoints: [],
       legalNotice: LEGAL_NOTICE,
+    },
+    OPINION_CONSENSUS: {
+      total: consensusTotal,
+      buy: buyPct, hold: holdPct, sell: sellPct,
+      buyCount, holdCount, sellCount,
     },
     DUMMY_NEWS: (newsR.data ?? []).map((r) => ({
       title: r.title,

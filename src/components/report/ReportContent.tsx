@@ -13,6 +13,7 @@ const fmt = (n: number) => n.toLocaleString('ko-KR')
 export default function ReportContent() {
   const { quote: STOCK_QUOTE, rep, fin } = useStockData()
   const r = rep.REPORT_DETAIL
+  const oc = rep.OPINION_CONSENSUS
   const QUARTERLY_EARNINGS = fin.QUARTERLY_EARNINGS
 
   return (
@@ -57,6 +58,50 @@ export default function ReportContent() {
             <span>▤ 리포트 발간일 <strong style={{ color: '#4E5968' }}>{r.publishDate}</strong></span>
             <span>다음 업데이트 <strong style={{ color: '#4E5968' }}>{r.nextUpdateDate}</strong></span>
           </div>
+
+          {/* 증권사 투자의견 컨센서스 (invest_opinion 증권사별 최신 의견 집계) */}
+          {oc.total > 0 && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 10 }}>
+                <div style={{ fontSize: 12, color: '#4E5968', fontWeight: 600 }}>증권사 투자의견 컨센서스</div>
+                <div style={{ fontSize: 11, color: '#8B95A1' }}>증권사 {oc.total}곳 최신 의견 기준</div>
+              </div>
+
+              {/* 100% 스택 가로 막대 — 컨테이너 overflow로 양끝 라운딩 */}
+              <div style={{ borderRadius: 8, overflow: 'hidden' }}>
+                <ResponsiveContainer width="100%" height={30}>
+                  <BarChart
+                    layout="vertical"
+                    data={[{ name: 'consensus', buy: oc.buyCount, hold: oc.holdCount, sell: oc.sellCount }]}
+                    margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+                    barCategoryGap={0}
+                  >
+                    <XAxis type="number" domain={[0, oc.total]} hide />
+                    <YAxis type="category" dataKey="name" hide />
+                    <Bar dataKey="buy" stackId="c" fill="#E8342B" />
+                    <Bar dataKey="hold" stackId="c" fill="#C6CDD6" />
+                    <Bar dataKey="sell" stackId="c" fill="#3182f6" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* 범례 */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 20px', marginTop: 10 }}>
+                {[
+                  { label: '매수', color: '#E8342B', pct: oc.buy, cnt: oc.buyCount },
+                  { label: '보유', color: '#C6CDD6', pct: oc.hold, cnt: oc.holdCount },
+                  { label: '매도', color: '#3182f6', pct: oc.sell, cnt: oc.sellCount },
+                ].map((x) => (
+                  <div key={x.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                    <span style={{ width: 9, height: 9, borderRadius: '50%', background: x.color, display: 'inline-block' }} />
+                    <span style={{ color: '#4E5968', fontWeight: 600 }}>{x.label}</span>
+                    <span style={{ color: '#111827', fontWeight: 800 }}>{x.pct}%</span>
+                    <span style={{ color: '#8B95A1' }}>{x.cnt}곳</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 분기 실적 차트 2개 */}
           <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, 1fr 1fr)', gap: 16 }}>

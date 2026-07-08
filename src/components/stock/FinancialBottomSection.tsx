@@ -17,9 +17,8 @@ export default function FinancialBottomSection() {
 
       {/* 배당 정보 */}
       <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+        <div style={{ marginBottom: 16 }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>배당 정보</span>
-          <span style={{ fontSize: 12, color: '#8B95A1', cursor: 'default' }}>더보기 ›</span>
         </div>
 
         {/* 핵심 지표 3개 */}
@@ -58,12 +57,9 @@ export default function FinancialBottomSection() {
 
       {/* 분기별 실적 추이 */}
       <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-          <div>
-            <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>분기별 실적 추이</span>
-            <span style={{ fontSize: 11, color: '#8B95A1', marginLeft: 6 }}>(단위: 억원)</span>
-          </div>
-          <span style={{ fontSize: 12, color: '#8B95A1', cursor: 'default' }}>더보기 ›</span>
+        <div style={{ marginBottom: 16 }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>분기별 실적 추이</span>
+          <span style={{ fontSize: 11, color: '#8B95A1', marginLeft: 6 }}>(단위: 억원)</span>
         </div>
 
         <ResponsiveContainer width="100%" height={180}>

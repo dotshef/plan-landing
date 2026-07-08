@@ -18,9 +18,8 @@ export default function FinancialTable() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
+      <div style={{ marginBottom: 14 }}>
         <div style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>주요 재무 지표</div>
-        <span style={{ fontSize: 12, color: '#8B95A1', cursor: 'default' }}>연간 ▾</span>
       </div>
 
       {/* 3×2 지표 카드 */}

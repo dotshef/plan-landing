@@ -182,6 +182,20 @@ export function payoutRatio(annualPerShareSum: number, eps: number): number {
   return eps ? (annualPerShareSum / eps) * 100 : 0
 }
 
+// 카운트 배열 → 백분율 배열(정수, 합계 정확히 100). 최대잔여법으로 반올림 오차 분배.
+export function pctDist(counts: number[]): number[] {
+  const total = counts.reduce((a, b) => a + b, 0)
+  if (!total) return counts.map(() => 0)
+  const raw = counts.map((c) => (c / total) * 100)
+  const out = raw.map(Math.floor)
+  const remainder = 100 - out.reduce((a, b) => a + b, 0)
+  const order = raw
+    .map((v, i) => [v - Math.floor(v), i] as const)
+    .sort((a, b) => b[0] - a[0])
+  for (let k = 0; k < remainder; k++) out[order[k][1]]++
+  return out
+}
+
 // BUY/HOLD/SELL(영문) → 한글 투자의견
 export function opinionKo(raw: string | null | undefined): string {
   const s = String(raw ?? '').toUpperCase()
