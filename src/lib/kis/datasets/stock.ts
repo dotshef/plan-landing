@@ -1,6 +1,6 @@
 import { db } from '@/lib/db/server'
 import { kisGet } from '../client'
-import { num, toDate, toTimestamp, type DatasetResult, type StockDataset } from './shared'
+import { dedupeByKey, num, toDate, toTimestamp, type DatasetResult, type StockDataset } from './shared'
 
 // ── 날짜 유틸 ───────────────────────────────────────────────────────────────
 function yyyymmdd(d: Date): string {
@@ -83,7 +83,9 @@ const daily: StockDataset = {
       }))
       .filter((r) => r.date)
     if (rows.length === 0) return 'unavailable'
-    const { error } = await db().from('price_daily').upsert(rows, { onConflict: 'code,date' })
+    const { error } = await db()
+      .from('price_daily')
+      .upsert(dedupeByKey(rows, (r) => r.date!), { onConflict: 'code,date' })
     if (error) throw new Error(`price_daily upsert: ${error.message}`)
     return 'ok'
   },
@@ -114,7 +116,7 @@ const investor: StockDataset = {
     if (rows.length === 0) return 'unavailable'
     const { error } = await db()
       .from('investor_trend_daily')
-      .upsert(rows, { onConflict: 'code,date' })
+      .upsert(dedupeByKey(rows, (r) => r.date!), { onConflict: 'code,date' })
     if (error) throw new Error(`investor_trend_daily upsert: ${error.message}`)
     return 'ok'
   },
@@ -185,7 +187,9 @@ const income: StockDataset = {
     if (rows.length === 0) return 'unavailable'
     const { error } = await db()
       .from('income_statement')
-      .upsert(rows, { onConflict: 'code,period_type,period' })
+      .upsert(dedupeByKey(rows, (r) => `${r.period_type}:${r.period}`), {
+        onConflict: 'code,period_type,period',
+      })
     if (error) throw new Error(`income_statement upsert: ${error.message}`)
     return 'ok'
   },
@@ -212,7 +216,9 @@ const ratio: StockDataset = {
       }))
       .filter((r) => /^\d{6}$/.test(r.period))
     if (rows.length === 0) return 'unavailable'
-    const { error } = await db().from('financial_ratio').upsert(rows, { onConflict: 'code,period' })
+    const { error } = await db()
+      .from('financial_ratio')
+      .upsert(dedupeByKey(rows, (r) => r.period), { onConflict: 'code,period' })
     if (error) throw new Error(`financial_ratio upsert: ${error.message}`)
     return 'ok'
   },
@@ -239,7 +245,9 @@ const dividend: StockDataset = {
       }))
       .filter((r) => r.base_date && r.per_share != null)
     if (rows.length === 0) return 'ok'
-    const { error } = await db().from('dividend').upsert(rows, { onConflict: 'code,base_date' })
+    const { error } = await db()
+      .from('dividend')
+      .upsert(dedupeByKey(rows, (r) => r.base_date!), { onConflict: 'code,base_date' })
     if (error) throw new Error(`dividend upsert: ${error.message}`)
     return 'ok'
   },
@@ -267,7 +275,7 @@ const program: StockDataset = {
     if (rows.length === 0) return 'ok'
     const { error } = await db()
       .from('program_trade_daily')
-      .upsert(rows, { onConflict: 'code,date' })
+      .upsert(dedupeByKey(rows, (r) => r.date!), { onConflict: 'code,date' })
     if (error) throw new Error(`program_trade_daily upsert: ${error.message}`)
     return 'ok'
   },
@@ -306,7 +314,9 @@ const opinion: StockDataset = {
     if (rows.length === 0) return 'unavailable'
     const { error } = await db()
       .from('invest_opinion')
-      .upsert(rows, { onConflict: 'code,opinion_date,firm' })
+      .upsert(dedupeByKey(rows, (r) => `${r.opinion_date}:${r.firm}`), {
+        onConflict: 'code,opinion_date,firm',
+      })
     if (error) throw new Error(`invest_opinion upsert: ${error.message}`)
     return 'ok'
   },
@@ -332,7 +342,9 @@ const opinionSec: StockDataset = {
     if (rows.length === 0) return 'unavailable'
     const { error } = await db()
       .from('invest_opinion')
-      .upsert(rows, { onConflict: 'code,opinion_date,firm' })
+      .upsert(dedupeByKey(rows, (r) => `${r.opinion_date}:${r.firm}`), {
+        onConflict: 'code,opinion_date,firm',
+      })
     if (error) throw new Error(`invest_opinion(sec) upsert: ${error.message}`)
     return 'ok'
   },

@@ -16,6 +16,15 @@ export interface MarketDataset {
 // 시장 전역 행의 ingest_state.code 값.
 export const MARKET_CODE = '_MARKET_'
 
+// 배치 내 PK 중복 제거. 같은 충돌키가 2행이면 Postgres upsert가
+// "ON CONFLICT DO UPDATE cannot affect row a second time"로 실패 → 마지막 값만 남긴다.
+// (KIS가 같은 기간/일자를 중복 반환하는 종목 대응)
+export function dedupeByKey<T>(rows: T[], keyFn: (r: T) => string): T[] {
+  const m = new Map<string, T>()
+  for (const r of rows) m.set(keyFn(r), r)
+  return [...m.values()]
+}
+
 // KIS 문자열 숫자 → number | null (빈 문자열·null·NaN → null).
 export function num(v: unknown): number | null {
   if (v === '' || v == null) return null
