@@ -58,25 +58,32 @@ export async function appendReportRequestToSheet(input: ReportRequestSheetInput)
   })
 
   const detail = await response.text()
+  const contentType = response.headers.get('content-type') ?? ''
   console.log('[report-request] Google Sheet append response:', {
     status: response.status,
     ok: response.ok,
-    body: detail.slice(0, 500),
+    contentType,
+    body: detail.slice(0, 2000),
   })
 
   if (!response.ok) {
     throw new Error(`Google Sheet webhook failed: ${response.status} ${detail}`)
   }
 
-  if (detail) {
-    try {
-      const result = JSON.parse(detail) as { ok?: unknown; error?: unknown }
-      if (result.ok === false) {
-        throw new Error(`Google Sheet webhook rejected: ${JSON.stringify(result)}`)
-      }
-    } catch (error) {
-      if (error instanceof SyntaxError) return
-      throw error
-    }
+  if (!detail) return
+
+  if (detail.trimStart().startsWith('<')) {
+    throw new Error(`Google Sheet webhook returned HTML instead of JSON: ${detail.slice(0, 2000)}`)
+  }
+
+  let result: { ok?: unknown; error?: unknown }
+  try {
+    result = JSON.parse(detail) as { ok?: unknown; error?: unknown }
+  } catch {
+    throw new Error(`Google Sheet webhook returned non-JSON response: ${detail.slice(0, 2000)}`)
+  }
+
+  if (result.ok !== true) {
+    throw new Error(`Google Sheet webhook rejected: ${JSON.stringify(result)}`)
   }
 }

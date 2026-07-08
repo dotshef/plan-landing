@@ -43,26 +43,35 @@ Apps Script 예시:
 const SECRET = 'your-long-random-secret'
 
 function doPost(e) {
-  const body = JSON.parse(e.postData.contents)
+  try {
+    const body = JSON.parse(e.postData.contents)
 
-  if (body.secret !== SECRET) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ ok: false }))
-      .setMimeType(ContentService.MimeType.JSON)
+    if (body.secret !== SECRET) {
+      return json({ ok: false, error: 'invalid secret' })
+    }
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('시트1')
+    if (!sheet) {
+      return json({ ok: false, error: 'sheet not found' })
+    }
+
+    sheet.appendRow([
+      body.requestedAtKst || body.requestedAt || new Date(),
+      body.name || '',
+      body.phone || '',
+      body.stock || '',
+      body.requestedAtIso || '',
+    ])
+
+    return json({ ok: true })
+  } catch (error) {
+    return json({ ok: false, error: String(error && error.message ? error.message : error) })
   }
+}
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1')
-
-  sheet.appendRow([
-    body.requestedAtKst || body.requestedAt || new Date(),
-    body.name || '',
-    body.phone || '',
-    body.stock || '',
-    body.requestedAtIso || '',
-  ])
-
+function json(value) {
   return ContentService
-    .createTextOutput(JSON.stringify({ ok: true }))
+    .createTextOutput(JSON.stringify(value))
     .setMimeType(ContentService.MimeType.JSON)
 }
 ```
