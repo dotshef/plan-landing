@@ -16,6 +16,13 @@ interface BatchArgs {
   lockTtlMs: number
 }
 
+// 데이터셋별 집계 (로그·응답용)
+type Stats = Record<string, { ok: number; unavailable: number; error: number }>
+function bump(stats: Stats, key: string, status: DatasetResult | 'error'): void {
+  const s = (stats[key] ??= { ok: 0, unavailable: 0, error: 0 })
+  s[status]++
+}
+
 async function recordState(
   code: string,
   dataset: string,
@@ -30,7 +37,7 @@ async function recordState(
     )
 }
 
-async function processStock(code: string): Promise<void> {
+async function processStock(code: string, stats: Stats): Promise<void> {
   // 이전에 'unavailable'로 찍힌 데이터셋은 재호출 억제(주권 전용 분기).
   const { data: states } = await db()
     .from('ingest_state')
@@ -45,8 +52,12 @@ async function processStock(code: string): Promise<void> {
     try {
       const result = await ds.run(code)
       await recordState(code, ds.key, result)
+      bump(stats, ds.key, result)
     } catch (e) {
-      await recordState(code, ds.key, 'error', e instanceof Error ? e.message : String(e))
+      const msg = e instanceof Error ? e.message : String(e)
+      await recordState(code, ds.key, 'error', msg)
+      bump(stats, ds.key, 'error')
+      console.error(`[ingest] ${code}/${ds.key} error: ${msg}`)
     }
   }
   await recordState(code, ALL_MARKER, 'ok')
@@ -54,6 +65,7 @@ async function processStock(code: string): Promise<void> {
 
 export async function runBatch({ lockName, owner, lockTtlMs }: BatchArgs) {
   const start = Date.now()
+  const stats: Stats = {}
 
   // 시장 데이터셋은 야간 1회만(락 소유자가 담당).
   if (!(await isMarketFresh())) {
@@ -61,8 +73,12 @@ export async function runBatch({ lockName, owner, lockTtlMs }: BatchArgs) {
       try {
         const result = await ds.run()
         await recordState(MARKET_CODE, ds.key, result)
+        bump(stats, ds.key, result)
       } catch (e) {
-        await recordState(MARKET_CODE, ds.key, 'error', e instanceof Error ? e.message : String(e))
+        const msg = e instanceof Error ? e.message : String(e)
+        await recordState(MARKET_CODE, ds.key, 'error', msg)
+        bump(stats, ds.key, 'error')
+        console.error(`[ingest] _MARKET_/${ds.key} error: ${msg}`)
       }
       await renewLock(lockName, owner, lockTtlMs)
     }
@@ -72,10 +88,18 @@ export async function runBatch({ lockName, owner, lockTtlMs }: BatchArgs) {
   let processed = 0
   for (const code of codes) {
     if (Date.now() - start > TIME_BUDGET_MS) break
-    await processStock(code)
+    await processStock(code, stats)
     processed++
     await renewLock(lockName, owner, lockTtlMs)
   }
 
-  return { processed, selected: codes.length }
+  const elapsedMs = Date.now() - start
+  const summary = { processed, selected: codes.length, elapsedMs, stats }
+  // 데이터셋별 ok/unavailable/error 요약을 한 줄로 → Vercel Logs에서 확인
+  const line = Object.entries(stats)
+    .map(([k, v]) => `${k}:${v.ok}ok${v.unavailable ? `/${v.unavailable}una` : ''}${v.error ? `/${v.error}err` : ''}`)
+    .join(' ')
+  console.log(`[ingest] processed=${processed}/${codes.length} ${Math.round(elapsedMs / 1000)}s | ${line}`)
+
+  return summary
 }

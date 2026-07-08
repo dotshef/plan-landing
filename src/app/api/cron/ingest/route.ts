@@ -19,10 +19,14 @@ export async function GET(req: Request) {
 
   const owner = crypto.randomUUID()
   const acquired = await acquireLock(LOCK_NAME, owner, LOCK_TTL_MS)
-  if (!acquired) return NextResponse.json({ skipped: 'locked' })
+  if (!acquired) {
+    console.log('[ingest] skipped: 락 보유 중인 다른 실행 있음')
+    return NextResponse.json({ skipped: 'locked' })
+  }
 
   try {
     const result = await runBatch({ lockName: LOCK_NAME, owner, lockTtlMs: LOCK_TTL_MS })
+    if (result.selected === 0) console.log('[ingest] no-op: 오늘 수집할 종목 없음(전량 신선)')
     return NextResponse.json({ ok: true, ...result })
   } catch (e) {
     return NextResponse.json(
