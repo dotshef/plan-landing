@@ -233,4 +233,4 @@ create index on invest_opinion (code, opinion_date desc);
 2. **`invest_opinion` 두 API 응답 중복 여부** — `FHKST663400C0`(증권사별)가 `FHKST663300C0`와 사실상 같으면 콜 제거(11→10콜/종목).
 3. **투자자동향 금액 필드 실값** — 실측 샘플에서 값이 공란이었음([SPEC_TEST](https://file+.vscode-resource.vscode-cdn.net/c%3A/D/SI/plan-landing/plan-landing/docs/reference/KIS_API_SPEC_TEST.md)). 채워지는지 확인.
 4. **`price_daily` 초기 백필** — 1년치(차트·52주 참고용) 확보 절차. 콜당 ~100행 제한으로 종목당 ~3콜 1회성 배치.
-5. **재무 API `stac_yymm` 정렬** — 응답이 최신순 보장 안 될 수 있음.
+5. **재무 API `stac_yymm` 정렬** — 응답이 최신순 보장 안 될 수 있음. 
