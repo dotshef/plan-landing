@@ -28,7 +28,7 @@ export default async function ReportCards() {
               <div style={{ marginTop: 14 }} />
 
               {/* 증권사 투자의견 컨센서스 미니 차트 (매수/보유/매도) */}
-              {r.consensus && r.consensus.total > 0 && (() => {
+              {r.consensus && r.consensus.total > 0 ? (() => {
                 const c = r.consensus
                 const seg = [
                   { label: '매수', color: '#E8342B', cnt: c.buyCount },
@@ -57,7 +57,11 @@ export default async function ReportCards() {
                     </div>
                   </div>
                 )
-              })()}
+              })() : (
+                <div style={{ minHeight: 56, marginBottom: 16, borderRadius: 10, background: '#F8FAFC', border: '1px solid #F2F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B95A1', fontSize: 12, fontWeight: 700 }}>
+                  증권사 투자의견 없음
+                </div>
+              )}
 
               <Link
                 href={`/report/${r.code}`}

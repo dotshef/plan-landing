@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { buildReportRequestEmailTemplate } from '@/lib/email/emailTemplate'
+import { appendReportRequestToSheet } from '@/lib/google/sheetWebhook'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -20,6 +21,7 @@ function normalize(value: unknown) {
 export async function POST(req: Request) {
   const apiKey = process.env.RESEND_API_KEY
   const toEmail = process.env.EMAIL_TO
+  const requestedAt = new Date()
 
   if (!apiKey || !toEmail) {
     return NextResponse.json(
@@ -49,13 +51,31 @@ export async function POST(req: Request) {
 
   const pageUrl = req.headers.get('referer') ?? undefined
   const userAgent = req.headers.get('user-agent') ?? undefined
+
+  try {
+    await appendReportRequestToSheet({
+      name,
+      phone,
+      stock,
+      pageUrl,
+      userAgent,
+      requestedAt,
+    })
+  } catch (error) {
+    console.error('[report-request] Google Sheet append failed:', error)
+    return NextResponse.json(
+      { error: '신청 정보를 저장하지 못했습니다. 잠시 후 다시 시도해주세요.' },
+      { status: 502 },
+    )
+  }
+
   const email = buildReportRequestEmailTemplate({
     name,
     phone,
     stock,
     pageUrl,
     userAgent,
-    requestedAt: new Date(),
+    requestedAt,
   })
 
   let resendResponse: Response

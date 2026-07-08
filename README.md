@@ -23,6 +23,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ```bash
 RESEND_API_KEY=your_resend_api_key
 EMAIL_TO=manager@example.com
+GOOGLE_SHEET_WEBHOOK_URL=https://script.google.com/macros/s/your-deployment-id/exec
+GOOGLE_SHEET_WEBHOOK_SECRET=your-long-random-secret
 ```
 
 발신자는 코드에서 `no-reply@dotshef.com`으로 고정되어 있습니다.
