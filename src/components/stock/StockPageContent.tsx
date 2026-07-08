@@ -3,7 +3,6 @@
 import { useEffect, useState, type CSSProperties } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Share2 } from 'lucide-react'
 import LoadingOverlay from '@/components/common/LoadingOverlay'
 import { useStockData } from '@/context/StockDataContext'
 import StockSidebar from '@/components/stock/StockSidebar'
@@ -108,11 +107,6 @@ export default function StockPageContent() {
           <span style={{ color: '#D1D6DB' }}>|</span>
           <span style={{ fontWeight: 700, color: '#1B6CF2' }}>{STOCK_QUOTE.code}</span>
           <span style={{ fontWeight: 600, color: '#4E5968' }}>{STOCK_QUOTE.name}</span>
-          <div style={{ marginLeft: 'var(--breadcrumb-actions-margin-left, auto)', width: 'var(--breadcrumb-actions-width, auto)', display: 'flex', justifyContent: 'var(--breadcrumb-actions-justify, flex-start)' as CSSProperties['justifyContent'], gap: 18 }}>
-            <span style={{ color: '#6B7684', cursor: 'default', display: 'flex', alignItems: 'center', gap: 5 }}>
-              <Share2 size={14} color="#6B7684" /> 공유하기
-            </span>
-          </div>
         </div>
 
         {/* 3컬럼 고정 레이아웃 */}

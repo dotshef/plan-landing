@@ -136,7 +136,17 @@ export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
             <span
               key={s.code}
               onClick={() => router.push(`/stock/${s.code}`)}
-              style={{ padding: '7px 14px', border: '1px solid #E5E8EB', borderRadius: 999, fontSize: 13, fontWeight: 600, color: '#4E5968', cursor: 'pointer', background: '#fff' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#EAF2FF'
+                e.currentTarget.style.borderColor = '#B3D1FF'
+                e.currentTarget.style.color = '#3182F6'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#fff'
+                e.currentTarget.style.borderColor = '#E5E8EB'
+                e.currentTarget.style.color = '#4E5968'
+              }}
+              style={{ padding: '7px 14px', border: '1px solid #E5E8EB', borderRadius: 999, fontSize: 13, fontWeight: 600, color: '#4E5968', cursor: 'pointer', background: '#fff', transition: 'background 0.15s, border-color 0.15s, color 0.15s' }}
             >
               {s.name}
             </span>

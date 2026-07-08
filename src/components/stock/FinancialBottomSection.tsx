@@ -13,7 +13,7 @@ export default function FinancialBottomSection() {
   const { fin } = useStockData()
   const { DIVIDEND_INFO, QUARTERLY_EARNINGS } = fin
   return (
-    <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(2, 1fr))', gap: 14 }}>
+    <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(2, minmax(0, 1fr)))', gap: 14 }}>
 
       {/* 배당 정보 */}
       <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
@@ -23,15 +23,15 @@ export default function FinancialBottomSection() {
         </div>
 
         {/* 핵심 지표 3개 */}
-        <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3, 1fr))', gap: 10, marginBottom: 20 }}>
+        <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3, minmax(0, 1fr)))', gap: 10, marginBottom: 20 }}>
           {[
-            { k: '배당수익률', v: `${DIVIDEND_INFO.yield}%` },
+            { k: '배당수익률', v: `${DIVIDEND_INFO.yield.toFixed(2)}%` },
             { k: '주당배당금', v: `${fmt(DIVIDEND_INFO.perShare)}원` },
-            { k: '배당성향',   v: `${DIVIDEND_INFO.payout}%` },
+            { k: '배당성향',   v: `${DIVIDEND_INFO.payout.toFixed(2)}%` },
           ].map(({ k, v }) => (
             <div key={k} style={{ background: '#F7F8FA', borderRadius: 10, padding: '10px 12px' }}>
               <div style={{ fontSize: 11, color: '#8B95A1', marginBottom: 4 }}>{k}</div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>{v}</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v}</div>
             </div>
           ))}
         </div>
