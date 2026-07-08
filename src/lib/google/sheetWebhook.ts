@@ -2,13 +2,11 @@ export interface ReportRequestSheetInput {
   name: string
   phone: string
   stock?: string
-  pageUrl?: string
-  userAgent?: string
   requestedAt: Date
 }
 
 function formatDate(date: Date) {
-  return new Intl.DateTimeFormat('ko-KR', {
+  return new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Seoul',
     year: 'numeric',
     month: '2-digit',
@@ -35,11 +33,11 @@ export async function appendReportRequestToSheet(input: ReportRequestSheetInput)
     body: JSON.stringify({
       secret,
       requestedAt: formatDate(input.requestedAt),
+      requestedAtKst: formatDate(input.requestedAt),
+      requestedAtIso: input.requestedAt.toISOString(),
       name: input.name,
       phone: input.phone,
       stock: input.stock?.trim() || '미입력',
-      pageUrl: input.pageUrl ?? '',
-      userAgent: input.userAgent ?? '',
     }),
   })
 

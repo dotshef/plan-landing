@@ -57,8 +57,6 @@ export async function POST(req: Request) {
       name,
       phone,
       stock,
-      pageUrl,
-      userAgent,
       requestedAt,
     })
   } catch (error) {
