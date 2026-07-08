@@ -68,9 +68,10 @@ export default function StockSidebar({ animate }: Props) {
       {/* CTA */}
       <Link
         href={`/report/${s.code}`}
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: 46, marginTop: 18, borderRadius: 11, background: '#1B6CF2', color: '#fff', fontSize: 14, fontWeight: 700, textDecoration: 'none' }}
+        className="stock-report-cta"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: 58, marginTop: 18, borderRadius: 12, background: '#1B6CF2', color: '#fff', fontSize: 15, fontWeight: 800, textDecoration: 'none', border: '2px solid #1B6CF2' }}
       >
-        리포트 보기
+        무료 리포트 바로 보기
       </Link>
     </div>
   )

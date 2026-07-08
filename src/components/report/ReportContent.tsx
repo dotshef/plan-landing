@@ -180,8 +180,8 @@ export default function ReportContent() {
           <div style={{ padding: '16px 18px', background: '#F5F8FE', borderRadius: 12, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
             <Lock size={16} color="#1B6CF2" style={{ flexShrink: 0, marginTop: 1 }} />
             <div>
-              <div style={{ fontSize: 13.5, fontWeight: 700, color: '#1B6CF2' }}>전체 리포트는 무료 신청 후 확인하실 수 있습니다.</div>
-              <div style={{ fontSize: 12, color: '#8B95A1', marginTop: 3 }}>기업 분석, 수급 분석, 밸류에이션, 리스크 분석 등 상세 내용 제공</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: '#1B6CF2' }}>전체 리포트는 무료 신청 후 확인하실 수 있습니다.</div>
+              <div style={{ fontSize: 14, color: '#8B95A1', marginTop: 5, lineHeight: 1.45 }}>기업 분석, 수급 분석, 밸류에이션, 리스크 분석 등 상세 내용 제공</div>
             </div>
           </div>
 

@@ -73,6 +73,25 @@ a {
   text-decoration: none;
 }
 
+.stock-report-cta {
+  animation: stock-report-cta-flash 2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes stock-report-cta-flash {
+  0%, 68%, 100% {
+    border-color: #1B6CF2;
+    box-shadow: 0 0 0 0 rgba(27, 108, 242, 0);
+  }
+  76% {
+    border-color: #9DCAFF;
+    box-shadow: 0 0 0 3px rgba(157, 202, 255, 0.55);
+  }
+  84% {
+    border-color: #D8EAFF;
+    box-shadow: 0 0 0 6px rgba(157, 202, 255, 0.18);
+  }
+}
+
 .responsive-table-scroll {
   width: 100%;
 }

@@ -14,9 +14,10 @@ export default function Header() {
         <div style={{ marginLeft: 'auto' }}>
           <Link
             href="/report"
+            className="stock-report-cta"
             style={{
-              height: 42, padding: '0 20px', border: 'none', borderRadius: 11,
-              background: '#1B6CF2', color: '#fff', fontSize: 14, fontWeight: 700,
+              height: 50, padding: '0 28px', border: '2px solid #1B6CF2', borderRadius: 12,
+              background: '#1B6CF2', color: '#fff', fontSize: 16, fontWeight: 800,
               cursor: 'pointer', display: 'inline-flex', alignItems: 'center', textDecoration: 'none'
             }}
           >

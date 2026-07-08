@@ -61,7 +61,7 @@ export default async function ReportCards() {
 
               <Link
                 href={`/report/${r.code}`}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, width: '100%', height: 42, border: 'none', borderRadius: 10, background: '#EAF1FE', color: '#1B6CF2', fontSize: 13.5, fontWeight: 700, cursor: 'pointer', textDecoration: 'none' }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, width: '100%', height: 52, border: 'none', borderRadius: 12, background: '#EAF1FE', color: '#1B6CF2', fontSize: 14, fontWeight: 800, cursor: 'pointer', textDecoration: 'none' }}
               >
                 무료 리포트 확인하기 ›
               </Link>
