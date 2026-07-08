@@ -35,12 +35,6 @@ export default function StockSidebar({ animate }: Props) {
       <div style={{ fontSize: 14, fontWeight: 700, color: changeColor, marginTop: 2 }}>
         {changeArrow} {fmt(Math.abs(s.change))} ({Math.abs(s.changeRate).toFixed(2)}%)
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10 }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', background: '#3182f6', borderRadius: 6, fontSize: 11, fontWeight: 700, color: '#fff' }}>
-          실시간
-        </div>
-        <span style={{ fontSize: 11, color: '#8B95A1' }}>{s.lastUpdated} 기준</span>
-      </div>
 
       {/* 주요 수치 */}
       <div style={{ marginTop: 18, borderTop: '1px solid #F2F4F6', paddingTop: 6 }}>
