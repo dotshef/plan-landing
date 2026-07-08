@@ -16,6 +16,17 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Environment Variables
+
+무료 리포트 신청 메일 발송에는 아래 서버 환경변수가 필요합니다.
+
+```bash
+RESEND_API_KEY=your_resend_api_key
+EMAIL_TO=manager@example.com
+```
+
+발신자는 코드에서 `no-reply@dotshef.com`으로 고정되어 있습니다.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, type CSSProperties } from 'react'
+import { useState, type CSSProperties, type FormEvent } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Check, Lock, Smartphone, Clock } from 'lucide-react'
 
 export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?: string }) {
   const [form, setForm] = useState({ name: '', phone: '', stock: defaultStock, agree: false })
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   function validate() {
@@ -16,11 +17,37 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
     return e
   }
 
-  function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
-    setSubmitted(true)
+
+    setSubmitting(true)
+    setErrors({})
+
+    try {
+      const response = await fetch('/api/report-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          stock: form.stock,
+        }),
+      })
+      const result = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        setErrors({ submit: result.error ?? '메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.' })
+        return
+      }
+
+      setSubmitted(true)
+    } catch {
+      setErrors({ submit: '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' })
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const [focusedField, setFocusedField] = useState<string | null>(null)
@@ -146,10 +173,12 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
 
                 <button
                   type="submit"
-                  style={{ width: '100%', height: 54, marginTop: 2, border: 'none', borderRadius: 13, background: '#1B6CF2', color: '#fff', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}
+                  disabled={submitting}
+                  style={{ width: '100%', height: 54, marginTop: 2, border: 'none', borderRadius: 13, background: submitting ? '#8B95A1' : '#1B6CF2', color: '#fff', fontSize: 16, fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer' }}
                 >
-                  무료 리포트 신청하기
+                  {submitting ? '신청 내용을 전송 중입니다' : '무료 리포트 신청하기'}
                 </button>
+                {errors.submit && <p style={{ fontSize: 12, color: '#E8342B', marginTop: -8, lineHeight: 1.5 }}>{errors.submit}</p>}
                 <div style={{ textAlign: 'center', fontSize: 12, color: '#B0B8C1', marginTop: -8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}><Lock size={12} color="#B0B8C1" /> 입력하신 정보는 안전하게 보호됩니다.</div>
               </form>
             </motion.div>
