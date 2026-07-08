@@ -34,9 +34,8 @@ export async function appendReportRequestToSheet(input: ReportRequestSheetInput)
     secret,
     requestedAt: requestedAtKst,
     requestedAtKst,
-    requestedAtIso: input.requestedAt.toISOString(),
     name: input.name,
-    phone: input.phone,
+    phone: `'${input.phone}`,
     stock: input.stock?.trim() || '미입력',
   }
   const endpoint = new URL(webhookUrl)

@@ -34,8 +34,10 @@ GOOGLE_SHEET_WEBHOOK_SECRET=your-long-random-secret
 Google Sheet에는 아래 순서로 행을 추가합니다.
 
 ```txt
-신청일시(KST) | 이름 | 연락처 | 관심종목 | 신청일시(ISO)
+신청일시(KST) | 이름 | 연락처 | 관심종목
 ```
+
+연락처는 앞자리 `0`이 사라지지 않도록 서버에서 작은따옴표(`'`)를 붙여 Google Sheet 텍스트 값으로 전달합니다. 시트 화면에는 작은따옴표 없이 `010...` 형태로 표시됩니다.
 
 Apps Script 예시:
 
@@ -50,7 +52,7 @@ function doPost(e) {
       return json({ ok: false, error: 'invalid secret' })
     }
 
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('시트1')
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('데이터수집')
     if (!sheet) {
       return json({ ok: false, error: 'sheet not found' })
     }
@@ -60,7 +62,6 @@ function doPost(e) {
       body.name || '',
       body.phone || '',
       body.stock || '',
-      body.requestedAtIso || '',
     ])
 
     return json({ ok: true })
