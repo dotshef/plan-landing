@@ -49,9 +49,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
   }
 
-  const pageUrl = req.headers.get('referer') ?? undefined
-  const userAgent = req.headers.get('user-agent') ?? undefined
-
   try {
     await appendReportRequestToSheet({
       name,
@@ -71,8 +68,6 @@ export async function POST(req: Request) {
     name,
     phone,
     stock,
-    pageUrl,
-    userAgent,
     requestedAt,
   })
 

@@ -17,6 +17,10 @@ function formatDate(date: Date) {
   }).format(date)
 }
 
+function maskPhone(phone: string) {
+  return phone.length > 4 ? `${'*'.repeat(phone.length - 4)}${phone.slice(-4)}` : phone
+}
+
 export async function appendReportRequestToSheet(input: ReportRequestSheetInput) {
   const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL
   const secret = process.env.GOOGLE_SHEET_WEBHOOK_SECRET
@@ -25,24 +29,54 @@ export async function appendReportRequestToSheet(input: ReportRequestSheetInput)
     throw new Error('GOOGLE_SHEET_WEBHOOK_URL / GOOGLE_SHEET_WEBHOOK_SECRET 환경변수가 필요합니다.')
   }
 
+  const requestedAtKst = formatDate(input.requestedAt)
+  const payload = {
+    secret,
+    requestedAt: requestedAtKst,
+    requestedAtKst,
+    requestedAtIso: input.requestedAt.toISOString(),
+    name: input.name,
+    phone: input.phone,
+    stock: input.stock?.trim() || '미입력',
+  }
+  const endpoint = new URL(webhookUrl)
+
+  console.log('[report-request] Google Sheet append start:', {
+    endpoint: endpoint.host,
+    requestedAtKst,
+    name: input.name,
+    phone: maskPhone(input.phone),
+    stock: payload.stock,
+  })
+
   const response = await fetch(webhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'text/plain;charset=utf-8',
     },
-    body: JSON.stringify({
-      secret,
-      requestedAt: formatDate(input.requestedAt),
-      requestedAtKst: formatDate(input.requestedAt),
-      requestedAtIso: input.requestedAt.toISOString(),
-      name: input.name,
-      phone: input.phone,
-      stock: input.stock?.trim() || '미입력',
-    }),
+    body: JSON.stringify(payload),
+  })
+
+  const detail = await response.text()
+  console.log('[report-request] Google Sheet append response:', {
+    status: response.status,
+    ok: response.ok,
+    body: detail.slice(0, 500),
   })
 
   if (!response.ok) {
-    const detail = await response.text()
     throw new Error(`Google Sheet webhook failed: ${response.status} ${detail}`)
+  }
+
+  if (detail) {
+    try {
+      const result = JSON.parse(detail) as { ok?: unknown; error?: unknown }
+      if (result.ok === false) {
+        throw new Error(`Google Sheet webhook rejected: ${JSON.stringify(result)}`)
+      }
+    } catch (error) {
+      if (error instanceof SyntaxError) return
+      throw error
+    }
   }
 }

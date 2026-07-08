@@ -2,8 +2,6 @@ export interface ReportRequestEmailInput {
   name: string
   phone: string
   stock?: string
-  pageUrl?: string
-  userAgent?: string
   requestedAt: Date
 }
 
@@ -53,8 +51,6 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
     name: escapeHtml(input.name),
     phone: escapeHtml(input.phone),
     stock: escapeHtml(stock),
-    pageUrl: input.pageUrl ? escapeHtml(input.pageUrl) : '',
-    userAgent: input.userAgent ? escapeHtml(input.userAgent) : '',
     requestedAt: escapeHtml(requestedAt),
   }
 
@@ -87,8 +83,6 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
                   ${row('관심 종목', safe.stock)}
                   ${row('신청 시각', safe.requestedAt)}
                 </table>
-                ${safe.pageUrl ? `<p style="margin:16px 0 0;font-size:12px;line-height:1.5;color:${GREY_500};">신청 페이지: <a href="${safe.pageUrl}" style="color:${BRAND};text-decoration:none;">${safe.pageUrl}</a></p>` : ''}
-                ${safe.userAgent ? `<p style="margin:6px 0 0;font-size:12px;line-height:1.5;color:${GREY_500};">User-Agent: ${safe.userAgent}</p>` : ''}
               </td>
             </tr>
             <tr>
@@ -110,8 +104,6 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
     `연락처: ${input.phone}`,
     `관심 종목: ${stock}`,
     `신청 시각: ${requestedAt}`,
-    input.pageUrl ? `신청 페이지: ${input.pageUrl}` : '',
-    input.userAgent ? `User-Agent: ${input.userAgent}` : '',
   ].filter(Boolean).join('\n')
 
   return { subject, html, text }
