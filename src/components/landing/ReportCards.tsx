@@ -25,7 +25,7 @@ export default async function ReportCards() {
                   <span style={{ padding: '3px 8px', borderRadius: 6, background: '#FCEEED', color: '#E8342B', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>가장 많이 조회</span>
                 )}
               </div>
-              <div style={{ margin: '14px 0 12px', fontSize: 13, lineHeight: 1.55, color: '#6B7684' }}>{r.summary}</div>
+              <div style={{ marginTop: 14 }} />
 
               {/* 증권사 투자의견 컨센서스 미니 차트 (매수/보유/매도) */}
               {r.consensus && r.consensus.total > 0 && (() => {

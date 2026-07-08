@@ -14,7 +14,6 @@ export interface ReportCard {
   name: string
   color: string
   hot: boolean
-  summary: string
   consensus: OpinionConsensus | null
 }
 
@@ -92,9 +91,6 @@ export async function getReportCards(): Promise<ReportCard[]> {
     name: r.stock?.name ?? r.code,
     color: stockColor(r.code),
     hot: r.rank === 1,
-    summary: r.stock?.industry
-      ? `${r.stock.industry} 업종 · 전문가 주가 전망 리포트를 무료로 확인하세요.`
-      : '전문가 주가 전망 리포트를 무료로 확인하세요.',
     consensus: consensus.get(r.code) ?? null,
   }))
 }
