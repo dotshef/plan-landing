@@ -16,6 +16,30 @@ interface IndexRow {
   sparkline: number[] | null
 }
 
+// ── 국내지수 일별 캔들 (FHKUP03500100) → 종가 배열(sparkline) ────────────────
+async function fetchDomesticSparkline(symbol: string): Promise<number[] | null> {
+  const to = new Date()
+  const from = new Date(to.getTime() - 40 * 24 * 60 * 60 * 1000)
+  const res = await kisGet<Record<string, string>>(
+    '/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice',
+    {
+      FID_COND_MRKT_DIV_CODE: 'U',
+      FID_INPUT_ISCD: symbol,
+      FID_INPUT_DATE_1: yyyymmdd(from),
+      FID_INPUT_DATE_2: yyyymmdd(to),
+      FID_PERIOD_DIV_CODE: 'D',
+    },
+    'FHKUP03500100',
+  )
+  const candles = (res.output2 ?? []) as Record<string, string>[]
+  // output2는 최신순 → 시간순으로 뒤집어 종가 배열(sparkline)
+  const sparkline = candles
+    .map((c) => num(c.bstp_nmix_prpr))
+    .filter((n): n is number => n != null)
+    .reverse()
+  return sparkline.length ? sparkline : null
+}
+
 // ── 국내지수 (FHPUP02100000): KOSPI 0001 / KOSDAQ 1001 ──────────────────────
 async function fetchDomestic(symbol: string, name: string): Promise<IndexRow> {
   const res = await kisGet<Record<string, string>>(
@@ -31,7 +55,7 @@ async function fetchDomestic(symbol: string, name: string): Promise<IndexRow> {
     change: num(o.bstp_nmix_prdy_vrss),
     change_rate: num(o.bstp_nmix_prdy_ctrt),
     is_rise: isRiseFromSign(o.prdy_vrss_sign),
-    sparkline: null, // 단일 콜에 일별 캔들 없음(표시용은 후속 보강)
+    sparkline: await fetchDomesticSparkline(symbol),
   }
 }
 

@@ -16,6 +16,7 @@
 | 컴포넌트 | 데이터 | API (tr_id) | 호출 수 |
 |---|---|---|---|
 | MarketIndexCards | KOSPI / KOSDAQ 지수 | 국내지수 `FHPUP02100000` | 2 |
+| MarketIndexCards | KOSPI / KOSDAQ sparkline | 국내지수 일별차트 `FHKUP03500100` | 2 |
 | MarketIndexCards | NASDAQ / S&P500 지수 + sparkline | 해외지수 `FHKST03030100` | 2 |
 | ReportCards | 인기 종목 카드 4개 — **HTS 조회상위 20종목 중 최상위 4종목**으로 선정, 1위에 "가장 많이 조회" 배지 | HTS조회상위 `HHMCM000100C0` | 1 |
 
@@ -92,6 +93,7 @@
 | # | API | tr_id | endpoint | 파라미터 | 사용 화면 |
 |---|---|---|---|---|---|
 | 11 | 국내 지수 | `FHPUP02100000` | `GET /uapi/domestic-stock/v1/quotations/inquire-index-price` | `FID_COND_MRKT_DIV_CODE=U`, `FID_INPUT_ISCD=0001`(KOSPI)/`1001`(KOSDAQ) | 1 |
+| 11-1 | 국내 지수 일별차트(sparkline) | `FHKUP03500100` | `GET /uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice` | `FID_COND_MRKT_DIV_CODE=U`, `FID_INPUT_ISCD=0001`/`1001`, `FID_INPUT_DATE_1/2`, `FID_PERIOD_DIV_CODE=D`. output2 종가 `bstp_nmix_prpr` | 1 |
 | 12 | 해외 지수 | `FHKST03030100` | `GET /uapi/overseas-price/v1/quotations/inquire-daily-chartprice` | `FID_COND_MRKT_DIV_CODE=N`, `FID_INPUT_ISCD=COMP`(NASDAQ)/`SPX`(S&P500), 기간, `D` | 1 |
 | 13 | HTS 조회상위 20종목 | `HHMCM000100C0` | `GET /uapi/domestic-stock/v1/ranking/hts-top-view` | 쿼리 파라미터 없음. **헤더에 `custtype: P` 필요** | 1 |
 
