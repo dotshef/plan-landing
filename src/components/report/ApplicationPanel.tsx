@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Check, Lock, Smartphone, Clock } from 'lucide-react'
 
 export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?: string }) {
-  const [form, setForm] = useState({ name: '', phone: '', stock: defaultStock, agree: false })
+  const [form, setForm] = useState({ name: '', phone: '', stock: defaultStock, privacy: false, agree: false })
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -84,6 +84,7 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
     if (!form.phone.trim()) e.phone = '연락처를 입력해주세요'
     else if (!phoneValid) e.phone = '올바른 연락처를 입력해주세요'
     else if (!verified) e.code = '휴대폰 인증을 완료해주세요'
+    if (!form.privacy) e.privacy = '개인정보 수집·이용에 동의해주세요'
     if (!form.agree) e.agree = '마케팅 정보 수신에 동의해주세요'
     return e
   }
@@ -259,7 +260,36 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                   <div style={{ fontSize: 11, color: '#B0B8C1', marginTop: 5 }}>여러 종목은 쉼표(,)로 구분</div>
                 </div>
 
-                {/* 동의 */}
+                {/* 개인정보 수집·이용 동의 */}
+                <div>
+                  <div
+                    onClick={() => setForm({ ...form, privacy: !form.privacy })}
+                    style={{ display: 'flex', gap: 10, alignItems: 'center', cursor: 'pointer', marginTop: 2 }}
+                  >
+                    <div style={{
+                      width: 20, height: 20, borderRadius: 6, flexShrink: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: '#fff',
+                      background: form.privacy ? '#1B6CF2' : '#fff',
+                      border: `1px solid ${form.privacy ? '#1B6CF2' : '#D1D6DB'}`,
+                    }}><Check size={12} color="#fff" strokeWidth={3} /></div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#4E5968' }}>
+                      개인정보 수집·이용 동의
+                    </span>
+                  </div>
+                  <div style={{ marginTop: 12, padding: 14, background: '#F8FAFC', border: '1px solid #F2F4F6', borderRadius: 10, fontSize: 11.5, color: '#8B95A1', lineHeight: 1.55, maxHeight: 96, overflow: 'auto' }}>
+                    [개인정보 수집·이용 동의] <br />
+                    <br />
+                    투자그룹 플랜은 무료 리포트 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.<br />
+                    <br />
+                    · 수집 항목: 이름, 연락처, 관심 종목<br />
+                    · 이용 목적: 무료 리포트 제공 및 투자 정보 안내<br />
+                    · 보유 기간: 동의일로부터 1년<br />
+                  </div>
+                  {errors.privacy && <p style={{ fontSize: 12, color: '#E8342B', marginTop: 4 }}>{errors.privacy}</p>}
+                </div>
+
+                {/* 마케팅 정보 수신 동의 */}
                 <div>
                   <div
                     onClick={() => setForm({ ...form, agree: !form.agree })}
@@ -308,8 +338,8 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
 
                 <button
                   type="submit"
-                  disabled={submitting || !form.agree || !verified}
-                  style={{ width: '100%', height: 54, marginTop: 2, border: 'none', borderRadius: 13, background: submitting || !form.agree || !verified ? '#B0B8C1' : '#1B6CF2', color: '#fff', fontSize: 16, fontWeight: 700, cursor: submitting || !form.agree || !verified ? 'not-allowed' : 'pointer' }}
+                  disabled={submitting || !form.privacy || !form.agree || !verified}
+                  style={{ width: '100%', height: 54, marginTop: 2, border: 'none', borderRadius: 13, background: submitting || !form.privacy || !form.agree || !verified ? '#B0B8C1' : '#1B6CF2', color: '#fff', fontSize: 16, fontWeight: 700, cursor: submitting || !form.privacy || !form.agree || !verified ? 'not-allowed' : 'pointer' }}
                 >
                   {submitting ? '신청 내용을 전송 중입니다' : '무료 리포트 신청하기'}
                 </button>

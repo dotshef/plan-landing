@@ -26,6 +26,14 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ko_KR',
     siteName: '투자그룹 플랜',
+    images: [
+      {
+        url: '/images/og-image.png',
+        width: 1731,
+        height: 909,
+        alt: '투자그룹 플랜 — 종목 분석 & 무료 리포트',
+      },
+    ],
   },
 }
 
