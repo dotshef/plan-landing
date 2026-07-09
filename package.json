@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "seed": "tsx scripts/seed-stock.ts",
-    "backfill": "tsx scripts/backfill-price.ts"
+    "lint": "eslint"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.0",

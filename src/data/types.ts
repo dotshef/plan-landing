@@ -1,5 +1,5 @@
 // 종목 데이터 공통 계약.
-// 목데이터(src/data/stocks/*)와 향후 KIS API 응답 매핑이 모두 이 타입을 따른다.
+// loader.ts의 DB(Supabase) 응답 매핑이 이 타입을 따른다.
 // 필드 ↔ KIS API 대응은 KIS_API_CALL_LIST.md 참고.
 
 export interface StockQuote {
