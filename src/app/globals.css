@@ -103,6 +103,7 @@ a {
   }
 
   .responsive-card-grid-4,
+  .responsive-market-grid,
   .responsive-trust-grid,
   .responsive-report-summary-grid {
     --grid-columns: repeat(2, 1fr);
