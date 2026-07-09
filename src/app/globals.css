@@ -159,8 +159,16 @@ a {
   }
 
   .responsive-home-features {
-    --features-direction: column;
-    --features-gap: 12px;
+    --features-direction: row;
+    --features-gap: 8px;
+    --feature-item-direction: column;
+    --feature-item-gap: 8px;
+    --feature-item-flex: 1;
+    --feature-item-text-align: center;
+  }
+
+  .feature-desc {
+    display: none;
   }
 
   .responsive-search-card {

@@ -49,7 +49,7 @@ export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
     <div className="responsive-home-hero" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--home-hero-padding, 52px 28px 30px)', display: 'grid', gridTemplateColumns: 'var(--home-hero-columns, 1fr 1.15fr)', gap: 'var(--home-hero-gap, 56px)', alignItems: 'start' }}>
       {/* 좌측 */}
       <div>
-        <div style={{ display: 'inline-block', padding: '6px 13px', borderRadius: 999, background: '#EAF1FE', color: '#1B6CF2', fontSize: 13, fontWeight: 700, marginBottom: 20 }}>
+        <div style={{ display: 'inline-block', background: 'transparent', color: '#111827', fontSize: 20, fontWeight: 600, marginBottom: 10, fontFamily: 'var(--font-maruburi)' }}>
           지금 가장 많이 찾는
         </div>
         <h1 className="responsive-hero-title" style={{ margin: 0, fontSize: 'var(--hero-title-size, 50px)', lineHeight: 1.18, fontWeight: 800, letterSpacing: '-0.03em', color: '#111827' }}>
@@ -61,13 +61,13 @@ export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
         </p>
         <div className="responsive-home-features" style={{ display: 'flex', flexDirection: 'var(--features-direction, row)' as CSSProperties['flexDirection'], gap: 'var(--features-gap, 14px)', marginTop: 34 }}>
           {FEATURES.map((f) => (
-            <div key={f.title} style={{ display: 'flex', gap: 11, alignItems: 'center' }}>
+            <div key={f.title} style={{ display: 'flex', flexDirection: 'var(--feature-item-direction, row)' as CSSProperties['flexDirection'], flex: 'var(--feature-item-flex, 0 1 auto)', gap: 'var(--feature-item-gap, 11px)', alignItems: 'center', textAlign: 'var(--feature-item-text-align, left)' as CSSProperties['textAlign'] }}>
               <div style={{ width: 42, height: 42, borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: f.bg }}>
                 <f.icon size={20} color="#1B6CF2" />
               </div>
               <div style={{ lineHeight: 1.25 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>{f.title}</div>
-                <div style={{ fontSize: 12, color: '#8B95A1' }}>{f.desc}</div>
+                <div className="feature-desc" style={{ fontSize: 12, color: '#8B95A1' }}>{f.desc}</div>
               </div>
             </div>
           ))}
