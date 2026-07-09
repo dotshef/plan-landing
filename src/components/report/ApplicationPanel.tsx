@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type CSSProperties, type FormEvent } from 'react'
+import { useState, useEffect, type CSSProperties, type FormEvent } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Check, Lock, Smartphone, Clock } from 'lucide-react'
 
@@ -10,11 +10,80 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
+  // 휴대폰 인증 상태
+  const [codeSent, setCodeSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [verifying, setVerifying] = useState(false)
+  const [verified, setVerified] = useState(false)
+  const [code, setCode] = useState('')
+  const [secondsLeft, setSecondsLeft] = useState(0)
+
+  // 만료 카운트다운
+  useEffect(() => {
+    if (secondsLeft <= 0) return
+    const t = setInterval(() => setSecondsLeft((s) => (s <= 1 ? 0 : s - 1)), 1000)
+    return () => clearInterval(t)
+  }, [secondsLeft])
+
+  const phoneValid = /^\d{10,11}$/.test(form.phone)
+  const mmss = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`
+
+  async function handleSendCode() {
+    if (!phoneValid) { setErrors((p) => ({ ...p, phone: '올바른 연락처를 입력해주세요' })); return }
+    setSending(true)
+    setErrors((p) => ({ ...p, phone: '', code: '' }))
+    try {
+      const res = await fetch('/api/sms/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone }),
+      })
+      const result = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setErrors((p) => ({ ...p, code: result.error ?? '인증번호 발송에 실패했습니다' }))
+        return
+      }
+      setCodeSent(true)
+      setVerified(false)
+      setCode('')
+      setSecondsLeft(Math.floor((result.ttlMs ?? 180000) / 1000))
+    } catch {
+      setErrors((p) => ({ ...p, code: '네트워크 오류가 발생했습니다' }))
+    } finally {
+      setSending(false)
+    }
+  }
+
+  async function handleVerifyCode() {
+    if (!/^\d{6}$/.test(code)) { setErrors((p) => ({ ...p, code: '인증번호 6자리를 입력해주세요' })); return }
+    setVerifying(true)
+    setErrors((p) => ({ ...p, code: '' }))
+    try {
+      const res = await fetch('/api/sms/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone, code }),
+      })
+      const result = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setErrors((p) => ({ ...p, code: result.error ?? '인증에 실패했습니다' }))
+        return
+      }
+      setVerified(true)
+      setSecondsLeft(0)
+    } catch {
+      setErrors((p) => ({ ...p, code: '네트워크 오류가 발생했습니다' }))
+    } finally {
+      setVerifying(false)
+    }
+  }
+
   function validate() {
     const e: Record<string, string> = {}
     if (!form.name.trim()) e.name = '이름을 입력해주세요'
     if (!form.phone.trim()) e.phone = '연락처를 입력해주세요'
-    else if (!/^\d{10,11}$/.test(form.phone)) e.phone = '올바른 연락처를 입력해주세요'
+    else if (!phoneValid) e.phone = '올바른 연락처를 입력해주세요'
+    else if (!verified) e.code = '휴대폰 인증을 완료해주세요'
     if (!form.agree) e.agree = '마케팅 정보 수신에 동의해주세요'
     return e
   }
@@ -98,18 +167,81 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                 {/* 연락처 */}
                 <div>
                   <label style={{ fontSize: 13, fontWeight: 700, color: '#4E5968' }}>연락처</label>
-                  <input
-                    type="tel"
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 11) })}
-                    onFocus={() => setFocusedField('phone')}
-                    onBlur={() => setFocusedField(null)}
-                    placeholder="- 없이 숫자만 입력해주세요"
-                    maxLength={11}
-                    style={inputStyle('phone')}
-                  />
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'stretch' }}>
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) => {
+                        const next = e.target.value.replace(/\D/g, '').slice(0, 11)
+                        setForm({ ...form, phone: next })
+                        // 번호가 바뀌면 인증 상태 초기화
+                        setCodeSent(false); setVerified(false); setCode(''); setSecondsLeft(0)
+                      }}
+                      onFocus={() => setFocusedField('phone')}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="- 없이 숫자만 입력해주세요"
+                      maxLength={11}
+                      disabled={verified}
+                      style={{ ...inputStyle('phone'), flex: 1, opacity: verified ? 0.7 : 1 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSendCode}
+                      disabled={!phoneValid || sending || verified}
+                      style={{
+                        marginTop: 8, whiteSpace: 'nowrap', padding: '0 14px', height: 50,
+                        borderRadius: 12, border: 'none', fontSize: 13, fontWeight: 700,
+                        cursor: !phoneValid || sending || verified ? 'not-allowed' : 'pointer',
+                        background: !phoneValid || sending || verified ? '#E5E8EB' : '#EAF2FE',
+                        color: !phoneValid || sending || verified ? '#B0B8C1' : '#1B6CF2',
+                      }}
+                    >
+                      {sending ? '발송 중' : verified ? '인증 완료' : codeSent ? '재발송' : '인증번호 발송'}
+                    </button>
+                  </div>
                   <div style={{ fontSize: 11, color: '#B0B8C1', marginTop: 5 }}>예) 01012345678</div>
                   {errors.phone && <p style={{ fontSize: 12, color: '#E8342B', marginTop: 4 }}>{errors.phone}</p>}
+
+                  {/* 인증번호 입력 */}
+                  {codeSent && !verified && (
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'stretch', marginTop: 10 }}>
+                      <div style={{ position: 'relative', flex: 1 }}>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={code}
+                          onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          onFocus={() => setFocusedField('code')}
+                          onBlur={() => setFocusedField(null)}
+                          placeholder="인증번호 6자리"
+                          maxLength={6}
+                          style={{ ...inputStyle('code'), marginTop: 0 }}
+                        />
+                        {secondsLeft > 0 && (
+                          <span style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 13, fontWeight: 700, color: '#E8342B' }}>{mmss}</span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleVerifyCode}
+                        disabled={verifying || code.length !== 6}
+                        style={{
+                          whiteSpace: 'nowrap', padding: '0 16px', height: 50, borderRadius: 12,
+                          border: 'none', fontSize: 13, fontWeight: 700,
+                          cursor: verifying || code.length !== 6 ? 'not-allowed' : 'pointer',
+                          background: verifying || code.length !== 6 ? '#B0B8C1' : '#1B6CF2', color: '#fff',
+                        }}
+                      >
+                        {verifying ? '확인 중' : '확인'}
+                      </button>
+                    </div>
+                  )}
+                  {verified && (
+                    <p style={{ fontSize: 12, color: '#03B26C', marginTop: 8, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Check size={13} color="#03B26C" strokeWidth={3} /> 휴대폰 인증이 완료되었습니다.
+                    </p>
+                  )}
+                  {errors.code && <p style={{ fontSize: 12, color: '#E8342B', marginTop: 4 }}>{errors.code}</p>}
                 </div>
 
                 {/* 관심종목 */}
@@ -176,8 +308,8 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
 
                 <button
                   type="submit"
-                  disabled={submitting || !form.agree}
-                  style={{ width: '100%', height: 54, marginTop: 2, border: 'none', borderRadius: 13, background: submitting || !form.agree ? '#B0B8C1' : '#1B6CF2', color: '#fff', fontSize: 16, fontWeight: 700, cursor: submitting || !form.agree ? 'not-allowed' : 'pointer' }}
+                  disabled={submitting || !form.agree || !verified}
+                  style={{ width: '100%', height: 54, marginTop: 2, border: 'none', borderRadius: 13, background: submitting || !form.agree || !verified ? '#B0B8C1' : '#1B6CF2', color: '#fff', fontSize: 16, fontWeight: 700, cursor: submitting || !form.agree || !verified ? 'not-allowed' : 'pointer' }}
                 >
                   {submitting ? '신청 내용을 전송 중입니다' : '무료 리포트 신청하기'}
                 </button>

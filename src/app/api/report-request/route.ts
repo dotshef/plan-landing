@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { buildReportRequestEmailTemplate } from '@/lib/email/emailTemplate'
 import { appendReportRequestToSheet } from '@/lib/google/sheetWebhook'
+import { isPhoneVerified } from '@/lib/sms/verificationStore'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -47,6 +48,15 @@ export async function POST(req: Request) {
 
   if (!/^\d{10,11}$/.test(phone)) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
+  }
+
+  try {
+    if (!(await isPhoneVerified(phone))) {
+      return NextResponse.json({ error: '휴대폰 인증을 먼저 완료해주세요.' }, { status: 401 })
+    }
+  } catch (error) {
+    console.error('[report-request] verification lookup failed:', error)
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 500 })
   }
 
   try {
