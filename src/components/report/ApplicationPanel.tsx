@@ -115,6 +115,15 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
       }
 
       setSubmitted(true)
+
+      // Google Ads 전환 측정 (리드 양식 제출)
+      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-17776841330/k1mnCOi70N8bEPKk1JxC',
+          value: 1.0,
+          currency: 'KRW',
+        })
+      }
     } catch {
       setErrors({ submit: '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' })
     } finally {
