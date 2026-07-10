@@ -1,7 +1,15 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 export default function Header() {
+  const pathname = usePathname()
+  // stock 페이지(/stock/[code])에서는 해당 종목 리포트로 연결
+  const stockMatch = pathname?.match(/^\/stock\/([^/]+)/)
+  const reportHref = stockMatch ? `/report/${stockMatch[1]}` : '/report'
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-[var(--border-default)]">
       <div className="responsive-header-inner" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--header-padding, 14px 28px)', display: 'flex', alignItems: 'center', gap: 'var(--header-gap, 32px)' }}>
@@ -13,7 +21,7 @@ export default function Header() {
         </Link>
         <div style={{ marginLeft: 'auto' }}>
           <Link
-            href="/report"
+            href={reportHref}
             className="stock-report-cta"
             style={{
               height: 'var(--header-cta-height, 50px)', padding: 'var(--header-cta-padding, 0 28px)',

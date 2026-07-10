@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Check, Lock, Smartphone, Clock } from 'lucide-react'
 
 export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?: string }) {
-  const [form, setForm] = useState({ name: '', phone: '', stock: defaultStock, privacy: false, agree: false })
+  const [form, setForm] = useState({ name: '', phone: '', stock: defaultStock, privacy: true, agree: true })
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
