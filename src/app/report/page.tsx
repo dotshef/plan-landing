@@ -1,4 +1,11 @@
+import type { Metadata } from 'next'
 import ApplicationPanel from '@/components/report/ApplicationPanel'
+
+export const metadata: Metadata = {
+  title: '무료 리포트 신청 | 투자그룹 플랜',
+  description: '관심 종목의 전문가 리포트를 무료로 신청하세요. 실시간 시세, 수급, AI 분석까지 한눈에 확인할 수 있습니다.',
+  alternates: { canonical: '/report' },
+}
 
 export default function ReportPage() {
   return (

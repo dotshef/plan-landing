@@ -95,6 +95,25 @@ export async function getReportCards(): Promise<ReportCard[]> {
   }))
 }
 
+// metadata용: 종목명만 경량 조회 (없으면 null).
+export async function getStockName(code: string): Promise<string | null> {
+  const { data } = await db()
+    .from('stock')
+    .select('name')
+    .eq('code', code)
+    .maybeSingle()
+  return data?.name ?? null
+}
+
+// 사이트맵용: 전체 종목 코드 목록 (보통주 위주, 상장 종목).
+export async function getAllStockCodes(): Promise<string[]> {
+  const { data } = await db()
+    .from('stock')
+    .select('code')
+    .order('code', { ascending: true })
+  return (data ?? []).map((r) => String(r.code))
+}
+
 // 검색/인기 종목 리스트 (조회상위 상위 N).
 export async function getPopularStocks(limit = 8): Promise<PopularStock[]> {
   const rows = await fetchTopView(limit)
