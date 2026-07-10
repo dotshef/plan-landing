@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { buildReportRequestEmailTemplate } from '@/lib/email/emailTemplate'
-import { appendReportRequestToSheet } from '@/lib/google/sheetWebhook'
 import { isPhoneVerified } from '@/lib/sms/verificationStore'
+import { db } from '@/lib/db/server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -60,14 +60,17 @@ export async function POST(req: Request) {
   }
 
   try {
-    await appendReportRequestToSheet({
-      name,
-      phone,
-      stock,
-      requestedAt,
-    })
+    const { error } = await db()
+      .from('report_request')
+      .insert({
+        name,
+        phone,
+        stock: stock || null,
+        requested_at: requestedAt.toISOString(),
+      })
+    if (error) throw error
   } catch (error) {
-    console.error('[report-request] Google Sheet append failed:', error)
+    console.error('[report-request] DB insert failed:', error)
     return NextResponse.json(
       { error: '신청 정보를 저장하지 못했습니다. 잠시 후 다시 시도해주세요.' },
       { status: 502 },

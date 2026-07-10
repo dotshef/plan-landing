@@ -23,59 +23,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ```bash
 RESEND_API_KEY=your_resend_api_key
 EMAIL_TO=manager@example.com
-GOOGLE_SHEET_WEBHOOK_URL=https://script.google.com/macros/s/your-deployment-id/exec
-GOOGLE_SHEET_WEBHOOK_SECRET=your-long-random-secret
 ```
 
 발신자는 코드에서 `no-reply@dotshef.com`으로 고정되어 있습니다.
 
-## Google Apps Script Webhook
-
-Google Sheet에는 아래 순서로 행을 추가합니다.
-
-```txt
-신청일시(KST) | 이름 | 연락처 | 관심종목
-```
-
-연락처는 앞자리 `0`이 사라지지 않도록 서버에서 작은따옴표(`'`)를 붙여 Google Sheet 텍스트 값으로 전달합니다. 시트 화면에는 작은따옴표 없이 `010...` 형태로 표시됩니다.
-
-Apps Script 예시:
-
-```js
-const SECRET = 'your-long-random-secret'
-
-function doPost(e) {
-  try {
-    const body = JSON.parse(e.postData.contents)
-
-    if (body.secret !== SECRET) {
-      return json({ ok: false, error: 'invalid secret' })
-    }
-
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('데이터수집')
-    if (!sheet) {
-      return json({ ok: false, error: 'sheet not found' })
-    }
-
-    sheet.appendRow([
-      body.requestedAtKst || body.requestedAt || new Date(),
-      body.name || '',
-      body.phone || '',
-      body.stock || '',
-    ])
-
-    return json({ ok: true })
-  } catch (error) {
-    return json({ ok: false, error: String(error && error.message ? error.message : error) })
-  }
-}
-
-function json(value) {
-  return ContentService
-    .createTextOutput(JSON.stringify(value))
-    .setMimeType(ContentService.MimeType.JSON)
-}
-```
+리포트 신청 고객 정보는 Supabase `report_request` 테이블에 저장됩니다(`supabase/migrations/0003_report_request.sql`).
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
