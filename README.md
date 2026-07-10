@@ -25,7 +25,7 @@ RESEND_API_KEY=your_resend_api_key
 EMAIL_TO=manager@example.com
 ```
 
-발신자는 코드에서 `no-reply@dotshef.com`으로 고정되어 있습니다.
+발신자는 코드에서 `no-reply@plankor.kr`으로 고정되어 있습니다.
 
 리포트 신청 고객 정보는 Supabase `report_request` 테이블에 저장됩니다(`supabase/migrations/0003_report_request.sql`).
 

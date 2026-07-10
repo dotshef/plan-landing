@@ -7,7 +7,7 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 const RESEND_ENDPOINT = 'https://api.resend.com/emails'
-const FROM_EMAIL = 'no-reply@dotshef.com'
+const FROM_EMAIL = 'no-reply@plankor.kr'
 
 interface ReportRequestPayload {
   name?: unknown
