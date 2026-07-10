@@ -3,7 +3,7 @@ export default function Footer() {
     <footer style={{ borderTop: '1px solid #E5E8EC', background: '#F9FAFB', marginTop: 80 }}>
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '36px 28px', color: '#8B95A1', lineHeight: 1.7 }}>
         <p style={{ fontSize: 14, color: '#4E5968', fontWeight: 600, margin: '0 0 16px' }}>
-          에이주식연구소 | 대표자 박지환 | 사업자등록번호 508-12-63370
+          투자그룹 플랜 | 대표자 이주원 | 사업자등록번호 658-19-01867
         </p>
 
         <p style={{ fontSize: 13, margin: '0 0 16px' }}>
