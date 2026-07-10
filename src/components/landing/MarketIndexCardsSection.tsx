@@ -1,7 +1,7 @@
 import { getMarketIndices } from '@/data/market-indices'
 import SparklineChart from '@/components/common/SparklineChart'
 
-export default async function MarketIndexCards() {
+export default async function MarketIndexCardsSection() {
   const indices = await getMarketIndices()
   return (
     <div className="responsive-section-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--section-padding, 16px 28px 8px)' }}>

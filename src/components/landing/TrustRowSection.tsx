@@ -7,7 +7,7 @@ const TRUST_ITEMS: { icon: LucideIcon; title: string; desc: string }[] = [
   { icon: Gift,         title: '모든 리포트 무료 제공', desc: '회원가입 없이 무료로 확인 가능합니다.' },
 ]
 
-export default function TrustRow() {
+export default function TrustRowSection() {
   return (
     <div className="responsive-section-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--section-padding, 16px 28px 56px)' }}>
       <div className="responsive-trust-grid responsive-section-card" style={{

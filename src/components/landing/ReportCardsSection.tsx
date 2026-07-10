@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getReportCards } from '@/data/registry'
 
-export default async function ReportCards() {
+export default async function ReportCardsSection() {
   const cards = await getReportCards()
   return (
     <div className="responsive-section-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--section-padding, 24px 28px 8px)' }}>

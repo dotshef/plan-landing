@@ -183,6 +183,49 @@ a {
     width: 100%;
   }
 
+  .responsive-compact-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* 모바일: 모든 직속 항목을 한 줄 풀폭으로 스택 (인라인 align/flex 무력화) */
+  .responsive-compact-row > * {
+    flex-basis: auto !important;
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
+  /* 인증번호 입력 + 확인은 한 줄 안에서 나란히 유지 */
+  .responsive-verify-pair > div {
+    flex: 1 1 auto !important;
+  }
+
+  /* 이름 + 연락처 + 인증번호 발송을 한 줄로 (연락처가 더 넓게, 발송은 우측 고정폭) */
+  .responsive-namephone-pair > input:nth-of-type(1) {
+    flex: 1 1 0 !important;
+  }
+
+  .responsive-namephone-pair > input:nth-of-type(2) {
+    flex: 1.8 1 0 !important;
+  }
+
+  /* 인증번호 발송 · 확인 버튼을 같은 폭으로(우측 정렬 시 세로 정렬) */
+  .responsive-namephone-pair > button,
+  .responsive-verify-pair > button {
+    box-sizing: border-box;
+    flex: 0 0 108px !important;
+    width: 108px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* 동의 2개도 한 줄로 나란히 (좌측 정렬) */
+  .responsive-consent-pair {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
   .responsive-card-grid-4,
   .responsive-trust-grid,
   .responsive-report-summary-grid,

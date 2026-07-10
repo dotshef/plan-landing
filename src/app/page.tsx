@@ -1,7 +1,8 @@
 import HeroSection from '@/components/landing/HeroSection'
-import ReportCards from '@/components/landing/ReportCards'
-import MarketIndexCards from '@/components/landing/MarketIndexCards'
-import TrustRow from '@/components/landing/TrustRow'
+import CompactLeadFormSection from '@/components/landing/CompactLeadFormSection'
+import ReportCardsSection from '@/components/landing/ReportCardsSection'
+import MarketIndexCardsSection from '@/components/landing/MarketIndexCardsSection'
+import TrustRowSection from '@/components/landing/TrustRowSection'
 import { getPopularStocks } from '@/data/registry'
 
 // DB(야간 스냅샷) 기반 → 요청 시 렌더. 빌드 프리렌더 시 DB 호출 방지.
@@ -12,9 +13,10 @@ export default async function HomePage() {
   return (
     <div style={{ background: 'linear-gradient(180deg,#fff 0%,#fff 60%,#F5F7FB 100%)' }}>
       <HeroSection stocks={popular} />
-      <ReportCards />
-      <MarketIndexCards />
-      <TrustRow />
+      <CompactLeadFormSection />
+      <ReportCardsSection />
+      <MarketIndexCardsSection />
+      <TrustRowSection />
     </div>
   )
 }
