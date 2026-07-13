@@ -2,6 +2,64 @@
 
 import { useEffect, useState, type FormEvent } from 'react'
 
+type TrafficSource = 'google' | 'naver' | 'unknown'
+
+interface AdAttribution {
+  trafficSource: TrafficSource
+  adKeyword: string | null
+}
+
+const ATTRIBUTION_STORAGE_KEY = 'report_ad_attribution'
+
+function detectAdAttribution(search: string): AdAttribution {
+  const params = new URLSearchParams(search)
+  const isGoogle = ['gclid', 'gbraid', 'wbraid', 'gad_campaignid']
+    .some((key) => params.has(key))
+  const isNaver = ['n_media', 'n_ad_group', 'n_ad', 'napm']
+    .some((key) => params.has(key))
+
+  if (isGoogle === isNaver) {
+    return { trafficSource: 'unknown', adKeyword: null }
+  }
+
+  if (isGoogle) {
+    return { trafficSource: 'google', adKeyword: null }
+  }
+
+  return {
+    trafficSource: 'naver',
+    adKeyword: params.get('n_query')?.trim().slice(0, 200) || null,
+  }
+}
+
+function readStoredAdAttribution(): AdAttribution {
+  if (typeof window === 'undefined') {
+    return { trafficSource: 'unknown', adKeyword: null }
+  }
+
+  try {
+    const stored = window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY)
+    if (!stored) return detectAdAttribution(window.location.search)
+
+    const parsed = JSON.parse(stored) as Partial<AdAttribution>
+    if (parsed.trafficSource === 'google') {
+      return { trafficSource: 'google', adKeyword: null }
+    }
+    if (parsed.trafficSource === 'naver') {
+      return {
+        trafficSource: 'naver',
+        adKeyword: typeof parsed.adKeyword === 'string'
+          ? parsed.adKeyword.trim().slice(0, 200) || null
+          : null,
+      }
+    }
+  } catch {
+    // 저장소를 사용할 수 없거나 값이 손상된 경우 기타 유입으로 제출한다.
+  }
+
+  return { trafficSource: 'unknown', adKeyword: null }
+}
+
 /**
  * 무료 리포트 신청 폼의 상태·검증·휴대폰 인증·제출 로직.
  * 세로형 ApplicationPanel과 가로형 CompactLeadFormSection이 공유한다.
@@ -19,6 +77,20 @@ export function useReportRequest(defaultStock = '') {
   const [verified, setVerified] = useState(false)
   const [code, setCode] = useState('')
   const [secondsLeft, setSecondsLeft] = useState(0)
+
+  // 같은 탭에서 최초로 확인된 광고 유입 정보만 세션 동안 유지한다.
+  useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY)) return
+
+      const attribution = detectAdAttribution(window.location.search)
+      if (attribution.trafficSource !== 'unknown') {
+        window.sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(attribution))
+      }
+    } catch {
+      // 브라우저 설정으로 sessionStorage가 차단되어도 신청 기능은 계속 제공한다.
+    }
+  }, [])
 
   // 만료 카운트다운
   useEffect(() => {
@@ -107,6 +179,7 @@ export function useReportRequest(defaultStock = '') {
     setErrors({})
 
     try {
+      const attribution = readStoredAdAttribution()
       const response = await fetch('/api/report-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -114,6 +187,8 @@ export function useReportRequest(defaultStock = '') {
           name: form.name,
           phone: form.phone,
           stock: form.stock,
+          trafficSource: attribution.trafficSource,
+          adKeyword: attribution.adKeyword,
         }),
       })
       const result = await response.json().catch(() => ({}))

@@ -13,10 +13,16 @@ interface ReportRequestPayload {
   name?: unknown
   phone?: unknown
   stock?: unknown
+  trafficSource?: unknown
+  adKeyword?: unknown
 }
 
 function normalize(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
+}
+
+function normalizeTrafficSource(value: unknown): 'google' | 'naver' | 'unknown' {
+  return value === 'google' || value === 'naver' ? value : 'unknown'
 }
 
 export async function POST(req: Request) {
@@ -41,6 +47,10 @@ export async function POST(req: Request) {
   const name = normalize(payload.name)
   const phone = normalize(payload.phone)
   const stock = normalize(payload.stock)
+  const trafficSource = normalizeTrafficSource(payload.trafficSource)
+  const adKeyword = trafficSource === 'naver'
+    ? normalize(payload.adKeyword).slice(0, 200) || null
+    : null
 
   if (!name || !phone) {
     return NextResponse.json({ error: '이름과 연락처를 입력해주세요.' }, { status: 400 })
@@ -66,6 +76,8 @@ export async function POST(req: Request) {
         name,
         phone,
         stock: stock || null,
+        traffic_source: trafficSource,
+        ad_keyword: adKeyword,
         requested_at: requestedAt.toISOString(),
       })
     if (error) throw error
@@ -81,6 +93,8 @@ export async function POST(req: Request) {
     name,
     phone,
     stock,
+    trafficSource,
+    adKeyword,
     requestedAt,
   })
 

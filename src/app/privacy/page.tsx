@@ -173,10 +173,11 @@ export default function PrivacyPage() {
           <ol className="dep1">
             <li>
               수집하는 개인정보의 항목은 원활한 고객상담, 각종 서비스의 제공을 위해 아래와 같은 개인정보를 수집하고 있습니다.
-              <strong className="tit2">[온라인 문의, 뉴스레터 수집항목]</strong>
+              <strong className="tit2">[온라인 문의, 뉴스레터, 무료 리포트 수집항목]</strong>
               <ol className="dep2">
                 <li>온라인 문의, 답변, 고객상담 : 이름, 이메일, 휴대전화번호</li>
                 <li>뉴스레터 신청, 발송 : 이름, 이메일</li>
+                <li>무료 리포트 신청 : 이름, 휴대전화번호, 관심 종목, 유입 광고 매체, 광고 키워드</li>
                 <li>IP adress : 쿠키, 방문 일시, 서비스 이용 기록</li>
               </ol>
             </li>
@@ -184,7 +185,7 @@ export default function PrivacyPage() {
               개인정보 수집방법<br />
               회사는 다음과 같은 방법으로 개인정보를 수집합니다.
               <ol className="dep2">
-                <li>홈페이지 상담 게시판, 전화, 전자우편</li>
+                <li>홈페이지 상담 게시판 및 무료 리포트 신청 양식, 전화, 전자우편</li>
               </ol>
             </li>
           </ol>
@@ -217,6 +218,7 @@ export default function PrivacyPage() {
                 <li>이벤트 등 광고성 정보 전달, 이벤트 당첨 시 물품배송</li>
                 <li>신규 서비스 개발 및 특화, 인구통계학적 특성에 따른 서비스 제공 및 광고 게재</li>
                 <li>접속 빈도 파악 또는 이용자의 서비스 이용에 대한 통계</li>
+                <li>광고 유입경로 및 광고 성과 확인</li>
               </ol>
             </li>
           </ol>
@@ -231,6 +233,7 @@ export default function PrivacyPage() {
             단, 다음의 정보에 대해서는 아래의 이유로 명시한 기간 동안 보존합니다.
           </p>
           <ol className="dep1">
+            <li>무료 리포트 신청 정보: 동의일로부터 1년</li>
             <li>
               전자상거래 등에서 소비자 보호에 관한 법률
               <ol className="dep2">
