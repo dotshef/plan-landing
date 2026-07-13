@@ -4,9 +4,26 @@ export default function Footer() {
   return (
     <footer style={{ borderTop: '1px solid #E5E8EC', background: '#F9FAFB', marginTop: 80 }}>
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '36px 28px', color: '#8B95A1', lineHeight: 1.7 }}>
-        <p style={{ fontSize: 14, color: '#4E5968', fontWeight: 600, margin: '0 0 16px' }}>
-          투자그룹 플랜 | 대표자 이주원 | 사업자등록번호 658-19-01867
-        </p>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 8,
+            margin: '0 0 16px',
+          }}
+        >
+          <p style={{ fontSize: 14, color: '#4E5968', fontWeight: 600, margin: 0 }}>
+            투자그룹 플랜 | 대표자 이주원 | 사업자등록번호 658-19-01867
+          </p>
+          <Link
+            href="/privacy"
+            style={{ fontSize: 17, fontWeight: 700, color: '#4E5968', textDecoration: 'none' }}
+          >
+            개인정보 처리방침
+          </Link>
+        </div>
 
         <p style={{ fontSize: 13, margin: '0 0 16px' }}>
           본 사이트에서 제공되는 모든 정보는 투자 판단의 참고자료이며, 서비스 이용에 따른 최종 책임은 이용자에게 있습니다.
@@ -23,15 +40,6 @@ export default function Footer() {
           <li>※ 본 업체는 정식 금융투자업자가 아닌 유사투자자문업자입니다.</li>
           <li>※ 투자 판단 및 책임은 이용자에게 있으며, 수익을 보장하지 않습니다.</li>
         </ul>
-
-        <p style={{ margin: '0 0 16px' }}>
-          <Link
-            href="/privacy"
-            style={{ fontSize: 13, fontWeight: 600, color: '#4E5968', textDecoration: 'none' }}
-          >
-            개인정보 처리방침
-          </Link>
-        </p>
 
         <p style={{ fontSize: 13, margin: 0 }}>
           본 페이지는 국내주식 주요 종목의 실시간 주가 흐름과
