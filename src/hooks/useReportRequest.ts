@@ -125,6 +125,10 @@ export function useReportRequest(defaultStock = '') {
 
       setSubmitted(true)
 
+      const eventId = `report_request_${
+        globalThis.crypto?.randomUUID?.() ?? `${Date.now()}_${Math.random().toString(36).slice(2)}`
+      }`
+
       // Google Ads 전환 측정 (리드 양식 제출)
       if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
         window.gtag('event', 'conversion', {
@@ -132,6 +136,22 @@ export function useReportRequest(defaultStock = '') {
           value: 1.0,
           currency: 'KRW',
         })
+      }
+
+      // OpenAI Ads measurement pixel (lead submission)
+      if (typeof window !== 'undefined' && typeof window.oaiq === 'function') {
+        window.oaiq(
+          'measure',
+          'lead_created',
+          {
+            type: 'contents',
+            amount: 0,
+            currency: 'KRW',
+          },
+          {
+            event_id: eventId,
+          },
+        )
       }
     } catch {
       setErrors({ submit: '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' })

@@ -60,6 +60,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('js', new Date());
             gtag('config', 'AW-17776841330');`}
         </Script>
+        {/* OpenAI Ads measurement pixel */}
+        <Script id="openai-ads-pixel-init" strategy="afterInteractive">
+          {`window.oaiq = window.oaiq || function () {
+              (window.oaiq.q = window.oaiq.q || []).push(arguments);
+            };
+            oaiq("init", { pixelId: "JYM2uogRGo6SA8nYb1Ff3g" });`}
+        </Script>
+        <Script
+          src="https://bzrcdn.openai.com/sdk/oaiq.min.js"
+          strategy="afterInteractive"
+        />
 
         <Header />
         <main>{children}</main>
