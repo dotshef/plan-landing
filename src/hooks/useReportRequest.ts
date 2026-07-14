@@ -208,7 +208,7 @@ export function useReportRequest(defaultStock = '') {
       if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
         window.gtag('event', 'conversion', {
           send_to: 'AW-17776841330/k1mnCOi70N8bEPKk1JxC',
-          value: 1.0,
+          value: 100,
           currency: 'KRW',
         })
       }
@@ -220,7 +220,7 @@ export function useReportRequest(defaultStock = '') {
           'lead_created',
           {
             type: 'contents',
-            amount: 0,
+            amount: 100,
             currency: 'KRW',
           },
           {
