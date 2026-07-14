@@ -10,7 +10,17 @@ function normalize(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
 }
 
+/** 프록시 헤더에서 클라이언트 IP를 추출한다 (x-forwarded-for 첫 번째 값 우선). */
+function clientIp(req: Request): string {
+  const xff = req.headers.get('x-forwarded-for')
+  if (xff) return xff.split(',')[0].trim()
+  return req.headers.get('x-real-ip')?.trim() || 'unknown'
+}
+
 export async function POST(req: Request) {
+  const ip = clientIp(req)
+  const userAgent = req.headers.get('user-agent') ?? 'unknown'
+
   let body: { phone?: unknown }
   try {
     body = await req.json()
@@ -43,6 +53,11 @@ export async function POST(req: Request) {
   }
 
   const code = generateCode()
+
+  // 발송 시점 요청 출처 기록 (어뷰징 추적용)
+  console.log(
+    `[sms/send-code] sending to ${phone} | ip=${ip} | ua=${userAgent}`,
+  )
 
   try {
     const result = await sendSms({
