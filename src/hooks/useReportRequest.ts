@@ -207,7 +207,7 @@ export function useReportRequest(defaultStock = '') {
       // Google Ads 전환 측정 (리드 양식 제출)
       if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
         window.gtag('event', 'conversion', {
-          send_to: 'AW-17776841330/k1mnCOi70N8bEPKk1JxC',
+          send_to: 'AW-17776841330/qmgOCOLvgtAcEPKk1JxC',
           value: 100,
           currency: 'KRW',
         })
