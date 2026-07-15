@@ -23,6 +23,12 @@ function normalize(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
 }
 
+// KST(UTC+9) 벽시계 문자열 'YYYY-MM-DD HH:MM:SS' — requested_at(timestamp, tz 없음) 컬럼용
+function toKstTimestamp(date: Date): string {
+  const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000)
+  return kst.toISOString().slice(0, 19).replace('T', ' ')
+}
+
 function normalizeTrafficSource(value: unknown): 'google' | 'naver' | 'unknown' {
   return value === 'google' || value === 'naver' ? value : 'unknown'
 }
@@ -88,7 +94,7 @@ export async function POST(req: Request) {
         ad_keyword: adKeyword,
         ad_campaign_id: adCampaignId,
         landing_url: landingUrl,
-        requested_at: requestedAt.toISOString(),
+        requested_at: toKstTimestamp(requestedAt),
       })
     if (error) throw error
   } catch (error) {
