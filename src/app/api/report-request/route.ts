@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { buildReportRequestEmailTemplate } from '@/lib/email/emailTemplate'
 import { isPhoneVerified } from '@/lib/sms/verificationStore'
 import { db } from '@/lib/db/server'
+import { hasRecentReportRequest } from '@/lib/reportRequest/duplicate'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -84,6 +85,18 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     console.error('[report-request] verification lookup failed:', error)
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 500 })
+  }
+
+  try {
+    if (await hasRecentReportRequest(name, phone, requestedAt)) {
+      return NextResponse.json(
+        { error: '이미 접수된 이력이 있습니다' },
+        { status: 409 },
+      )
+    }
+  } catch (error) {
+    console.error('[report-request] duplicate lookup failed:', error)
     return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 500 })
   }
 

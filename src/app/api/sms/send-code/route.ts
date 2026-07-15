@@ -4,6 +4,7 @@ import { CODE_TTL_MS, generateCode } from '@/lib/sms/verification'
 import { checkSendRateLimit, createVerification } from '@/lib/sms/verificationStore'
 import { verifyTurnstile } from '@/lib/turnstile/verify'
 import { maybeAlertHighVolume } from '@/lib/sms/volumeAlert'
+import { hasRecentReportRequest } from '@/lib/reportRequest/duplicate'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -23,14 +24,18 @@ export async function POST(req: Request) {
   const ip = clientIp(req)
   const userAgent = req.headers.get('user-agent') ?? 'unknown'
 
-  let body: { phone?: unknown; turnstileToken?: unknown }
+  let body: { name?: unknown; phone?: unknown; turnstileToken?: unknown }
   try {
     body = await req.json()
   } catch {
     return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 })
   }
 
+  const name = normalize(body.name)
   const phone = normalize(body.phone)
+  if (!name) {
+    return NextResponse.json({ error: '이름을 입력해주세요.' }, { status: 400 })
+  }
   if (!/^\d{10,11}$/.test(phone)) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
   }
@@ -46,6 +51,18 @@ export async function POST(req: Request) {
   }
 
   // 발송 남용 차단
+  try {
+    if (await hasRecentReportRequest(name, phone)) {
+      return NextResponse.json(
+        { error: '이미 접수된 이력이 있습니다' },
+        { status: 409 },
+      )
+    }
+  } catch (error) {
+    console.error('[sms/send-code] duplicate lookup failed:', error)
+    return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 500 })
+  }
+
   let gate
   try {
     gate = await checkSendRateLimit(phone)

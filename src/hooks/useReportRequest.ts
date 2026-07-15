@@ -209,6 +209,7 @@ export function useReportRequest(defaultStock = '') {
   }
 
   async function handleSendCode() {
+    if (!form.name.trim()) { setErrors((p) => ({ ...p, name: '이름을 입력해주세요' })); return }
     if (!phoneValid) { setErrors((p) => ({ ...p, phone: '올바른 연락처를 입력해주세요' })); return }
     setSending(true)
     setErrors((p) => ({ ...p, phone: '', code: '' }))
@@ -224,7 +225,7 @@ export function useReportRequest(defaultStock = '') {
       const res = await fetch('/api/sms/send-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: form.phone, turnstileToken }),
+        body: JSON.stringify({ name: form.name.trim(), phone: form.phone, turnstileToken }),
       })
       const result = await res.json().catch(() => ({}))
       if (!res.ok) {
