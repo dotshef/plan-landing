@@ -46,7 +46,7 @@ async function sendAlertEmail(count: number): Promise<void> {
     timeStyle: 'medium',
   }).format(new Date())
 
-  const subject = `[⚠️ SMS 발송 급증 경보] 최근 ${windowLabel} ${count}건`
+  const subject = `[SMS 발송 급증 경보] 최근 ${windowLabel} 동안 ${count}건`
   const text = [
     'SMS 인증 발송량이 임계치를 넘었습니다.',
     '',
