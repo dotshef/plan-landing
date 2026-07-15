@@ -269,6 +269,13 @@ export function useReportRequest(defaultStock = '') {
           },
         )
       }
+
+      // 네이버 프리미엄 로그분석 전환 측정 (신청완료/lead)
+      if (typeof window !== 'undefined' && window.wcs) {
+        window.wcs_add = window.wcs_add || {}
+        window.wcs_add['wa'] = 's_68759ef9d7a'
+        window.wcs.trans({ type: 'lead' })
+      }
     } catch {
       setErrors({ submit: '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' })
     } finally {

@@ -4,6 +4,7 @@ import Script from 'next/script'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import NaverWcs from '@/components/tracking/NaverWcs'
 import { Analytics } from "@vercel/analytics/next"
 
 const pretendard = localFont({
@@ -71,6 +72,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://bzrcdn.openai.com/sdk/oaiq.min.js"
           strategy="afterInteractive"
         />
+        {/* 네이버 프리미엄 로그분석 (공통) */}
+        <NaverWcs />
 
         <Header />
         <main>{children}</main>
