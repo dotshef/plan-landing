@@ -5,6 +5,7 @@ export interface ReportRequestEmailInput {
   trafficSource: 'google' | 'naver' | 'unknown'
   adKeyword?: string | null
   adCampaignId?: string | null
+  adCampaignLabel?: string | null
   landingUrl?: string | null
   requestedAt: Date
 }
@@ -57,6 +58,7 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
   }[input.trafficSource]
   const adKeyword = input.adKeyword?.trim() || '없음'
   const adCampaignId = input.adCampaignId?.trim() || '없음'
+  const adCampaignLabel = input.adCampaignLabel?.trim() || '없음'
   const landingUrl = input.landingUrl?.trim() || '없음'
   const requestedAt = formatDate(input.requestedAt)
   const safe = {
@@ -66,6 +68,7 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
     trafficSource: escapeHtml(trafficSource),
     adKeyword: escapeHtml(adKeyword),
     adCampaignId: escapeHtml(adCampaignId),
+    adCampaignLabel: escapeHtml(adCampaignLabel),
     landingUrl: escapeHtml(landingUrl),
     requestedAt: escapeHtml(requestedAt),
   }
@@ -100,6 +103,7 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
                   ${row('유입 광고 매체', safe.trafficSource)}
                   ${row('광고 키워드', safe.adKeyword)}
                   ${row('캠페인 ID', safe.adCampaignId)}
+                  ${row('캠페인 라벨', safe.adCampaignLabel)}
                   ${row('유입 URL', safe.landingUrl)}
                   ${row('신청 시각', safe.requestedAt)}
                 </table>
@@ -126,6 +130,7 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
     `유입 광고 매체: ${trafficSource}`,
     `광고 키워드: ${adKeyword}`,
     `캠페인 ID: ${adCampaignId}`,
+    `캠페인 라벨: ${adCampaignLabel}`,
     `유입 URL: ${landingUrl}`,
     `신청 시각: ${requestedAt}`,
   ].filter(Boolean).join('\n')

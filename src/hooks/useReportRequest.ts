@@ -8,6 +8,7 @@ interface AdAttribution {
   trafficSource: TrafficSource
   adKeyword: string | null
   adCampaignId: string | null
+  adCampaignLabel: string | null
   landingUrl: string | null
 }
 
@@ -17,6 +18,7 @@ const UNKNOWN_ATTRIBUTION: AdAttribution = {
   trafficSource: 'unknown',
   adKeyword: null,
   adCampaignId: null,
+  adCampaignLabel: null,
   landingUrl: null,
 }
 
@@ -38,6 +40,7 @@ function detectAdAttribution(search: string, href: string): AdAttribution {
       trafficSource: 'google',
       adKeyword: null,
       adCampaignId: params.get('gad_campaignid')?.trim().slice(0, 100) || null,
+      adCampaignLabel: params.get('c')?.trim().slice(0, 100) || null,
       landingUrl,
     }
   }
@@ -46,6 +49,7 @@ function detectAdAttribution(search: string, href: string): AdAttribution {
     trafficSource: 'naver',
     adKeyword: params.get('n_query')?.trim().slice(0, 200) || null,
     adCampaignId: null,
+    adCampaignLabel: null,
     landingUrl,
   }
 }
@@ -70,6 +74,9 @@ function readStoredAdAttribution(): AdAttribution {
         adCampaignId: typeof parsed.adCampaignId === 'string'
           ? parsed.adCampaignId.trim().slice(0, 100) || null
           : null,
+        adCampaignLabel: typeof parsed.adCampaignLabel === 'string'
+          ? parsed.adCampaignLabel.trim().slice(0, 100) || null
+          : null,
         landingUrl,
       }
     }
@@ -80,6 +87,7 @@ function readStoredAdAttribution(): AdAttribution {
           ? parsed.adKeyword.trim().slice(0, 200) || null
           : null,
         adCampaignId: null,
+        adCampaignLabel: null,
         landingUrl,
       }
     }
@@ -220,6 +228,7 @@ export function useReportRequest(defaultStock = '') {
           trafficSource: attribution.trafficSource,
           adKeyword: attribution.adKeyword,
           adCampaignId: attribution.adCampaignId,
+          adCampaignLabel: attribution.adCampaignLabel,
           landingUrl: attribution.landingUrl,
         }),
       })

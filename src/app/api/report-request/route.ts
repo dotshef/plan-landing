@@ -16,6 +16,7 @@ interface ReportRequestPayload {
   trafficSource?: unknown
   adKeyword?: unknown
   adCampaignId?: unknown
+  adCampaignLabel?: unknown
   landingUrl?: unknown
 }
 
@@ -62,6 +63,9 @@ export async function POST(req: Request) {
   const adCampaignId = trafficSource === 'google'
     ? normalize(payload.adCampaignId).slice(0, 100) || null
     : null
+  const adCampaignLabel = trafficSource === 'google'
+    ? normalize(payload.adCampaignLabel).slice(0, 100) || null
+    : null
   const landingUrl = trafficSource === 'unknown'
     ? null
     : normalize(payload.landingUrl).slice(0, 2000) || null
@@ -93,6 +97,7 @@ export async function POST(req: Request) {
         traffic_source: trafficSource,
         ad_keyword: adKeyword,
         ad_campaign_id: adCampaignId,
+        ad_campaign_label: adCampaignLabel,
         landing_url: landingUrl,
         requested_at: toKstTimestamp(requestedAt),
       })
@@ -112,6 +117,7 @@ export async function POST(req: Request) {
     trafficSource,
     adKeyword,
     adCampaignId,
+    adCampaignLabel,
     landingUrl,
     requestedAt,
   })
