@@ -3,6 +3,7 @@ import { sendSms } from '@/lib/sms/aligo'
 import { CODE_TTL_MS, generateCode } from '@/lib/sms/verification'
 import { checkSendRateLimit, createVerification } from '@/lib/sms/verificationStore'
 import { verifyTurnstile } from '@/lib/turnstile/verify'
+import { maybeAlertHighVolume } from '@/lib/sms/volumeAlert'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -101,6 +102,9 @@ export async function POST(req: Request) {
       { status: 500 },
     )
   }
+
+  // 발송량 급증 시 경보(로그+메일)만 — 차단하지 않음
+  await maybeAlertHighVolume()
 
   return NextResponse.json({ ok: true, ttlMs: CODE_TTL_MS })
 }
