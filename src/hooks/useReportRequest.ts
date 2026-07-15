@@ -7,11 +7,20 @@ type TrafficSource = 'google' | 'naver' | 'unknown'
 interface AdAttribution {
   trafficSource: TrafficSource
   adKeyword: string | null
+  adCampaignId: string | null
+  landingUrl: string | null
 }
 
 const ATTRIBUTION_STORAGE_KEY = 'report_ad_attribution'
 
-function detectAdAttribution(search: string): AdAttribution {
+const UNKNOWN_ATTRIBUTION: AdAttribution = {
+  trafficSource: 'unknown',
+  adKeyword: null,
+  adCampaignId: null,
+  landingUrl: null,
+}
+
+function detectAdAttribution(search: string, href: string): AdAttribution {
   const params = new URLSearchParams(search)
   const isGoogle = ['gclid', 'gbraid', 'wbraid', 'gad_campaignid']
     .some((key) => params.has(key))
@@ -19,31 +28,50 @@ function detectAdAttribution(search: string): AdAttribution {
     .some((key) => params.has(key))
 
   if (isGoogle === isNaver) {
-    return { trafficSource: 'unknown', adKeyword: null }
+    return UNKNOWN_ATTRIBUTION
   }
 
+  const landingUrl = href.slice(0, 2000) || null
+
   if (isGoogle) {
-    return { trafficSource: 'google', adKeyword: null }
+    return {
+      trafficSource: 'google',
+      adKeyword: null,
+      adCampaignId: params.get('gad_campaignid')?.trim().slice(0, 100) || null,
+      landingUrl,
+    }
   }
 
   return {
     trafficSource: 'naver',
     adKeyword: params.get('n_query')?.trim().slice(0, 200) || null,
+    adCampaignId: null,
+    landingUrl,
   }
 }
 
 function readStoredAdAttribution(): AdAttribution {
   if (typeof window === 'undefined') {
-    return { trafficSource: 'unknown', adKeyword: null }
+    return UNKNOWN_ATTRIBUTION
   }
 
   try {
     const stored = window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY)
-    if (!stored) return detectAdAttribution(window.location.search)
+    if (!stored) return detectAdAttribution(window.location.search, window.location.href)
 
     const parsed = JSON.parse(stored) as Partial<AdAttribution>
+    const landingUrl = typeof parsed.landingUrl === 'string'
+      ? parsed.landingUrl.slice(0, 2000) || null
+      : null
     if (parsed.trafficSource === 'google') {
-      return { trafficSource: 'google', adKeyword: null }
+      return {
+        trafficSource: 'google',
+        adKeyword: null,
+        adCampaignId: typeof parsed.adCampaignId === 'string'
+          ? parsed.adCampaignId.trim().slice(0, 100) || null
+          : null,
+        landingUrl,
+      }
     }
     if (parsed.trafficSource === 'naver') {
       return {
@@ -51,13 +79,15 @@ function readStoredAdAttribution(): AdAttribution {
         adKeyword: typeof parsed.adKeyword === 'string'
           ? parsed.adKeyword.trim().slice(0, 200) || null
           : null,
+        adCampaignId: null,
+        landingUrl,
       }
     }
   } catch {
     // 저장소를 사용할 수 없거나 값이 손상된 경우 기타 유입으로 제출한다.
   }
 
-  return { trafficSource: 'unknown', adKeyword: null }
+  return UNKNOWN_ATTRIBUTION
 }
 
 /**
@@ -83,7 +113,7 @@ export function useReportRequest(defaultStock = '') {
     try {
       if (window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY)) return
 
-      const attribution = detectAdAttribution(window.location.search)
+      const attribution = detectAdAttribution(window.location.search, window.location.href)
       if (attribution.trafficSource !== 'unknown') {
         window.sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(attribution))
       }
@@ -189,6 +219,8 @@ export function useReportRequest(defaultStock = '') {
           stock: form.stock,
           trafficSource: attribution.trafficSource,
           adKeyword: attribution.adKeyword,
+          adCampaignId: attribution.adCampaignId,
+          landingUrl: attribution.landingUrl,
         }),
       })
       const result = await response.json().catch(() => ({}))

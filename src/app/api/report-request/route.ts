@@ -15,6 +15,8 @@ interface ReportRequestPayload {
   stock?: unknown
   trafficSource?: unknown
   adKeyword?: unknown
+  adCampaignId?: unknown
+  landingUrl?: unknown
 }
 
 function normalize(value: unknown) {
@@ -51,6 +53,12 @@ export async function POST(req: Request) {
   const adKeyword = trafficSource === 'naver'
     ? normalize(payload.adKeyword).slice(0, 200) || null
     : null
+  const adCampaignId = trafficSource === 'google'
+    ? normalize(payload.adCampaignId).slice(0, 100) || null
+    : null
+  const landingUrl = trafficSource === 'unknown'
+    ? null
+    : normalize(payload.landingUrl).slice(0, 2000) || null
 
   if (!name || !phone) {
     return NextResponse.json({ error: '이름과 연락처를 입력해주세요.' }, { status: 400 })
@@ -78,6 +86,8 @@ export async function POST(req: Request) {
         stock: stock || null,
         traffic_source: trafficSource,
         ad_keyword: adKeyword,
+        ad_campaign_id: adCampaignId,
+        landing_url: landingUrl,
         requested_at: requestedAt.toISOString(),
       })
     if (error) throw error
@@ -95,6 +105,8 @@ export async function POST(req: Request) {
     stock,
     trafficSource,
     adKeyword,
+    adCampaignId,
+    landingUrl,
     requestedAt,
   })
 
