@@ -1,6 +1,8 @@
 'use client'
 
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
 type TrafficSource = 'google' | 'naver' | 'unknown'
 
@@ -137,6 +139,65 @@ export function useReportRequest(defaultStock = '') {
     return () => clearInterval(t)
   }, [secondsLeft])
 
+  // ── Cloudflare Turnstile (봇 방지) ─────────────────────────────
+  const turnstileRef = useRef<HTMLDivElement | null>(null)
+  const widgetIdRef = useRef<string | null>(null)
+  const tokenResolverRef = useRef<{ resolve: (t: string) => void; reject: (e: Error) => void } | null>(null)
+
+  // 스크립트 로드 후 invisible 위젯을 1회 렌더 (execute 모드: 발송 시점에 실행)
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY) return
+    const iv = setInterval(() => {
+      const ts = window.turnstile
+      if (!ts || !turnstileRef.current || widgetIdRef.current) return
+      clearInterval(iv)
+      widgetIdRef.current = ts.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        size: 'invisible',
+        execution: 'execute',
+        callback: (token) => {
+          tokenResolverRef.current?.resolve(token)
+          tokenResolverRef.current = null
+        },
+        'error-callback': () => {
+          tokenResolverRef.current?.reject(new Error('turnstile-error'))
+          tokenResolverRef.current = null
+        },
+        'expired-callback': () => {
+          tokenResolverRef.current?.reject(new Error('turnstile-expired'))
+          tokenResolverRef.current = null
+        },
+      })
+    }, 200)
+    return () => clearInterval(iv)
+  }, [])
+
+  // 발송 직전 챌린지를 실행해 1회용 토큰을 받는다. 로드 실패/타임아웃 시 reject → 발송 차단.
+  function getTurnstileToken(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const ts = window.turnstile
+      if (!ts || !widgetIdRef.current) {
+        reject(new Error('turnstile-not-ready'))
+        return
+      }
+      tokenResolverRef.current = { resolve, reject }
+      try {
+        ts.reset(widgetIdRef.current)
+        ts.execute(widgetIdRef.current)
+      } catch (e) {
+        tokenResolverRef.current = null
+        reject(e as Error)
+        return
+      }
+      setTimeout(() => {
+        if (tokenResolverRef.current) {
+          tokenResolverRef.current = null
+          reject(new Error('turnstile-timeout'))
+        }
+      }, 15000)
+    })
+  }
+
   const phoneValid = /^\d{10,11}$/.test(form.phone)
   const mmss = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`
 
@@ -152,10 +213,18 @@ export function useReportRequest(defaultStock = '') {
     setSending(true)
     setErrors((p) => ({ ...p, phone: '', code: '' }))
     try {
+      // 봇 방지 토큰 획득 — 실패(로드 실패 포함) 시 발송 차단
+      let turnstileToken: string
+      try {
+        turnstileToken = await getTurnstileToken()
+      } catch {
+        setErrors((p) => ({ ...p, code: '봇 방지 검증을 완료하지 못했습니다. 페이지를 새로고침 후 다시 시도해주세요' }))
+        return
+      }
       const res = await fetch('/api/sms/send-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: form.phone }),
+        body: JSON.stringify({ phone: form.phone, turnstileToken }),
       })
       const result = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -289,5 +358,6 @@ export function useReportRequest(defaultStock = '') {
     codeSent, sending, verifying, verified, code, setCode, secondsLeft,
     phoneValid, mmss,
     handlePhoneChange, handleSendCode, handleVerifyCode, handleSubmit,
+    turnstileRef,
   }
 }

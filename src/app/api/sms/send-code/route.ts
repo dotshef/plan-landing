@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { sendSms } from '@/lib/sms/aligo'
 import { CODE_TTL_MS, generateCode } from '@/lib/sms/verification'
 import { checkSendRateLimit, createVerification } from '@/lib/sms/verificationStore'
+import { verifyTurnstile } from '@/lib/turnstile/verify'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
   const ip = clientIp(req)
   const userAgent = req.headers.get('user-agent') ?? 'unknown'
 
-  let body: { phone?: unknown }
+  let body: { phone?: unknown; turnstileToken?: unknown }
   try {
     body = await req.json()
   } catch {
@@ -33,7 +34,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
   }
 
-  // 발송 남용(비용 폭탄) 차단
+  // 봇 방지: Turnstile 토큰 검증
+  const turnstileOk = await verifyTurnstile(normalize(body.turnstileToken), ip)
+  if (!turnstileOk) {
+    console.warn(`[sms/send-code] turnstile BLOCKED | ip=${ip} | ua=${userAgent} | phone=${phone}`)
+    return NextResponse.json(
+      { error: '봇 방지 검증에 실패했습니다. 페이지를 새로고침 후 다시 시도해주세요.' },
+      { status: 403 },
+    )
+  }
+
+  // 발송 남용 차단
   let gate
   try {
     gate = await checkSendRateLimit(phone)

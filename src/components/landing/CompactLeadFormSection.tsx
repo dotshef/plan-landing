@@ -13,6 +13,7 @@ export default function CompactLeadFormSection() {
     codeSent, sending, verifying, verified, code, setCode, secondsLeft,
     phoneValid, mmss,
     handlePhoneChange, handleSendCode, handleVerifyCode, handleSubmit,
+    turnstileRef,
   } = useReportRequest()
 
   const [focusedField, setFocusedField] = useState<string | null>(null)
@@ -45,6 +46,8 @@ export default function CompactLeadFormSection() {
               </div>
 
               <form onSubmit={handleSubmit}>
+                {/* Cloudflare Turnstile invisible 위젯 컨테이너 (봇 방지) */}
+                <div ref={turnstileRef} />
                 {/* 전체 1행: 이름 · 연락처 · 인증발송 · 인증번호 입력 · 확인 · 동의2 · 신청 */}
                 <div className="responsive-compact-row" style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                   {/* 이름 + 연락처 + 인증번호 발송 — 한 줄로 묶어 모바일에서도 나란히 */}

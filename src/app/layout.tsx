@@ -72,9 +72,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://bzrcdn.openai.com/sdk/oaiq.min.js"
           strategy="afterInteractive"
         />
-        {/* 네이버 프리미엄 로그분석 (공통) */}
+        {/* Cloudflare Turnstile (봇 방지) — explicit 렌더로 발송 시점에 실행 */}
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+          strategy="afterInteractive"
+        />
+        {/* 네이버 로그분석 */}
         <NaverWcs />
-
         <Header />
         <main>{children}</main>
         <Footer />

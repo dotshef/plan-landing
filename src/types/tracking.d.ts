@@ -14,6 +14,23 @@ declare global {
     wcs_add?: Record<string, string>
     wcs_do?: (...args: unknown[]) => void
     _nasa?: Record<string, unknown>
+    // Cloudflare Turnstile
+    turnstile?: {
+      render: (
+        container: HTMLElement,
+        params: {
+          sitekey: string
+          size?: 'normal' | 'compact' | 'flexible' | 'invisible'
+          execution?: 'render' | 'execute'
+          callback?: (token: string) => void
+          'error-callback'?: () => void
+          'expired-callback'?: () => void
+        },
+      ) => string
+      execute: (widgetId: string) => void
+      reset: (widgetId: string) => void
+      remove: (widgetId: string) => void
+    }
   }
 }
 

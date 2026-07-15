@@ -12,6 +12,7 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
     codeSent, sending, verifying, verified, code, setCode, secondsLeft,
     phoneValid, mmss,
     handlePhoneChange, handleSendCode, handleVerifyCode, handleSubmit,
+    turnstileRef,
   } = useReportRequest(defaultStock)
 
   const [focusedField, setFocusedField] = useState<string | null>(null)
@@ -42,6 +43,8 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
               <div style={{ fontSize: 13, color: '#8B95A1', marginTop: 5 }}>입력하신 정보는 리포트 발송 용도로만 사용됩니다.</div>
 
               <form onSubmit={handleSubmit} style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                {/* Cloudflare Turnstile invisible 위젯 컨테이너 (봇 방지) */}
+                <div ref={turnstileRef} />
                 {/* 이름 */}
                 <div>
                   <label style={{ fontSize: 13, fontWeight: 700, color: '#4E5968' }}>이름</label>

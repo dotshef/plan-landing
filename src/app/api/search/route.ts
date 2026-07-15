@@ -13,7 +13,6 @@ export interface SearchHit {
 
 export async function GET(req: Request) {
   const raw = new URL(req.url).searchParams.get('q')?.trim() ?? ''
-  // PostgREST or-필터 파싱을 깨는 문자 제거(콤마·와일드카드·괄호)
   const q = raw.replace(/[,%_()]/g, '')
   if (q.length < 1) return NextResponse.json([] as SearchHit[])
 
