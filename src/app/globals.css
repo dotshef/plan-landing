@@ -141,12 +141,6 @@ a {
     --header-cta-size: 14px;
   }
 
-  .responsive-footer-brand {
-    --footer-brand-logo-size: 38px;
-    --footer-brand-name-size: 19px;
-    --footer-brand-gap: 10px;
-  }
-
   .responsive-section-shell {
     --section-padding: 12px 16px 8px;
   }

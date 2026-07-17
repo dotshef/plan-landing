@@ -1,0 +1,142 @@
+.footer {
+  --footer-max-width: 1320px;
+  --footer-padding-x: 28px;
+  --footer-padding-top: 44px;
+  --footer-padding-bottom: 34px;
+  --footer-column-gap: 28px;
+  --footer-section-gap: 24px;
+  --footer-readable-width: 900px;
+
+  margin-top: 80px;
+  border-top: 1px solid var(--color-grey-200);
+  background: var(--color-grey-50);
+}
+
+.footerInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+  max-width: var(--footer-max-width);
+  margin: 0 auto;
+  padding: var(--footer-padding-top) var(--footer-padding-x)
+    var(--footer-padding-bottom);
+  column-gap: var(--footer-column-gap);
+  color: var(--color-grey-500);
+  line-height: 1.7;
+}
+
+.footerBrand {
+  grid-column: 1;
+  grid-row: 1;
+  margin-bottom: 12px;
+  color: var(--color-grey-900);
+}
+
+.footerBrandName {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.footerMetaRow {
+  display: contents;
+}
+
+.footerBusinessInfo {
+  grid-column: 1;
+  grid-row: 2;
+  margin-bottom: 28px;
+  color: var(--color-grey-700);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.registrationNumber {
+  font-weight: 700;
+}
+
+.footerPrivacyLink {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  color: var(--color-grey-600);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footerPrivacyLink:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 4px;
+}
+
+.footerNotice,
+.footerNoticeList,
+.footerDescription,
+.footerCopyright {
+  grid-column: 1 / -1;
+}
+
+.footerNotice,
+.footerNoticeList,
+.footerDescription {
+  width: 100%;
+  max-width: var(--footer-readable-width);
+  font-size: 13px;
+}
+
+.footerNotice,
+.footerNoticeList {
+  margin: 0 0 16px;
+}
+
+.footerNoticeList {
+  padding-left: 0;
+  list-style: none;
+}
+
+.footerDescription {
+  margin: 0;
+}
+
+.footerCopyright {
+  margin: var(--footer-section-gap) 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-grey-200);
+  font-size: 12px;
+}
+
+@media (max-width: 620px) {
+  .footer {
+    --footer-padding-x: 16px;
+    --footer-padding-top: 36px;
+    --footer-padding-bottom: 28px;
+  }
+
+  .footerInner {
+    grid-template-columns: 1fr;
+  }
+
+  .footerBrand,
+  .footerBusinessInfo,
+  .footerPrivacyLink {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .footerBrandName {
+    font-size: 19px;
+  }
+
+  .footerBusinessInfo {
+    margin-bottom: 16px;
+  }
+
+  .footerPrivacyLink {
+    margin-bottom: 24px;
+    justify-self: start;
+  }
+}
