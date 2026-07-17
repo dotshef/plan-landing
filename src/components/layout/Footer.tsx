@@ -1,9 +1,45 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   return (
     <footer style={{ borderTop: '1px solid #E5E8EC', background: '#F9FAFB', marginTop: 80 }}>
       <div style={{ maxWidth: 1320, margin: '0 auto', padding: '36px 28px', color: '#8B95A1', lineHeight: 1.7 }}>
+        <div
+          className="responsive-footer-brand"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 'var(--footer-brand-gap, 14px)',
+            marginBottom: 24,
+            color: '#191F28',
+            textDecoration: 'none',
+          }}
+        >
+          <Image
+            src="/images/plan-logo.png"
+            alt=""
+            width={44}
+            height={44}
+            style={{
+              width: 'var(--footer-brand-logo-size, 44px)',
+              height: 'var(--footer-brand-logo-size, 44px)',
+              flexShrink: 0,
+            }}
+          />
+          <span
+            style={{
+              fontSize: 'var(--footer-brand-name-size, 22px)',
+              fontWeight: 800,
+              lineHeight: 1.2,
+              letterSpacing: '-0.04em',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            투자그룹플랜
+          </span>
+        </div>
+
         <div
           style={{
             display: 'flex',
@@ -14,9 +50,12 @@ export default function Footer() {
             margin: '0 0 16px',
           }}
         >
-          <p style={{ fontSize: 14, color: '#4E5968', fontWeight: 600, margin: 0 }}>
-            투자그룹 플랜 | 대표자 이주원 | 사업자등록번호 658-19-01867
-          </p>
+          <div style={{ fontSize: 14, color: '#4E5968', lineHeight: 1.7 }}>
+            <p>대표자 이주원</p>
+            <p>
+              사업자등록번호 <strong style={{ fontWeight: 700 }}>658-19-01867</strong>
+            </p>
+          </div>
           <Link
             href="/privacy"
             style={{ fontSize: 17, fontWeight: 700, color: '#4E5968', textDecoration: 'none' }}
@@ -46,6 +85,10 @@ export default function Footer() {
           AI 기반 종목분석 및 주가전망 정보를 제공하는 안내 페이지입니다.
           시장 데이터, 기업 공시, 거래량 및 이슈 분석을 기반으로
           투자 판단에 참고할 수 있는 정보를 제공합니다.
+        </p>
+
+        <p style={{ fontSize: 13, margin: '24px 0 0' }}>
+          © 2026 투자그룹플랜. All rights reserved.
         </p>
       </div>
     </footer>
