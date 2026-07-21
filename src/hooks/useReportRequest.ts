@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { normalizePhone } from '@/lib/phone'
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
@@ -198,7 +199,7 @@ export function useReportRequest(defaultStock = '') {
     })
   }
 
-  const phoneValid = /^\d{10,11}$/.test(form.phone)
+  const phoneValid = normalizePhone(form.phone) !== null
   const mmss = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`
 
   // 연락처 입력 변경 — 숫자만 유지하고 인증 상태 초기화

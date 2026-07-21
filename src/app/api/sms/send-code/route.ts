@@ -5,6 +5,7 @@ import { checkSendRateLimit, createVerification } from '@/lib/sms/verificationSt
 import { verifyTurnstile } from '@/lib/turnstile/verify'
 import { maybeAlertHighVolume } from '@/lib/sms/volumeAlert'
 import { hasRecentReportRequest } from '@/lib/reportRequest/duplicate'
+import { normalizePhone } from '@/lib/phone'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -32,11 +33,11 @@ export async function POST(req: Request) {
   }
 
   const name = normalize(body.name)
-  const phone = normalize(body.phone)
+  const phone = normalizePhone(normalize(body.phone))
   if (!name) {
     return NextResponse.json({ error: '이름을 입력해주세요.' }, { status: 400 })
   }
-  if (!/^\d{10,11}$/.test(phone)) {
+  if (!phone) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
   }
 

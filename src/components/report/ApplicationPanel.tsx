@@ -4,6 +4,7 @@ import { useState, type CSSProperties } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Check, Lock, Smartphone, Clock } from 'lucide-react'
 import { useReportRequest } from '@/hooks/useReportRequest'
+import { formatPhone } from '@/lib/phone'
 
 export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?: string }) {
   const {
@@ -66,12 +67,12 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                   <div style={{ display: 'flex', gap: 8, alignItems: 'stretch' }}>
                     <input
                       type="tel"
-                      value={form.phone}
+                      value={formatPhone(form.phone)}
                       onChange={(e) => handlePhoneChange(e.target.value)}
                       onFocus={() => setFocusedField('phone')}
                       onBlur={() => setFocusedField(null)}
-                      placeholder="- 없이 숫자만 입력해주세요"
-                      maxLength={11}
+                      placeholder="휴대폰 번호를 입력해주세요"
+                      maxLength={13}
                       disabled={verified}
                       style={{ ...inputStyle('phone'), flex: 1, opacity: verified ? 0.7 : 1 }}
                     />
@@ -90,7 +91,7 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                       {sending ? '발송 중' : verified ? '인증 완료' : codeSent ? '재발송' : '인증번호 발송'}
                     </button>
                   </div>
-                  <div style={{ fontSize: 11, color: '#B0B8C1', marginTop: 5 }}>예) 01012345678</div>
+                  <div style={{ fontSize: 11, color: '#B0B8C1', marginTop: 5 }}>예) 010-1234-5678</div>
                   {errors.phone && <p style={{ fontSize: 12, color: '#E8342B', marginTop: 4 }}>{errors.phone}</p>}
 
                   {/* 인증번호 입력 */}
@@ -255,7 +256,7 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                 <div style={{ fontSize: 13, fontWeight: 800, color: '#111827', marginBottom: 10 }}>신청 정보</div>
                 {[
                   ['이름', form.name],
-                  ['연락처', form.phone],
+                  ['연락처', formatPhone(form.phone)],
                   ['관심종목', form.stock],
                 ].map(([k, v]) => (
                   <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 13 }}>

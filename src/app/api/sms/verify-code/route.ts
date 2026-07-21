@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { verifyLatestCode } from '@/lib/sms/verificationStore'
+import { normalizePhone } from '@/lib/phone'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -16,10 +17,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 })
   }
 
-  const phone = normalize(body.phone)
+  const phone = normalizePhone(normalize(body.phone))
   const code = normalize(body.code)
 
-  if (!/^\d{10,11}$/.test(phone)) {
+  if (!phone) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
   }
   if (!/^\d{6}$/.test(code)) {

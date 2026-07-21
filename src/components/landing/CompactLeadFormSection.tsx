@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Check, Lock } from 'lucide-react'
 import { useReportRequest } from '@/hooks/useReportRequest'
+import { formatPhone } from '@/lib/phone'
 import ConsentModal, { type ConsentKind } from './ConsentModal'
 
 export default function CompactLeadFormSection() {
@@ -63,12 +64,12 @@ export default function CompactLeadFormSection() {
                     />
                     <input
                       type="tel"
-                      value={form.phone}
+                      value={formatPhone(form.phone)}
                       onChange={(e) => handlePhoneChange(e.target.value)}
                       onFocus={() => setFocusedField('phone')}
                       onBlur={() => setFocusedField(null)}
-                      placeholder="연락처 (숫자만)"
-                      maxLength={11}
+                      placeholder="휴대폰 번호"
+                      maxLength={13}
                       disabled={verified}
                       style={{ ...inputStyle('phone'), flex: '0 0 160px', minWidth: 0, opacity: verified ? 0.7 : 1 }}
                     />
@@ -172,7 +173,7 @@ export default function CompactLeadFormSection() {
               <div>
                 <div style={{ fontSize: 17, fontWeight: 800, color: '#111827' }}>신청이 완료되었습니다!</div>
                 <div style={{ fontSize: 13.5, color: '#6B7684', marginTop: 3 }}>
-                  입력하신 연락처({form.phone})로 영업일 기준 1~2일 이내에 리포트 안내를 보내드리겠습니다.
+                  입력하신 연락처({formatPhone(form.phone)})로 영업일 기준 1~2일 이내에 리포트 안내를 보내드리겠습니다.
                 </div>
               </div>
             </motion.div>

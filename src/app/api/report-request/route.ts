@@ -3,6 +3,7 @@ import { buildReportRequestEmailTemplate } from '@/lib/email/emailTemplate'
 import { isPhoneVerified } from '@/lib/sms/verificationStore'
 import { db } from '@/lib/db/server'
 import { hasRecentReportRequest } from '@/lib/reportRequest/duplicate'
+import { normalizePhone } from '@/lib/phone'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
   }
 
   const name = normalize(payload.name)
-  const phone = normalize(payload.phone)
+  const phoneRaw = normalize(payload.phone)
   const stock = normalize(payload.stock)
   const trafficSource = normalizeTrafficSource(payload.trafficSource)
   const adKeyword = trafficSource === 'naver'
@@ -71,11 +72,12 @@ export async function POST(req: Request) {
     ? null
     : normalize(payload.landingUrl).slice(0, 2000) || null
 
-  if (!name || !phone) {
+  if (!name || !phoneRaw) {
     return NextResponse.json({ error: '이름과 연락처를 입력해주세요.' }, { status: 400 })
   }
 
-  if (!/^\d{10,11}$/.test(phone)) {
+  const phone = normalizePhone(phoneRaw)
+  if (!phone) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
   }
 
