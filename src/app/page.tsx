@@ -3,6 +3,7 @@ import CompactLeadFormSection from '@/components/landing/CompactLeadFormSection'
 import ReportCardsSection from '@/components/landing/ReportCardsSection'
 import MarketIndexCardsSection from '@/components/landing/MarketIndexCardsSection'
 import TrustRowSection from '@/components/landing/TrustRowSection'
+import StickyLeadBar from '@/components/landing/StickyLeadBar'
 import { getPopularStocks } from '@/data/registry'
 
 // DB(야간 스냅샷) 기반 → 요청 시 렌더. 빌드 프리렌더 시 DB 호출 방지.
@@ -17,6 +18,7 @@ export default async function HomePage() {
       <ReportCardsSection />
       <MarketIndexCardsSection />
       <TrustRowSection />
+      <StickyLeadBar />
     </div>
   )
 }

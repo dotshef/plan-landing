@@ -96,6 +96,9 @@ a {
   width: 100%;
 }
 
+/* 하단 고정 리드 바 (StickyLeadBar) — 데스크톱 한 줄 기본, 모바일 재배치 */
+.slb-send-short { display: none; }
+
 @media (max-width: 1024px) {
   .responsive-home-hero {
     --home-hero-columns: 1fr;
@@ -225,6 +228,38 @@ a {
     justify-content: flex-start;
     gap: 14px;
   }
+
+  /* 하단 고정 바: 세로 축소 여백 + [이름·연락처·인증] / [인증번호·확인] / [동의·신청] 3단 */
+  .slb-bar {
+    padding: 10px 16px !important;
+  }
+
+  .slb-primary,
+  .slb-code,
+  .slb-tail {
+    width: 100%;
+    flex: 1 1 100% !important;
+    margin-left: 0 !important;
+  }
+
+  /* 모바일: 인증번호 행은 발송 후에만 노출 (데스크톱은 항상 표시) */
+  .slb-code-idle {
+    display: none !important;
+  }
+
+  .slb-tail {
+    justify-content: space-between;
+  }
+
+  .slb-send {
+    flex: 0 0 96px !important;
+    width: 96px;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .slb-send-full { display: none; }
+  .slb-send-short { display: inline; }
 
   .responsive-card-grid-4,
   .responsive-trust-grid,
