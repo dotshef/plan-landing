@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sendSms } from '@/lib/sms/aligo'
+import { sendSms } from '@/lib/sms/gateway'
 import { CODE_TTL_MS, generateCode } from '@/lib/sms/verification'
 import { checkSendRateLimit, createVerification } from '@/lib/sms/verificationStore'
 import { verifyTurnstile } from '@/lib/turnstile/verify'
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
       msgType: 'SMS',
     })
     if (!result.ok) {
-      console.error('[sms/send-code] Aligo failed:', result.resultCode, result.message)
+      console.error('[sms/send-code] Gateway failed:', result.resultCode, result.message)
       return NextResponse.json(
         { error: '인증번호 발송에 실패했습니다. 잠시 후 다시 시도해주세요.' },
         { status: 502 },
