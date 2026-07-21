@@ -2,8 +2,8 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 
 /** 인증번호 유효시간 (밀리초) */
 export const CODE_TTL_MS = 3 * 60 * 1000
-/** 최대 검증 시도 횟수 */
-export const MAX_ATTEMPTS = 5
+/** 최대 검증 실패 허용 횟수 */
+export const MAX_FAIL_COUNT = 5
 /** 인증 완료 후 실제 신청까지 유효한 시간 (밀리초) */
 export const VERIFIED_TTL_MS = 10 * 60 * 1000
 

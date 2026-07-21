@@ -2,7 +2,7 @@ import 'server-only'
 import { db } from '@/lib/db/server'
 import {
   CODE_TTL_MS,
-  MAX_ATTEMPTS,
+  MAX_FAIL_COUNT,
   VERIFIED_TTL_MS,
   hashCode,
   hashEqual,
@@ -69,7 +69,7 @@ export type VerifyOutcome =
 export async function verifyLatestCode(phone: string, code: string): Promise<VerifyOutcome> {
   const { data, error } = await db()
     .from(TABLE)
-    .select('id, code_hash, expires_at, attempts, verified_at')
+    .select('id, code_hash, expires_at, fail_count, verified_at')
     .eq('phone', phone)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -80,7 +80,7 @@ export async function verifyLatestCode(phone: string, code: string): Promise<Ver
   // 유효한 미검증 코드가 없음 (미발송 / 이미 검증됨 / 만료)
   if (!row || row.verified_at) return { outcome: 'expired' }
   if (new Date(row.expires_at as string).getTime() < Date.now()) return { outcome: 'expired' }
-  if ((row.attempts as number) >= MAX_ATTEMPTS) return { outcome: 'too_many' }
+  if ((row.fail_count as number) >= MAX_FAIL_COUNT) return { outcome: 'too_many' }
 
   if (hashEqual(row.code_hash as string, hashCode(phone, code))) {
     const { error: updErr } = await db()
@@ -91,10 +91,10 @@ export async function verifyLatestCode(phone: string, code: string): Promise<Ver
     return { outcome: 'ok' }
   }
 
-  const attempts = (row.attempts as number) + 1
-  const { error: updErr } = await db().from(TABLE).update({ attempts }).eq('id', row.id)
+  const failCount = (row.fail_count as number) + 1
+  const { error: updErr } = await db().from(TABLE).update({ fail_count: failCount }).eq('id', row.id)
   if (updErr) throw updErr
-  return { outcome: 'invalid', remaining: Math.max(0, MAX_ATTEMPTS - attempts) }
+  return { outcome: 'invalid', remaining: Math.max(0, MAX_FAIL_COUNT - failCount) }
 }
 
 /** 신청 시점에 해당 번호가 최근에 인증되었는지 확인 */
