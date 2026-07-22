@@ -128,7 +128,7 @@ export async function POST(req: Request) {
 
   // 발송 성공 후에만 인증행 저장
   try {
-    await createVerification(phone, code)
+    await createVerification(phone, code, name)
   } catch (error) {
     console.error('[sms/send-code] DB insert failed:', error)
     return NextResponse.json(

@@ -10,6 +10,18 @@ import {
 
 const TABLE = 'phone_verification'
 
+// KST(UTC+9) 벽시계 문자열 'YYYY-MM-DDTHH:mm:ss' — created_at/verified_at(timestamp, tz 없음) 컬럼용
+function toKstTimestamp(date: Date): string {
+  const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000)
+  return kst.toISOString().slice(0, 19).replace('T', ' ')
+}
+
+// DB에서 읽은 KST 벽시계 naive 문자열('YYYY-MM-DDTHH:mm:ss[.ffffff]')을 실제 시각(Date)으로 복원
+function parseKstTimestamp(value: string): Date {
+  const trimmed = value.replace(' ', 'T').replace(/(\.\d{3})\d*$/, '$1')
+  return new Date(`${trimmed}+09:00`)
+}
+
 // ── 발송 rate-limit 정책 ──────────────────────────────────────
 /** rate-limit 집계 창 (밀리초) */
 const SEND_WINDOW_MS = 60 * 60 * 1000
@@ -24,7 +36,7 @@ export type SendGate =
 
 /** 번호별 발송 남용(비용 폭탄) 차단 */
 export async function checkSendRateLimit(phone: string): Promise<SendGate> {
-  const since = new Date(Date.now() - SEND_WINDOW_MS).toISOString()
+  const since = toKstTimestamp(new Date(Date.now() - SEND_WINDOW_MS))
   const { data, error } = await db()
     .from(TABLE)
     .select('created_at')
@@ -39,7 +51,7 @@ export async function checkSendRateLimit(phone: string): Promise<SendGate> {
     return { ok: false, reason: 'limit', retryAfterSec: Math.ceil(SEND_WINDOW_MS / 1000) }
   }
   if (rows.length > 0) {
-    const elapsed = Date.now() - new Date(rows[0].created_at as string).getTime()
+    const elapsed = Date.now() - parseKstTimestamp(rows[0].created_at as string).getTime()
     if (elapsed < RESEND_COOLDOWN_MS) {
       return { ok: false, reason: 'cooldown', retryAfterSec: Math.ceil((RESEND_COOLDOWN_MS - elapsed) / 1000) }
     }
@@ -48,11 +60,12 @@ export async function checkSendRateLimit(phone: string): Promise<SendGate> {
 }
 
 /** 새 인증번호 행 저장 (SMS 발송 성공 후 호출) */
-export async function createVerification(phone: string, code: string): Promise<void> {
+export async function createVerification(phone: string, code: string, name: string): Promise<void> {
   const { error } = await db()
     .from(TABLE)
     .insert({
       phone,
+      name,
       code_hash: hashCode(phone, code),
       expires_at: new Date(Date.now() + CODE_TTL_MS).toISOString(),
     })
@@ -85,7 +98,7 @@ export async function verifyLatestCode(phone: string, code: string): Promise<Ver
   if (hashEqual(row.code_hash as string, hashCode(phone, code))) {
     const { error: updErr } = await db()
       .from(TABLE)
-      .update({ verified_at: new Date().toISOString() })
+      .update({ verified_at: toKstTimestamp(new Date()) })
       .eq('id', row.id)
     if (updErr) throw updErr
     return { outcome: 'ok' }
@@ -99,7 +112,7 @@ export async function verifyLatestCode(phone: string, code: string): Promise<Ver
 
 /** 신청 시점에 해당 번호가 최근에 인증되었는지 확인 */
 export async function isPhoneVerified(phone: string): Promise<boolean> {
-  const since = new Date(Date.now() - VERIFIED_TTL_MS).toISOString()
+  const since = toKstTimestamp(new Date(Date.now() - VERIFIED_TTL_MS))
   const { data, error } = await db()
     .from(TABLE)
     .select('id')

@@ -5,6 +5,12 @@ const TABLE = 'phone_verification'
 const RESEND_ENDPOINT = 'https://api.resend.com/emails'
 const FROM_EMAIL = 'no-reply@plankor.kr'
 
+// KST(UTC+9) 벽시계 문자열 'YYYY-MM-DDTHH:mm:ss' — created_at(timestamp, tz 없음) 컬럼용
+function toKstTimestamp(date: Date): string {
+  const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000)
+  return kst.toISOString().slice(0, 19).replace('T', ' ')
+}
+
 // ── 경보 정책 ──────────────────────────────────────────────
 /** 발송량 집계 창 (밀리초) — 급증 감지용 */
 const VOLUME_WINDOW_MS = 24 * 60 * 60 * 1000
@@ -22,7 +28,7 @@ function formatWindow(ms: number): string {
 
 /** 창 내 전체 발송 건수를 센다(번호 무관 전역 합계). */
 async function countSendsInWindow(): Promise<number> {
-  const since = new Date(Date.now() - VOLUME_WINDOW_MS).toISOString()
+  const since = toKstTimestamp(new Date(Date.now() - VOLUME_WINDOW_MS))
   const { count, error } = await db()
     .from(TABLE)
     .select('id', { count: 'exact', head: true })
