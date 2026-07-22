@@ -316,6 +316,12 @@ export function useReportRequest(defaultStock = '') {
         globalThis.crypto?.randomUUID?.() ?? `${Date.now()}_${Math.random().toString(36).slice(2)}`
       }`
 
+      // GTM 맞춤 이벤트 트리거용 (상담/리포트 신청 완료)
+      if (typeof window !== 'undefined') {
+        window.dataLayer = window.dataLayer || []
+        window.dataLayer.push({ event: 'consultation_complete' })
+      }
+
       // Google Ads 전환 측정 (리드 양식 제출)
       if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
         window.gtag('event', 'conversion', {
