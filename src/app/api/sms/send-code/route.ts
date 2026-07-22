@@ -10,6 +10,13 @@ import { normalizePhone } from '@/lib/phone'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
+// ── 임시 응급조치: SMS 펌핑 공격 UA 지문 차단 (완전일치) ──
+// 서브넷 레이트리밋 도입 후 제거 예정. 공격자가 UA를 바꾸면 항목 추가.
+// 주의: 부분일치 금지 — Edge/웨일 UA가 이 문자열을 포함하므로 반드시 완전일치로만 비교.
+const BLOCKED_UA_EXACT = new Set([
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
+])
+
 function normalize(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
 }
@@ -39,6 +46,15 @@ export async function POST(req: Request) {
   }
   if (!phone) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
+  }
+
+  // 봇 지문 차단 (임시 응급조치)
+  if (BLOCKED_UA_EXACT.has(userAgent)) {
+    console.warn(`[sms/send-code] ua-blocked | ip=${ip} | phone=${phone}`)
+    return NextResponse.json(
+      { error: '보안 정책에 따라 차단되었습니다. 다른 브라우저로 시도해주세요' },
+      { status: 403 },
+    )
   }
 
   // 봇 방지: Turnstile 토큰 검증
