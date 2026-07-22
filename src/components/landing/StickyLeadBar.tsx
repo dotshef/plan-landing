@@ -70,6 +70,8 @@ export default function StickyLeadBar() {
         }}
       >
             <div className="slb-bar" style={{ maxWidth: 1320, margin: '0 auto', padding: '12px 24px' }}>
+              {/* Cloudflare Turnstile 위젯 컨테이너 — 체크박스 챌린지가 필요한 방문자에게만 표시됨 */}
+              <div ref={turnstileRef} style={{ width: '100%' }} />
               <AnimatePresence mode="wait">
                 {!submitted ? (
                   <motion.form
@@ -80,9 +82,6 @@ export default function StickyLeadBar() {
                     className="slb-form"
                     style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}
                   >
-                    {/* Cloudflare Turnstile invisible 위젯 컨테이너 (봇 방지) */}
-                    <div ref={turnstileRef} />
-
                     {/* 이름 · 연락처 · 인증요청 */}
                     <div className="slb-primary" style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '1 1 320px', minWidth: 0 }}>
                       <input

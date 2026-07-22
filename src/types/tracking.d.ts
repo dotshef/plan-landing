@@ -20,11 +20,15 @@ declare global {
         container: HTMLElement,
         params: {
           sitekey: string
-          size?: 'normal' | 'compact' | 'flexible' | 'invisible'
+          size?: 'normal' | 'compact' | 'flexible'
+          appearance?: 'always' | 'execute' | 'interaction-only'
           execution?: 'render' | 'execute'
           callback?: (token: string) => void
-          'error-callback'?: () => void
+          'error-callback'?: (errorCode?: string) => boolean | void
           'expired-callback'?: () => void
+          'timeout-callback'?: () => void
+          'before-interactive-callback'?: () => void
+          'after-interactive-callback'?: () => void
         },
       ) => string
       execute: (widgetId: string) => void

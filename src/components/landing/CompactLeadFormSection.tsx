@@ -47,7 +47,7 @@ export default function CompactLeadFormSection() {
               </div>
 
               <form onSubmit={handleSubmit}>
-                {/* Cloudflare Turnstile invisible 위젯 컨테이너 (봇 방지) */}
+                {/* Cloudflare Turnstile 위젯 컨테이너 — 체크박스 챌린지가 필요한 방문자에게만 표시됨 */}
                 <div ref={turnstileRef} />
                 {/* 전체 1행: 이름 · 연락처 · 인증발송 · 인증번호 입력 · 확인 · 동의2 · 신청 */}
                 <div className="responsive-compact-row" style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>

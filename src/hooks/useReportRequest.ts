@@ -144,8 +144,16 @@ export function useReportRequest(defaultStock = '') {
   const turnstileRef = useRef<HTMLDivElement | null>(null)
   const widgetIdRef = useRef<string | null>(null)
   const tokenResolverRef = useRef<{ resolve: (t: string) => void; reject: (e: Error) => void } | null>(null)
+  const tokenTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // 스크립트 로드 후 invisible 위젯을 1회 렌더 (execute 모드: 발송 시점에 실행)
+  function clearTokenTimeout() {
+    if (tokenTimeoutRef.current) {
+      clearTimeout(tokenTimeoutRef.current)
+      tokenTimeoutRef.current = null
+    }
+  }
+
+  // 스크립트 로드 후 위젯을 1회 렌더 (interaction-only: 체크박스가 필요한 방문자에게만 표시)
   useEffect(() => {
     if (!TURNSTILE_SITE_KEY) return
     const iv = setInterval(() => {
@@ -154,19 +162,34 @@ export function useReportRequest(defaultStock = '') {
       clearInterval(iv)
       widgetIdRef.current = ts.render(turnstileRef.current, {
         sitekey: TURNSTILE_SITE_KEY,
-        size: 'invisible',
+        appearance: 'interaction-only',
+        size: 'flexible',
         execution: 'execute',
         callback: (token) => {
+          clearTokenTimeout()
           tokenResolverRef.current?.resolve(token)
           tokenResolverRef.current = null
         },
         'error-callback': () => {
+          clearTokenTimeout()
           tokenResolverRef.current?.reject(new Error('turnstile-error'))
           tokenResolverRef.current = null
         },
         'expired-callback': () => {
+          clearTokenTimeout()
           tokenResolverRef.current?.reject(new Error('turnstile-expired'))
           tokenResolverRef.current = null
+        },
+        // 인터랙티브 챌린지가 Cloudflare 자체 제한 시간 내 완료되지 않은 경우
+        'timeout-callback': () => {
+          clearTokenTimeout()
+          tokenResolverRef.current?.reject(new Error('turnstile-interactive-timeout'))
+          tokenResolverRef.current = null
+        },
+        // 체크박스가 표시되는 순간 — 사용자가 완료할 시간을 갖도록 15초 타임아웃 해제
+        'before-interactive-callback': () => {
+          clearTokenTimeout()
+          setErrors((p) => ({ ...p, code: '보안 확인이 표시되었습니다. 확인을 완료하면 자동으로 진행됩니다' }))
         },
       })
     }, 200)
@@ -190,7 +213,9 @@ export function useReportRequest(defaultStock = '') {
         reject(e as Error)
         return
       }
-      setTimeout(() => {
+      // 체크박스가 뜨면 before-interactive-callback이 이 타이머를 해제한다
+      tokenTimeoutRef.current = setTimeout(() => {
+        tokenTimeoutRef.current = null
         if (tokenResolverRef.current) {
           tokenResolverRef.current = null
           reject(new Error('turnstile-timeout'))
@@ -223,6 +248,8 @@ export function useReportRequest(defaultStock = '') {
         setErrors((p) => ({ ...p, code: '봇 방지 검증을 완료하지 못했습니다. 페이지를 새로고침 후 다시 시도해주세요' }))
         return
       }
+      // 체크박스 안내 문구가 표시됐었다면 제거
+      setErrors((p) => ({ ...p, code: '' }))
       const res = await fetch('/api/sms/send-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
