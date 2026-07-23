@@ -15,6 +15,9 @@ export const dynamic = 'force-dynamic'
 // 주의: 부분일치 금지 — Edge/웨일 UA가 이 문자열을 포함하므로 반드시 완전일치로만 비교.
 const BLOCKED_UA_EXACT = new Set([
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
+  // ⚠️ 주의: stock 안드로이드 크롬의 흔한 UA와 완전 동일 → 실제 모바일 고객 일부도 차단됨.
+  // 펌핑 우회 대응으로 추가(2026-07-23). verify-code 성공 급감 시 즉시 이 줄 제거.
+  'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36',
 ])
 
 function normalize(value: unknown) {
