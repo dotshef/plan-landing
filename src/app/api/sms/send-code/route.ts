@@ -18,6 +18,8 @@ const BLOCKED_UA_EXACT = new Set([
   // ⚠️ 주의: stock 안드로이드 크롬의 흔한 UA와 완전 동일 → 실제 모바일 고객 일부도 차단됨.
   // 펌핑 우회 대응으로 추가(2026-07-23). verify-code 성공 급감 시 즉시 이 줄 제거.
   'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36',
+  // 웨일 모바일 UA 위장 펌핑 공격으로 추가(2026-07-24, ip=203.234.237.71).
+  'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Whale/3.9.14.9 Mobile Safari/537.36',
 ])
 
 function normalize(value: unknown) {
