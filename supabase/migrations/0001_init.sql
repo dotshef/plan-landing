@@ -2,8 +2,6 @@
 -- 데이터 흐름: KIS → 야간 Vercel Cron → Supabase → 클라이언트(항상 DB만 읽음)
 -- 접근 제어: 서버 서비스롤 전용. RLS 미사용(v1). kis_token은 시크릿.
 
--- ─── 수집 인프라 ────────────────────────────────────────────────────────────
-
 -- 토큰 캐시 (단일 행). cron 청크 간 재사용 → 발급 "1분당 1회" 제한 회피.
 create table if not exists kis_token (
   id           smallint primary key default 1 check (id = 1),
@@ -31,8 +29,6 @@ create table if not exists cron_lock (
   expires_at timestamptz not null
 );
 
--- ─── 종목 디멘션 ────────────────────────────────────────────────────────────
-
 -- 종목 마스터 + 정적 속성. 이름·유니버스·보통주 판별의 단일 출처.
 -- 시드: 종목마스터 스냅샷(~4,374). industry는 야간 수집 시 갱신.
 create table if not exists stock (
@@ -44,8 +40,6 @@ create table if not exists stock (
   is_common  boolean generated always as (group_code = 'ST' and right(code, 1) = '0') stored
 );
 create index if not exists stock_group_code_idx on stock (group_code);  -- cron 유니버스(ST) 조회용
-
--- ─── 시장 단위 ──────────────────────────────────────────────────────────────
 
 create table if not exists market_index (
   symbol      text primary key,             -- '0001'KOSPI '1001'KOSDAQ 'COMP'NASDAQ 'SPX'S&P500
@@ -65,8 +59,6 @@ create table if not exists top_view (
   code       text not null references stock(code),
   fetched_at timestamptz not null default now()
 );
-
--- ─── 일별 팩트 (_daily) ─────────────────────────────────────────────────────
 
 -- 일봉 OHLCV + 거래활동. 무한 누적. "현재가" = 최신 행의 close.
 create table if not exists price_daily (
@@ -100,8 +92,6 @@ create table if not exists program_trade_daily (
   primary key (code, date)
 );
 
--- ─── 종목 지표 스냅샷 ───────────────────────────────────────────────────────
-
 -- inquire-price 지표군 스냅샷 (밸류에이션·주당지표·52주·보유율). 종목당 1행, 야간 upsert.
 create table if not exists fundamental (
   code              text primary key references stock(code),
@@ -112,8 +102,6 @@ create table if not exists fundamental (
   foreign_ownership numeric,                 -- hts_frgn_ehrt
   as_of             timestamptz not null     -- 수집 기준시각(장마감)
 );
-
--- ─── 기간 팩트 (재무) ───────────────────────────────────────────────────────
 
 -- 손익계산서 (연간/분기). eps 없음 — 실측상 응답에 미포함(재무비율 소속).
 create table if not exists income_statement (
@@ -145,8 +133,6 @@ create table if not exists dividend (
   pay_date  date,                            -- 지급일
   primary key (code, base_date)
 );
-
--- ─── 이벤트 ─────────────────────────────────────────────────────────────────
 
 -- 종목 뉴스. 재수집 중복은 unique로 흡수.
 create table if not exists news (

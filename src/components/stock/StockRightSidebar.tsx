@@ -14,7 +14,6 @@ export default function StockRightSidebar() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* 주요 지표 요약 */}
       <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 20 }}>
         <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 14 }}>주요 지표 요약</div>
         {[
@@ -31,7 +30,6 @@ export default function StockRightSidebar() {
         ))}
       </div>
 
-      {/* 최근 1년 주가 추이 */}
       <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 20 }}>
         <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 12 }}>최근 1년 주가 추이</div>
         <SparklineChart data={yearClose} isRise={isUp} height={120} />

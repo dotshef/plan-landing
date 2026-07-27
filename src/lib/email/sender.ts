@@ -10,13 +10,11 @@ function formatFrom(label: string): string {
   return `${label} <${FROM_EMAIL}>`
 }
 
-/** 발송에 필요한 환경변수가 모두 설정됐는지. DB 작업 전 조기 차단용. */
 export function isMailConfigured(): boolean {
   return Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_TO)
 }
 
 export interface MailInput {
-  /** 발신자 표시 이름 (예: '플랜그룹 리포트 신청') */
   label: string
   subject: string
   text: string

@@ -22,7 +22,6 @@ export default function FinancialTable() {
         <div style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>주요 재무 지표</div>
       </div>
 
-      {/* 3×2 지표 카드 */}
       <div className="responsive-financial-metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 9 }}>
         {metrics.map((m) => (
           <div key={m.label} style={{ background: '#F7F8FA', border: '1px solid #EEF1F6', borderRadius: 10, padding: 13, textAlign: 'center' }}>
@@ -32,7 +31,6 @@ export default function FinancialTable() {
         ))}
       </div>
 
-      {/* 연도별 실적 테이블 */}
       <div style={{ marginTop: 18, fontSize: 11, color: '#8B95A1', marginBottom: 8 }}>(단위: 십억원)</div>
       <div className="responsive-table-scroll">
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>

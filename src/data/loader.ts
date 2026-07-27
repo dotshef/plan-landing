@@ -34,7 +34,6 @@ function quarterLabel(period: string): string {
 const LEGAL_NOTICE =
   '본 리포트는 투자 권유 목적이 아닙니다. 수익을 보장하지 않으며, 투자 결정은 투자자 본인의 판단과 책임 하에 이루어져야 합니다. 과거 수익률이 미래 수익을 보장하지 않습니다.'
 
-// ── 메인 ────────────────────────────────────────────────────────────────────
 export async function getStockData(code: string): Promise<StockData> {
   const supabase = db()
 
@@ -56,7 +55,7 @@ export async function getStockData(code: string): Promise<StockData> {
   const industry = stockR.data?.industry ?? ''
   const fund = fundR.data ?? {}
 
-  const priceAsc = (priceR.data ?? []).slice().reverse() // 시간순
+  const priceAsc = (priceR.data ?? []).slice().reverse()
   const closes = priceAsc.map((r) => n(r.close))
   const latest = priceAsc[priceAsc.length - 1]
   const currentPrice = latest ? n(latest.close) : 0
@@ -68,7 +67,6 @@ export async function getStockData(code: string): Promise<StockData> {
   const ratios = ratioR.data ?? []
   const latestRatio = ratios[0] ?? {}
 
-  // ── quote ──
   const quote: StockQuote = {
     code,
     name,
@@ -90,7 +88,6 @@ export async function getStockData(code: string): Promise<StockData> {
     lastUpdated: fmtDateTime(fund.as_of) || fmtDate(latest?.date),
   }
 
-  // ── chart ──
   const candles: CandleData[] = priceAsc.map((r) => ({
     time: String(r.date),
     open: n(r.open), high: n(r.high), low: n(r.low), close: n(r.close), volume: n(r.volume),
@@ -125,7 +122,6 @@ export async function getStockData(code: string): Promise<StockData> {
     TECHNICAL_INDICATORS: buildTechnicalIndicators(candles),
   }
 
-  // ── financials ──
   const incomes = incomeR.data ?? []
   const ratioByYear = new Map(ratios.map((r) => [String(r.period).slice(0, 4), r]))
   const annual = incomes
@@ -173,7 +169,6 @@ export async function getStockData(code: string): Promise<StockData> {
     }),
   }
 
-  // ── report ──
   const opinions = opinionR.data ?? []
   const topOpinion = opinions[0]
 

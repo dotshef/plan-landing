@@ -11,7 +11,6 @@ const LOCK_NAME = 'ingest'
 const LOCK_TTL_MS = 120_000 // 종목마다 heartbeat 연장
 
 export async function GET(req: Request) {
-  // 엔드포인트 보호: Authorization: Bearer ${CRON_SECRET}
   const auth = req.headers.get('authorization')
   if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })

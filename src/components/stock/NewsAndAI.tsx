@@ -9,7 +9,6 @@ export default function NewsAndAI() {
   return (
     <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(2, 1fr))', gap: 14 }}>
 
-      {/* 오늘의 뉴스 */}
       <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>오늘의 뉴스</span>
@@ -22,7 +21,6 @@ export default function NewsAndAI() {
         ))}
       </div>
 
-      {/* 기업 개요 */}
       <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>기업 개요</span>

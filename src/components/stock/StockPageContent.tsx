@@ -101,7 +101,6 @@ export default function StockPageContent() {
       <LoadingOverlay show={loading} />
       <div className="responsive-page-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--page-padding, 18px 28px 56px)' }}>
 
-        {/* Breadcrumb */}
         <div className="responsive-breadcrumb" style={{ display: 'flex', alignItems: 'center', flexWrap: 'var(--breadcrumb-wrap, nowrap)' as CSSProperties['flexWrap'], gap: 12, marginBottom: 16, fontSize: 13 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#6B7684', textDecoration: 'none' }}>← 검색 결과</Link>
           <span style={{ color: '#D1D6DB' }}>|</span>
@@ -109,11 +108,9 @@ export default function StockPageContent() {
           <span style={{ fontWeight: 600, color: '#4E5968' }}>{STOCK_QUOTE.name}</span>
         </div>
 
-        {/* 3컬럼 고정 레이아웃 */}
         <div className="responsive-stock-layout" style={{ display: 'grid', gridTemplateColumns: 'var(--layout-columns, 236px 1fr 268px)', gap: 18, alignItems: 'start' }}>
           <StockSidebar animate={animate} />
 
-          {/* 중앙 컬럼 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
               {tabsRow}

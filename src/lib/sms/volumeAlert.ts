@@ -10,22 +10,17 @@ function toKstTimestamp(date: Date): string {
   return kst.toISOString().slice(0, 19).replace('T', ' ')
 }
 
-// ── 경보 정책 ──────────────────────────────────────────────
-/** 발송량 집계 창 (밀리초) — 급증 감지용 */
 const VOLUME_WINDOW_MS = 24 * 60 * 60 * 1000
-/** 이 건수 이상이면 경보 (차단은 하지 않음) */
 const VOLUME_THRESHOLD = 100
 /** 경보 재발송 쿨다운 (밀리초) — 공격 지속 시 메일 폭주 방지 */
 const ALERT_COOLDOWN_MS = 60 * 60 * 1000
 let lastAlertAt = 0
 
-/** 밀리초 창을 '24시간' / '30분' 형태의 한글 라벨로 변환한다. */
 function formatWindow(ms: number): string {
   const min = Math.round(ms / 60000)
   return min % 60 === 0 ? `${min / 60}시간` : `${min}분`
 }
 
-/** 창 내 전체 발송 건수를 센다(번호 무관 전역 합계). */
 async function countSendsInWindow(): Promise<number> {
   const since = toKstTimestamp(new Date(Date.now() - VOLUME_WINDOW_MS))
   const { count, error } = await db()

@@ -2,7 +2,6 @@ import { db } from '@/lib/db/server'
 import { kisGet } from '../client'
 import { dedupeByKey, num, toDate, toTimestamp, type DatasetResult, type StockDataset } from './shared'
 
-// ── 날짜 유틸 ───────────────────────────────────────────────────────────────
 function yyyymmdd(d: Date): string {
   return d.toISOString().slice(0, 10).replace(/-/g, '')
 }
@@ -12,7 +11,6 @@ function recentRange(days: number): { from: string; to: string } {
   return { from: yyyymmdd(from), to: yyyymmdd(to) }
 }
 
-// ── quote: 현재가 → fundamental + stock.industry ────────────────────────────
 const quote: StockDataset = {
   key: 'quote',
   async run(code) {
@@ -52,7 +50,6 @@ const quote: StockDataset = {
   },
 }
 
-// ── daily: 일봉 OHLCV → price_daily (증분 ~30일) ─────────────────────────────
 const daily: StockDataset = {
   key: 'daily',
   async run(code) {
@@ -91,7 +88,6 @@ const daily: StockDataset = {
   },
 }
 
-// ── investor: 투자자별 순매수 → investor_trend_daily ────────────────────────
 const investor: StockDataset = {
   key: 'investor',
   async run(code) {
@@ -122,7 +118,6 @@ const investor: StockDataset = {
   },
 }
 
-// ── news: 종목 뉴스 → news (중복은 unique 흡수) ──────────────────────────────
 const news: StockDataset = {
   key: 'news',
   async run(code) {
@@ -158,7 +153,6 @@ const news: StockDataset = {
   },
 }
 
-// ── income: 손익계산서(연/분기) → income_statement ──────────────────────────
 async function fetchIncome(code: string, div: '0' | '1', type: 'A' | 'Q') {
   const res = await kisGet<unknown>(
     '/uapi/domestic-stock/v1/finance/income-statement',
@@ -195,7 +189,6 @@ const income: StockDataset = {
   },
 }
 
-// ── ratio: 재무비율(연간) → financial_ratio ─────────────────────────────────
 const ratio: StockDataset = {
   key: 'ratio',
   async run(code) {
@@ -224,7 +217,6 @@ const ratio: StockDataset = {
   },
 }
 
-// ── dividend: 예탁원 배당 → dividend ────────────────────────────────────────
 const dividend: StockDataset = {
   key: 'dividend',
   async run(code) {
@@ -253,7 +245,6 @@ const dividend: StockDataset = {
   },
 }
 
-// ── program: 프로그램매매 일별 → program_trade_daily (전체 순매수만) ─────────
 const program: StockDataset = {
   key: 'program',
   async run(code) {
@@ -281,7 +272,6 @@ const program: StockDataset = {
   },
 }
 
-// ── opinion / opinion_sec: 투자의견 → invest_opinion (PK로 중복 흡수) ────────
 function mapOpinion(code: string, list: Record<string, string>[]) {
   return list
     .map((r) => ({

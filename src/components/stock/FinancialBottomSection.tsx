@@ -15,13 +15,11 @@ export default function FinancialBottomSection() {
   return (
     <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(2, minmax(0, 1fr)))', gap: 14 }}>
 
-      {/* 배당 정보 */}
       <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
         <div style={{ marginBottom: 16 }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>배당 정보</span>
         </div>
 
-        {/* 핵심 지표 3개 */}
         <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3, minmax(0, 1fr)))', gap: 10, marginBottom: 20 }}>
           {[
             { k: '배당수익률', v: `${DIVIDEND_INFO.yield.toFixed(2)}%` },
@@ -35,7 +33,6 @@ export default function FinancialBottomSection() {
           ))}
         </div>
 
-        {/* 배당 이력 바 차트 */}
         <div style={{ fontSize: 12, color: '#8B95A1', marginBottom: 8 }}>연간 주당배당금 추이 (원)</div>
         <ResponsiveContainer width="100%" height={120}>
           <BarChart data={DIVIDEND_INFO.history} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -55,7 +52,6 @@ export default function FinancialBottomSection() {
         </ResponsiveContainer>
       </div>
 
-      {/* 분기별 실적 추이 */}
       <div className="responsive-section-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 'var(--card-padding, 20px 22px)' }}>
         <div style={{ marginBottom: 16 }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>분기별 실적 추이</span>

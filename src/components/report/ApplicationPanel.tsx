@@ -47,7 +47,6 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                   gap:16 flex column 안에 두면 숨김 상태에서도 빈 gap이 생겨 form 밖에 배치 */}
               <div ref={turnstileRef} />
               <form onSubmit={handleSubmit} style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 16 }}>
-                {/* 이름 */}
                 <div>
                   <label style={{ fontSize: 13, fontWeight: 700, color: '#4E5968' }}>이름</label>
                   <input
@@ -62,7 +61,6 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                   {errors.name && <p style={{ fontSize: 12, color: '#E8342B', marginTop: 4 }}>{errors.name}</p>}
                 </div>
 
-                {/* 연락처 */}
                 <div>
                   <label style={{ fontSize: 13, fontWeight: 700, color: '#4E5968' }}>연락처</label>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'stretch' }}>
@@ -95,7 +93,6 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                   <div style={{ fontSize: 11, color: '#B0B8C1', marginTop: 5 }}>예) 010-1234-5678</div>
                   {errors.phone && <p style={{ fontSize: 12, color: '#E8342B', marginTop: 4 }}>{errors.phone}</p>}
 
-                  {/* 인증번호 입력 */}
                   {codeSent && !verified && (
                     <div style={{ display: 'flex', gap: 8, alignItems: 'stretch', marginTop: 10 }}>
                       <div style={{ position: 'relative', flex: 1 }}>
@@ -137,7 +134,6 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                   {errors.code && <p style={{ fontSize: 12, color: '#E8342B', marginTop: 4 }}>{errors.code}</p>}
                 </div>
 
-                {/* 관심종목 */}
                 <div>
                   <label style={{ fontSize: 13, fontWeight: 700, color: '#4E5968' }}>관심 종목 <span style={{ color: '#B0B8C1', fontWeight: 500 }}>(선택)</span></label>
                   <input
@@ -152,7 +148,6 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                   <div style={{ fontSize: 11, color: '#B0B8C1', marginTop: 5 }}>여러 종목은 쉼표(,)로 구분</div>
                 </div>
 
-                {/* 개인정보 수집·이용 동의 */}
                 <div>
                   <div
                     onClick={() => setForm({ ...form, privacy: !form.privacy })}
@@ -181,7 +176,6 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
                   {errors.privacy && <p style={{ fontSize: 12, color: '#E8342B', marginTop: 4 }}>{errors.privacy}</p>}
                 </div>
 
-                {/* 마케팅 정보 수신 동의 */}
                 <div>
                   <div
                     onClick={() => setForm({ ...form, agree: !form.agree })}

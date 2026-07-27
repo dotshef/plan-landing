@@ -18,7 +18,6 @@ export default function ReportContent() {
 
   return (
     <div>
-      {/* 헤더 */}
       <div className="responsive-report-header" style={{ display: 'flex', flexDirection: 'var(--report-header-direction, row)' as CSSProperties['flexDirection'], alignItems: 'flex-start', gap: 14 }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: '#6B7684' }}>{r.name}({r.code})</div>
@@ -34,9 +33,7 @@ export default function ReportContent() {
 
       <div style={{ marginTop: 22 }} />
 
-      {/* 탭 콘텐츠 */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          {/* 핵심 카드 3개 (투자의견 / 현재가 / 목표주가) */}
           <div className="responsive-report-summary-grid" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3,1fr))', gap: 12 }}>
             {[
               { label: '투자 의견',           icon: true,  value: r.opinion,                                                   sub: '국내 증권사 종합 투자의견', color: r.opinion === '매수' ? '#E8342B' : r.opinion === '매도' ? '#3182f6' : '#F5C900', subColor: '#8B95A1' },
@@ -53,7 +50,6 @@ export default function ReportContent() {
             ))}
           </div>
 
-          {/* 발간일 메타 */}
           <div className="responsive-report-meta" style={{ display: 'flex', flexDirection: 'var(--report-meta-direction, row)' as CSSProperties['flexDirection'], gap: 'var(--report-meta-gap, 20px)', fontSize: 12, color: '#8B95A1' }}>
             <span>▤ 리포트 발간일 <strong style={{ color: '#4E5968' }}>{r.publishDate}</strong></span>
             <span>다음 업데이트 <strong style={{ color: '#4E5968' }}>{r.nextUpdateDate}</strong></span>
@@ -85,7 +81,6 @@ export default function ReportContent() {
                 </ResponsiveContainer>
               </div>
 
-              {/* 범례 */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 20px', marginTop: 10 }}>
                 {[
                   { label: '매수', color: '#E8342B', pct: oc.buy, cnt: oc.buyCount },
@@ -103,10 +98,8 @@ export default function ReportContent() {
             </div>
           )}
 
-          {/* 분기 실적 차트 2개 */}
           <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, 1fr 1fr)', gap: 16 }}>
 
-            {/* 분기별 매출액 추이 */}
             <div>
               <div style={{ fontSize: 12, color: '#4E5968', fontWeight: 600, marginBottom: 8 }}>
                 분기별 매출액 추이 <span style={{ fontWeight: 400, color: '#8B95A1' }}>(단위: 조원)</span>
@@ -133,7 +126,6 @@ export default function ReportContent() {
               </ResponsiveContainer>
             </div>
 
-            {/* 영업이익 추이 */}
             <div>
               <div style={{ fontSize: 12, color: '#4E5968', fontWeight: 600, marginBottom: 8 }}>
                 영업이익 추이 <span style={{ fontWeight: 400, color: '#8B95A1' }}>(단위: 조원)</span>
@@ -176,7 +168,6 @@ export default function ReportContent() {
 
           </div>
 
-          {/* 잠금 안내 */}
           <div style={{ padding: '16px 18px', background: '#F5F8FE', borderRadius: 12, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
             <Lock size={16} color="#1B6CF2" style={{ flexShrink: 0, marginTop: 1 }} />
             <div>
@@ -185,7 +176,6 @@ export default function ReportContent() {
             </div>
           </div>
 
-          {/* 법적 고지 */}
           <div style={{ fontSize: 11, color: '#B0B8C1', lineHeight: 1.5, borderTop: '1px solid #F2F4F6', paddingTop: 14 }}>
             {r.legalNotice}
           </div>

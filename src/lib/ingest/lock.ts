@@ -5,7 +5,6 @@ import { db } from '@/lib/db/server'
 
 export async function acquireLock(name: string, owner: string, ttlMs: number): Promise<boolean> {
   const now = Date.now()
-  // 만료된 락 정리
   await db().from('cron_lock').delete().eq('name', name).lt('expires_at', new Date(now).toISOString())
   // 유효한 락이 있으면 PK 충돌 → 획득 실패
   const { error } = await db()

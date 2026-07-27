@@ -62,7 +62,6 @@ export async function POST(req: Request) {
     )
   }
 
-  // 봇 방지: Turnstile 토큰 검증
   const turnstileOk = await verifyTurnstile(normalize(body.turnstileToken), ip)
   if (!turnstileOk) {
     console.warn(`[sms/send-code] turnstile BLOCKED | ip=${ip} | ua=${userAgent} | phone=${phone}`)
@@ -72,7 +71,6 @@ export async function POST(req: Request) {
     )
   }
 
-  // 발송 남용 차단
   try {
     if (await hasRecentReportRequest(name, phone)) {
       return NextResponse.json(
@@ -131,7 +129,6 @@ export async function POST(req: Request) {
     )
   }
 
-  // 발송 성공 후에만 인증행 저장
   try {
     await createVerification(phone, code, name)
   } catch (error) {

@@ -23,8 +23,6 @@ export interface StockQuote {
   lastUpdated: string
 }
 
-// ─── chart ────────────────────────────────────────────────────────────────────
-
 export interface CandleData {
   /** 일봉 이상은 'YYYY-MM-DD', 분봉은 Unix timestamp(초) */
   time: string | number
@@ -66,8 +64,6 @@ export interface StockChart {
   TECHNICAL_INDICATORS: TechnicalIndicator[]
 }
 
-// ─── financials ───────────────────────────────────────────────────────────────
-
 export interface StockFinancials {
   FINANCIAL_METRICS: { per: number; pbr: number; roe: number; eps: number; dividendYield: number }
   ANNUAL_FINANCIALS: { year: string; revenue: number; operatingProfit: number; netProfit: number; eps: number }[]
@@ -75,8 +71,6 @@ export interface StockFinancials {
   DIVIDEND_INFO: { yield: number; perShare: number; payout: number; history: { year: string; amount: number }[] }
   QUARTERLY_EARNINGS: { quarter: string; revenue: number; op: number; opMargin: number }[]
 }
-
-// ─── report ───────────────────────────────────────────────────────────────────
 
 export interface StockReport {
   REPORT_DETAIL: {
@@ -103,8 +97,6 @@ export interface StockReport {
   DUMMY_NEWS: { title: string; source: string; time: string }[]
   COMPANY_OVERVIEW: { description: string; ceo: string; founded: string; employees: string; industry: string }
 }
-
-// ─── 종목 데이터 묶음 ─────────────────────────────────────────────────────────
 
 export interface StockData {
   quote: StockQuote

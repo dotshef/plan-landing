@@ -70,7 +70,6 @@ export default function CandlestickChart() {
       ma20.setData(raw.flatMap((d, i) => ma20v[i] != null ? [{ time: d.time as never, value: ma20v[i]! }] : []))
       ma60.setData(raw.flatMap((d, i) => ma60v[i] != null ? [{ time: d.time as never, value: ma60v[i]! }] : []))
 
-      // 기본으로 최근 3개월 구간 표시
       chart.timeScale().setVisibleLogicalRange({ from: raw.length - 65 - 0.5, to: raw.length - 0.5 })
 
       const ro = new ResizeObserver(() => {

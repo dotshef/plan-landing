@@ -82,7 +82,6 @@ export default function StickyLeadBar() {
                     className="slb-form"
                     style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}
                   >
-                    {/* 이름 · 연락처 · 인증요청 */}
                     <div className="slb-primary" style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '1 1 320px', minWidth: 0 }}>
                       <input
                         type="text"
@@ -162,7 +161,6 @@ export default function StickyLeadBar() {
                       </button>
                     </div>
 
-                    {/* 동의 · 신청 */}
                     <div className="slb-tail" style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0, marginLeft: 'auto' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                         <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>

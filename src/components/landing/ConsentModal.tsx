@@ -50,7 +50,6 @@ const CONTENT: Record<ConsentKind, { title: string; body: React.ReactNode }> = {
 }
 
 export default function ConsentModal({ kind, onClose }: { kind: ConsentKind | null; onClose: () => void }) {
-  // ESC 닫기 + 배경 스크롤 잠금
   useEffect(() => {
     if (!kind) return
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }

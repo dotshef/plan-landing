@@ -27,7 +27,6 @@ export default async function ReportCardsSection() {
               </div>
               <div style={{ marginTop: 14 }} />
 
-              {/* 증권사 투자의견 컨센서스 미니 차트 (매수/보유/매도) */}
               {r.consensus && r.consensus.total > 0 ? (() => {
                 const c = r.consensus
                 const seg = [

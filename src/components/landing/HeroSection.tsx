@@ -40,14 +40,13 @@ export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
       code
       ?? results.find((s) => s.name === q || s.code === q)?.code
       ?? results[0]?.code
-      ?? (/^[0-9A-Za-z]{6}$/.test(q) ? q.toUpperCase() : undefined) // 6자리면 코드로 직접 이동
+      ?? (/^[0-9A-Za-z]{6}$/.test(q) ? q.toUpperCase() : undefined)
     if (!target) { setShowError(true); return }
     router.push(`/stock/${target}`)
   }
 
   return (
     <div className="responsive-home-hero" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--home-hero-padding, 52px 28px 30px)', display: 'grid', gridTemplateColumns: 'var(--home-hero-columns, 1fr 1.15fr)', gap: 'var(--home-hero-gap, 56px)', alignItems: 'start' }}>
-      {/* 좌측 */}
       <div>
         <div style={{ display: 'inline-block', background: 'transparent', color: '#111827', fontSize: 20, fontWeight: 600, marginBottom: 10, fontFamily: 'var(--font-maruburi)' }}>
           지금 가장 많이 찾는
@@ -74,13 +73,11 @@ export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
         </div>
       </div>
 
-      {/* 우측 — 검색 카드 */}
       <div className="responsive-search-card" style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 20, padding: 'var(--search-card-padding, 48px 32px)', boxShadow: '0 8px 30px rgba(17,40,90,.06)' }}>
         <div style={{ fontSize: 21, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em' }}>
           종목명 또는 종목코드를 입력하고 분석을 시작하세요
         </div>
 
-        {/* 검색 인풋 */}
         <div className="responsive-search-row" style={{ display: 'flex', flexDirection: 'var(--search-row-direction, row)' as CSSProperties['flexDirection'], gap: 10, marginTop: 20, position: 'relative' }}>
           <div style={{ flex: 1, position: 'relative' }}>
             <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', display: 'flex' }}><Search size={16} color="#1B6CF2" /></span>
@@ -129,7 +126,6 @@ export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
           </div>
         )}
 
-        {/* 인기 검색어 */}
         <div style={{ marginTop: 20, fontSize: 13, fontWeight: 700, color: '#4E5968' }}>인기 검색어</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
           {stocks.map((s) => (

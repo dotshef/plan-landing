@@ -111,7 +111,6 @@ export function useReportRequest(defaultStock = '') {
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // 휴대폰 인증 상태
   const [codeSent, setCodeSent] = useState(false)
   const [sending, setSending] = useState(false)
   const [verifying, setVerifying] = useState(false)
@@ -133,14 +132,12 @@ export function useReportRequest(defaultStock = '') {
     }
   }, [])
 
-  // 만료 카운트다운
   useEffect(() => {
     if (secondsLeft <= 0) return
     const t = setInterval(() => setSecondsLeft((s) => (s <= 1 ? 0 : s - 1)), 1000)
     return () => clearInterval(t)
   }, [secondsLeft])
 
-  // ── Cloudflare Turnstile (봇 방지) ─────────────────────────────
   const turnstileRef = useRef<HTMLDivElement | null>(null)
   const widgetIdRef = useRef<string | null>(null)
   const tokenResolverRef = useRef<{ resolve: (t: string) => void; reject: (e: Error) => void } | null>(null)
@@ -227,7 +224,6 @@ export function useReportRequest(defaultStock = '') {
   const phoneValid = normalizePhone(form.phone) !== null
   const mmss = `${String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:${String(secondsLeft % 60).padStart(2, '0')}`
 
-  // 연락처 입력 변경 — 숫자만 유지하고 인증 상태 초기화
   function handlePhoneChange(raw: string) {
     const next = raw.replace(/\D/g, '').slice(0, 11)
     setForm((p) => ({ ...p, phone: next }))
@@ -248,7 +244,6 @@ export function useReportRequest(defaultStock = '') {
         setErrors((p) => ({ ...p, code: '봇 방지 검증을 완료하지 못했습니다. 페이지를 새로고침 후 다시 시도해주세요' }))
         return
       }
-      // 체크박스 안내 문구가 표시됐었다면 제거
       setErrors((p) => ({ ...p, code: '' }))
       const res = await fetch('/api/sms/send-code', {
         method: 'POST',

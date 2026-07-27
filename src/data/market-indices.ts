@@ -9,7 +9,7 @@ export interface MarketIndex {
   sparkline: number[]
 }
 
-const ORDER = ['0001', '1001', 'COMP', 'SPX'] // KOSPI, KOSDAQ, NASDAQ, S&P500
+const ORDER = ['0001', '1001', 'COMP', 'SPX']
 
 const n = (v: unknown): number => {
   const x = Number(v)

@@ -16,7 +16,6 @@ interface IndexRow {
   sparkline: number[] | null
 }
 
-// ── 국내지수 일별 캔들 (FHKUP03500100) → 종가 배열(sparkline) ────────────────
 async function fetchDomesticSparkline(symbol: string): Promise<number[] | null> {
   const to = new Date()
   const from = new Date(to.getTime() - 40 * 24 * 60 * 60 * 1000)
@@ -40,7 +39,6 @@ async function fetchDomesticSparkline(symbol: string): Promise<number[] | null> 
   return sparkline.length ? sparkline : null
 }
 
-// ── 국내지수 (FHPUP02100000): KOSPI 0001 / KOSDAQ 1001 ──────────────────────
 async function fetchDomestic(symbol: string, name: string): Promise<IndexRow> {
   const res = await kisGet<Record<string, string>>(
     '/uapi/domestic-stock/v1/quotations/inquire-index-price',
@@ -59,7 +57,6 @@ async function fetchDomestic(symbol: string, name: string): Promise<IndexRow> {
   }
 }
 
-// ── 해외지수 (FHKST03030100): NASDAQ COMP / S&P500 SPX ──────────────────────
 async function fetchOverseas(symbol: string, name: string): Promise<IndexRow> {
   const to = new Date()
   const from = new Date(to.getTime() - 40 * 24 * 60 * 60 * 1000)
@@ -113,7 +110,6 @@ const indices: MarketDataset = {
   },
 }
 
-// ── HTS 조회상위 (HHMCM000100C0) → 보통주 필터 후 원자 교체 ──────────────────
 const topView: MarketDataset = {
   key: 'top_view',
   async run() {

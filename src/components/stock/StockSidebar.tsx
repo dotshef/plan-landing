@@ -19,7 +19,6 @@ export default function StockSidebar({ animate }: Props) {
   const changeArrow = isUp ? '▲' : '▼'
   return (
     <div style={{ background: '#fff', border: '1px solid #EEF1F6', borderRadius: 16, padding: 22 }}>
-      {/* 종목 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
         <div style={{ width: 40, height: 40, borderRadius: '50%', background: color, flexShrink: 0 }} />
         <div>
@@ -28,7 +27,6 @@ export default function StockSidebar({ animate }: Props) {
         </div>
       </div>
 
-      {/* 현재가 */}
       <div style={{ fontSize: 34, fontWeight: 800, color: changeColor, letterSpacing: '-0.02em' }}>
         {animate ? <CountingNumber target={s.currentPrice} formatter={fmt} /> : fmt(s.currentPrice)}원
       </div>
@@ -36,7 +34,6 @@ export default function StockSidebar({ animate }: Props) {
         {changeArrow} {fmt(Math.abs(s.change))} ({Math.abs(s.changeRate).toFixed(2)}%)
       </div>
 
-      {/* 주요 수치 */}
       <div style={{ marginTop: 18, borderTop: '1px solid #F2F4F6', paddingTop: 6 }}>
         {[
           { k: '시가',     v: fmt(s.open),   color: '#111827' },
@@ -65,7 +62,6 @@ export default function StockSidebar({ animate }: Props) {
         </div>
       </div>
 
-      {/* CTA */}
       <Link
         href={`/report/${s.code}`}
         className="stock-report-cta"

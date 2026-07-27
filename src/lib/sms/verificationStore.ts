@@ -22,12 +22,8 @@ function parseKstTimestamp(value: string): Date {
   return new Date(`${trimmed}+09:00`)
 }
 
-// ── 발송 rate-limit 정책 ──────────────────────────────────────
-/** rate-limit 집계 창 (밀리초) */
 const SEND_WINDOW_MS = 60 * 60 * 1000
-/** 집계 창 내 최대 발송 건수 */
 const SEND_MAX_IN_WINDOW = 5
-/** 재발송 쿨다운 (밀리초) */
 const RESEND_COOLDOWN_MS = 30 * 1000
 
 export type SendGate =
@@ -59,7 +55,6 @@ export async function checkSendRateLimit(phone: string): Promise<SendGate> {
   return { ok: true }
 }
 
-/** 새 인증번호 행 저장 (SMS 발송 성공 후 호출) */
 export async function createVerification(phone: string, code: string, name: string): Promise<void> {
   const { error } = await db()
     .from(TABLE)
@@ -90,7 +85,6 @@ export async function verifyLatestCode(phone: string, code: string): Promise<Ver
   if (error) throw error
   const row = data?.[0]
 
-  // 유효한 미검증 코드가 없음 (미발송 / 이미 검증됨 / 만료)
   if (!row || row.verified_at) return { outcome: 'expired' }
   if (new Date(row.expires_at as string).getTime() < Date.now()) return { outcome: 'expired' }
   if ((row.fail_count as number) >= MAX_FAIL_COUNT) return { outcome: 'too_many' }
@@ -110,7 +104,6 @@ export async function verifyLatestCode(phone: string, code: string): Promise<Ver
   return { outcome: 'invalid', remaining: Math.max(0, MAX_FAIL_COUNT - failCount) }
 }
 
-/** 신청 시점에 해당 번호가 최근에 인증되었는지 확인 */
 export async function isPhoneVerified(phone: string): Promise<boolean> {
   const since = toKstTimestamp(new Date(Date.now() - VERIFIED_TTL_MS))
   const { data, error } = await db()

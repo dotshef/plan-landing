@@ -1,11 +1,9 @@
 export interface SendSmsInput {
   /** 수신자 전화번호 (- 없이 숫자만) */
   receiver: string
-  /** 메시지 내용 */
   msg: string
   /** SMS/LMS/MMS 지정 (미지정 시 알리고가 자동 판별) */
   msgType?: 'SMS' | 'LMS' | 'MMS'
-  /** LMS/MMS 제목 */
   title?: string
 }
 

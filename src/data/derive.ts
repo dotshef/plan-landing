@@ -2,7 +2,6 @@
 // 순수 함수 모음 — DB 행 배열을 받아 UI 타입 조각을 만든다.
 import type { CandleData, TechnicalIndicator } from './types'
 
-// ── 기본 통계 ───────────────────────────────────────────────────────────────
 function sma(values: number[], period: number): number[] {
   const out: number[] = []
   for (let i = 0; i < values.length; i++) {
@@ -86,7 +85,6 @@ function bollingerPercentB(closes: number[], period = 20): number[] {
 const tail = (arr: number[], n = 11) => arr.filter((v) => !Number.isNaN(v)).slice(-n)
 const last = (arr: number[]) => { const t = tail(arr, 1); return t.length ? t[0] : NaN }
 
-// ── 기술적 지표 5종 (StockChart.TECHNICAL_INDICATORS) ────────────────────────
 export function buildTechnicalIndicators(candles: CandleData[]): TechnicalIndicator[] {
   const closes = candles.map((c) => c.close)
   if (closes.length < 2) return []
@@ -156,7 +154,6 @@ export function buildTechnicalIndicators(candles: CandleData[]): TechnicalIndica
   ]
 }
 
-// ── 밸류에이션·배당 파생 ─────────────────────────────────────────────────────
 export function changeFromCloses(closes: number[]): { change: number; changeRate: number } {
   if (closes.length < 2) return { change: 0, changeRate: 0 }
   const cur = closes[closes.length - 1], prev = closes[closes.length - 2]
