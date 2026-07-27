@@ -1,9 +1,8 @@
 import 'server-only'
 import { db } from '@/lib/db/server'
+import { isMailConfigured, sendMail } from '@/lib/email/sender'
 
 const TABLE = 'phone_verification'
-const RESEND_ENDPOINT = 'https://api.resend.com/emails'
-const FROM_EMAIL = 'no-reply@plankor.kr'
 
 // KST(UTC+9) 벽시계 문자열 'YYYY-MM-DDTHH:mm:ss' — created_at(timestamp, tz 없음) 컬럼용
 function toKstTimestamp(date: Date): string {
@@ -38,9 +37,7 @@ async function countSendsInWindow(): Promise<number> {
 }
 
 async function sendAlertEmail(count: number): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY
-  const toEmail = process.env.EMAIL_TO
-  if (!apiKey || !toEmail) {
+  if (!isMailConfigured()) {
     console.error('[sms/volumeAlert] RESEND_API_KEY / EMAIL_TO 미설정 — 경보 메일 생략')
     return
   }
@@ -65,16 +62,10 @@ async function sendAlertEmail(count: number): Promise<void> {
     '※ 현재는 경보만 발송하며 실제 발송은 차단하지 않습니다.',
   ].join('\n')
 
-  const res = await fetch(RESEND_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ from: FROM_EMAIL, to: [toEmail], subject, text }),
-  })
-  if (!res.ok) {
-    console.error('[sms/volumeAlert] 경보 메일 발송 실패:', await res.text())
+  try {
+    await sendMail({ label: '플랜그룹 SMS 경보', subject, text })
+  } catch (error) {
+    console.error('[sms/volumeAlert] 경보 메일 발송 실패:', error)
   }
 }
 
