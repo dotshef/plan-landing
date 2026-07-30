@@ -10,9 +10,10 @@ import { normalizePhone } from '@/lib/phone'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// ── 임시 응급조치: SMS 펌핑 공격 UA 지문 차단 (완전일치) ──
+// ── 임시 응급조치: SMS 펌핑 공격 UA 지문 차단 ──
 // 서브넷 레이트리밋 도입 후 제거 예정. 공격자가 UA를 바꾸면 항목 추가.
-// 주의: 부분일치 금지 — Edge/웨일 UA가 이 문자열을 포함하므로 반드시 완전일치로만 비교.
+// Chrome 계열 지문은 완전일치로만 비교한다 — Edge/웨일 정상 UA가 `Chrome/...` 문자열을
+// 그대로 포함하므로 부분일치로 바꾸면 즉시 오탐이 발생한다.
 const BLOCKED_UA_EXACT = new Set([
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
   // ⚠️ 주의: stock 안드로이드 크롬의 흔한 UA와 완전 동일 → 실제 모바일 고객 일부도 차단됨.
@@ -21,6 +22,11 @@ const BLOCKED_UA_EXACT = new Set([
   // 웨일 모바일 UA 위장 펌핑 공격으로 추가(2026-07-24, ip=203.234.237.71).
   'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Whale/3.9.14.9 Mobile Safari/537.36',
 ])
+
+// 계열 전체를 부분일치로 차단하는 지문. 완전일치로 열거하면 버전만 바꿔 즉시 우회되는 경우에만 쓴다.
+// `Firefox/`: 공격자가 Chrome 차단을 인지한 뒤 Firefox로 전환, 150/152/153 버전을 섞어 로테이션(2026-07-30 추가).
+// 국내 정상 사용자 UA(삼성 브라우저·인앱 웹뷰·Edge·웨일)에는 `Firefox/`가 등장하지 않아 오탐 없음.
+const BLOCKED_UA_INCLUDES = ['Firefox/']
 
 function normalize(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
@@ -54,8 +60,11 @@ export async function POST(req: Request) {
   }
 
   // 봇 지문 차단 (임시 응급조치)
-  if (BLOCKED_UA_EXACT.has(userAgent)) {
-    console.warn(`[sms/send-code] ua-blocked | ip=${ip} | phone=${phone}`)
+  if (
+    BLOCKED_UA_EXACT.has(userAgent) ||
+    BLOCKED_UA_INCLUDES.some((fingerprint) => userAgent.includes(fingerprint))
+  ) {
+    console.warn(`[sms/send-code] ua-blocked | ip=${ip} | phone=${phone} | ua=${userAgent}`)
     return NextResponse.json(
       { error: '보안 정책에 따라 차단되었습니다. 다른 브라우저로 시도해주세요' },
       { status: 403 },
