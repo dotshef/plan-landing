@@ -90,6 +90,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://bzrcdn.openai.com/sdk/oaiq.min.js"
           strategy="afterInteractive"
         />
+        {/* 비즈스프링 로그분석 — 원본은 document.write 방식이라 동적 삽입으로 대체 */}
+        <Script id="bslog-init" strategy="afterInteractive">
+          {`(function(){
+              if (document.getElementById('bslog_script')) return;
+              var s = document.createElement('script');
+              s.id = 'bslog_script';
+              s.type = 'text/javascript';
+              s.async = true;
+              s.src = 'https://bs-report.lob.kr/ntrace.js?bs_id=bsgroup&bs_m=4183158&t=' + new Date().getTime();
+              document.getElementsByTagName('head')[0].appendChild(s);
+            })();`}
+        </Script>
         {/* Cloudflare Turnstile (봇 방지) — explicit 렌더로 발송 시점에 실행 */}
         <Script
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
