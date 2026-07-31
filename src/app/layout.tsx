@@ -102,6 +102,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               document.getElementsByTagName('head')[0].appendChild(s);
             })();`}
         </Script>
+        {/* 에이스카운터 로그분석 — 원본의 첫 script 태그 앞 삽입을 head appendChild로 대체 */}
+        <Script id="acecounter-init" strategy="afterInteractive">
+          {`window._AceGID = (function () {
+              var Inf = ['plankor.kr', 'www.plankor.kr,plankor.kr', 'AZ3A106068', '1', 'NaPm,Ncisy', '1'];
+              var _CI = (!window._AceGID) ? [] : window._AceGID.val;
+              var _N = 0;
+              if (_CI.join('.').indexOf(Inf[2]) < 0) { _CI.push(Inf); _N = _CI.length; }
+              return { o: _N, val: _CI };
+            })();
+            window._AceCounter = (function () {
+              var G = window._AceGID;
+              if (G.o == 0) return;
+              var _A = G.val[G.o - 1];
+              var _U = (_A[4]).replace(/,/g, '_');
+              var _sc = document.createElement('script');
+              _sc.async = true;
+              _sc.src = 'https://cr.acecounter.com/ac.js?gc=' + _A[2] + '&py=' + _A[1] + '&up=' + _U + '&rd=' + (new Date().getTime());
+              document.getElementsByTagName('head')[0].appendChild(_sc);
+              return _sc.src;
+            })();`}
+        </Script>
         {/* Cloudflare Turnstile (봇 방지) — explicit 렌더로 발송 시점에 실행 */}
         <Script
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
