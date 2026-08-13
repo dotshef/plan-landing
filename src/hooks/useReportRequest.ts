@@ -344,6 +344,12 @@ export function useReportRequest(defaultStock = '') {
         window.dataLayer.push({ event: 'consultation_complete' })
       }
 
+      // Google Ads 향상된 전환 — 전화번호를 E.164 형식 user_data로 설정 (전환 이벤트보다 먼저 호출)
+      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+        const e164 = '+82' + form.phone.replace(/[^0-9]/g, '').replace(/^0/, '')
+        window.gtag('set', 'user_data', { phone_number: e164 })
+      }
+
       // Google Ads 전환 측정 (리드 양식 제출)
       if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
         window.gtag('event', 'conversion', {

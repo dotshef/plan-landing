@@ -14,6 +14,8 @@ declare global {
     wcs_add?: Record<string, string>
     wcs_do?: (...args: unknown[]) => void
     _nasa?: Record<string, unknown>
+    // 에이스카운터 공통 스크립트가 생성하는 계정 정보
+    _AceGID?: { o: number; val: string[][] }
     // Cloudflare Turnstile
     turnstile?: {
       render: (

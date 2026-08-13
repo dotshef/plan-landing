@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import localFont from 'next/font/local'
 import Script from 'next/script'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import NaverWcs from '@/components/tracking/NaverWcs'
+import PageViewTracker from '@/components/tracking/PageViewTracker'
 import { Analytics } from "@vercel/analytics/next"
 
 const pretendard = localFont({
@@ -130,6 +132,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         {/* 네이버 로그분석 */}
         <NaverWcs />
+        {/* 라우트 전환 시 PV 재발행 (useSearchParams 사용 → Suspense 필수) */}
+        <Suspense fallback={null}>
+          <PageViewTracker />
+        </Suspense>
         <Header />
         <main>{children}</main>
         <Footer />
