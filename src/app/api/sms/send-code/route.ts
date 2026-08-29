@@ -42,6 +42,7 @@ function clientIp(req: Request): string {
 export async function POST(req: Request) {
   const ip = clientIp(req)
   const userAgent = req.headers.get('user-agent') ?? 'unknown'
+  const referer = req.headers.get('referer') ?? 'none'
 
   let body: { name?: unknown; phone?: unknown; turnstileToken?: unknown }
   try {
@@ -64,7 +65,9 @@ export async function POST(req: Request) {
     BLOCKED_UA_EXACT.has(userAgent) ||
     BLOCKED_UA_INCLUDES.some((fingerprint) => userAgent.includes(fingerprint))
   ) {
-    console.warn(`[sms/send-code] ua-blocked | ip=${ip} | phone=${phone} | ua=${userAgent}`)
+    console.warn(
+      `[sms/send-code] ua-blocked | ip=${ip} | phone=${phone} | referer=${referer} | ua=${userAgent}`,
+    )
     return NextResponse.json(
       { error: '보안 정책에 따라 차단되었습니다. 다른 브라우저로 시도해주세요' },
       { status: 403 },
@@ -73,7 +76,9 @@ export async function POST(req: Request) {
 
   const turnstileOk = await verifyTurnstile(normalize(body.turnstileToken), ip)
   if (!turnstileOk) {
-    console.warn(`[sms/send-code] turnstile BLOCKED | ip=${ip} | ua=${userAgent} | phone=${phone}`)
+    console.warn(
+      `[sms/send-code] turnstile BLOCKED | ip=${ip} | phone=${phone} | referer=${referer} | ua=${userAgent}`,
+    )
     return NextResponse.json(
       { error: '봇 방지 검증에 실패했습니다. 페이지를 새로고침 후 다시 시도해주세요.' },
       { status: 403 },
@@ -114,7 +119,7 @@ export async function POST(req: Request) {
 
   // 발송 시점 요청 출처 기록 (어뷰징 추적용)
   console.log(
-    `[sms/send-code] sending to ${phone} | ip=${ip} | ua=${userAgent}`,
+    `[sms/send-code] sending to ${phone} | ip=${ip} | referer=${referer} | ua=${userAgent}`,
   )
 
   try {
