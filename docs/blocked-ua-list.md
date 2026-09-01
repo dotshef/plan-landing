@@ -1,7 +1,7 @@
 # 차단된 User-Agent 목록
 
-> **상태: 폐기 (2026-08-31).** UA 차단 코드는 제거됐다 — 공격자가 정품 Edge 152 UA로 전환해 블랙리스트가 공격은 0% 차단하고 실고객(stock 안드로이드 크롬·Firefox 사용자)만 차단하는 상태였다. 대체 방어는 [광고 세션 게이트](ad-session-gate.md). UA는 로그 기록용 보조 신호로만 유지한다. 아래는 이력 보존용 기록이다.
-> 코드 위치(제거 전): [src/app/api/sms/send-code/route.ts](../src/app/api/sms/send-code/route.ts)
+> 코드 위치: [src/app/api/sms/send-code/route.ts:13-29](../src/app/api/sms/send-code/route.ts#L13-L29)
+> 상태: SMS 인증번호 발송 API(`/api/sms/send-code`)에 적용된 **임시 응급조치**. 서브넷 레이트리밋 도입 후 제거 예정.
 > 비교 방식: **완전일치**와 **부분일치** 두 종류의 규칙을 병행한다 (아래 참조).
 
 ## 규칙 종류

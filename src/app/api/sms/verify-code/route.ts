@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { verifyLatestCode } from '@/lib/sms/verificationStore'
 import { normalizePhone } from '@/lib/phone'
-import { AD_GRANT_COOKIE, verifyGrant } from '@/lib/adSession/grant'
-import { consumeSession } from '@/lib/adSession/store'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -39,16 +36,8 @@ export async function POST(req: Request) {
   }
 
   switch (result.outcome) {
-    case 'ok': {
-      // 인증이 끝난 광고 세션은 소진 처리 — 실패해도 인증 결과에는 영향 없음
-      try {
-        const grant = verifyGrant((await cookies()).get(AD_GRANT_COOKIE)?.value)
-        if (grant) await consumeSession(grant.id)
-      } catch (error) {
-        console.error('[sms/verify-code] ad-session consume failed:', error)
-      }
+    case 'ok':
       return NextResponse.json({ ok: true })
-    }
     case 'invalid':
       return NextResponse.json(
         { error: `인증번호가 일치하지 않습니다. (남은 시도 ${result.remaining}회)`, remaining: result.remaining },
