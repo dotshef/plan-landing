@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { sendSms } from '@/lib/sms/gateway'
 import { CODE_TTL_MS, generateCode } from '@/lib/sms/verification'
 import { checkSendRateLimit, createVerification } from '@/lib/sms/verificationStore'
@@ -6,27 +7,11 @@ import { verifyTurnstile } from '@/lib/turnstile/verify'
 import { maybeAlertHighVolume } from '@/lib/sms/volumeAlert'
 import { hasRecentReportRequest } from '@/lib/reportRequest/duplicate'
 import { normalizePhone } from '@/lib/phone'
+import { AD_GRANT_COOKIE, verifyGrant } from '@/lib/adSession/grant'
+import { checkSession, claimSessionSend } from '@/lib/adSession/store'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-// ── 임시 응급조치: SMS 펌핑 공격 UA 지문 차단 ──
-// 서브넷 레이트리밋 도입 후 제거 예정. 공격자가 UA를 바꾸면 항목 추가.
-// Chrome 계열 지문은 완전일치로만 비교한다 — Edge/웨일 정상 UA가 `Chrome/...` 문자열을
-// 그대로 포함하므로 부분일치로 바꾸면 즉시 오탐이 발생한다.
-const BLOCKED_UA_EXACT = new Set([
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
-  // ⚠️ 주의: stock 안드로이드 크롬의 흔한 UA와 완전 동일 → 실제 모바일 고객 일부도 차단됨.
-  // 펌핑 우회 대응으로 추가(2026-07-23). verify-code 성공 급감 시 즉시 이 줄 제거.
-  'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36',
-  // 웨일 모바일 UA 위장 펌핑 공격으로 추가(2026-07-24, ip=203.234.237.71).
-  'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Whale/3.9.14.9 Mobile Safari/537.36',
-])
-
-// 계열 전체를 부분일치로 차단하는 지문. 완전일치로 열거하면 버전만 바꿔 즉시 우회되는 경우에만 쓴다.
-// `Firefox/`: 공격자가 Chrome 차단을 인지한 뒤 Firefox로 전환, 150/152/153 버전을 섞어 로테이션(2026-07-30 추가).
-// 국내 정상 사용자 UA(삼성 브라우저·인앱 웹뷰·Edge·웨일)에는 `Firefox/`가 등장하지 않아 오탐 없음.
-const BLOCKED_UA_INCLUDES = ['Firefox/']
 
 function normalize(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
@@ -37,6 +22,15 @@ function clientIp(req: Request): string {
   const xff = req.headers.get('x-forwarded-for')
   if (xff) return xff.split(',')[0].trim()
   return req.headers.get('x-real-ip')?.trim() || 'unknown'
+}
+
+// 광고 세션 게이트 차단 응답. 사유를 특정할 수 없는 문구만 쓴다 —
+// 차단 기준을 응답에 노출하면 우회를 코치하게 된다(7월 UA 차단 문구의 교훈).
+function genericBlock() {
+  return NextResponse.json(
+    { error: '요청을 처리할 수 없습니다. 잠시 후 다시 시도해주세요.' },
+    { status: 403 },
+  )
 }
 
 export async function POST(req: Request) {
@@ -60,18 +54,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
   }
 
-  // 봇 지문 차단 (임시 응급조치)
-  if (
-    BLOCKED_UA_EXACT.has(userAgent) ||
-    BLOCKED_UA_INCLUDES.some((fingerprint) => userAgent.includes(fingerprint))
-  ) {
+  // ── 광고 세션 게이트: proxy가 광고 랜딩 시 발급한 그랜트가 있어야 발송 가능 ──
+  // AD_SESSION_ENFORCE=0 이면 차단하지 않고 로그만 남긴다(관찰 모드).
+  const enforce = process.env.AD_SESSION_ENFORCE !== '0'
+  const cookieStore = await cookies()
+  const grant = verifyGrant(cookieStore.get(AD_GRANT_COOKIE)?.value)
+
+  if (!grant) {
     console.warn(
-      `[sms/send-code] ua-blocked | ip=${ip} | phone=${phone} | referer=${referer} | ua=${userAgent}`,
+      `[sms/send-code] ad-grant MISSING | ip=${ip} | phone=${phone} | referer=${referer} | ua=${userAgent}`,
     )
-    return NextResponse.json(
-      { error: '보안 정책에 따라 차단되었습니다. 다른 브라우저로 시도해주세요' },
-      { status: 403 },
-    )
+    if (enforce) return genericBlock()
+  } else {
+    let gate
+    try {
+      gate = await checkSession(grant, phone)
+    } catch (error) {
+      console.error('[sms/send-code] ad-session lookup failed:', error)
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 500 })
+    }
+    if (!gate.ok) {
+      console.warn(
+        `[sms/send-code] ad-session BLOCKED (${gate.reason}) | session=${grant.id} | ip=${ip} | phone=${phone} | referer=${referer} | ua=${userAgent}`,
+      )
+      if (enforce) return genericBlock()
+    }
   }
 
   const turnstileOk = await verifyTurnstile(normalize(body.turnstileToken), ip)
@@ -115,11 +122,28 @@ export async function POST(req: Request) {
     )
   }
 
+  // 발송 슬롯 선점 — 게이트웨이 호출 전에 세션 발송 횟수를 원자적으로 증가시킨다
+  if (grant) {
+    let claim
+    try {
+      claim = await claimSessionSend(grant, phone)
+    } catch (error) {
+      console.error('[sms/send-code] ad-session claim failed:', error)
+      return NextResponse.json({ error: '잠시 후 다시 시도해주세요.' }, { status: 500 })
+    }
+    if (!claim.ok) {
+      console.warn(
+        `[sms/send-code] ad-session CLAIM BLOCKED (${claim.reason}) | session=${grant.id} | ip=${ip} | phone=${phone}`,
+      )
+      if (enforce) return genericBlock()
+    }
+  }
+
   const code = generateCode()
 
   // 발송 시점 요청 출처 기록 (어뷰징 추적용)
   console.log(
-    `[sms/send-code] sending to ${phone} | ip=${ip} | referer=${referer} | ua=${userAgent}`,
+    `[sms/send-code] sending to ${phone} | session=${grant?.id ?? 'none'} | ip=${ip} | referer=${referer} | ua=${userAgent}`,
   )
 
   try {
