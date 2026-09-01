@@ -10,23 +10,21 @@ import { normalizePhone } from '@/lib/phone'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// ── 임시 응급조치: SMS 펌핑 공격 UA 지문 차단 ──
-// 서브넷 레이트리밋 도입 후 제거 예정. 공격자가 UA를 바꾸면 항목 추가.
-// Chrome 계열 지문은 완전일치로만 비교한다 — Edge/웨일 정상 UA가 `Chrome/...` 문자열을
-// 그대로 포함하므로 부분일치로 바꾸면 즉시 오탐이 발생한다.
-const BLOCKED_UA_EXACT = new Set([
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
-  // ⚠️ 주의: stock 안드로이드 크롬의 흔한 UA와 완전 동일 → 실제 모바일 고객 일부도 차단됨.
-  // 펌핑 우회 대응으로 추가(2026-07-23). verify-code 성공 급감 시 즉시 이 줄 제거.
-  'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36',
-  // 웨일 모바일 UA 위장 펌핑 공격으로 추가(2026-07-24, ip=203.234.237.71).
-  'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Whale/3.9.14.9 Mobile Safari/537.36',
-])
-
-// 계열 전체를 부분일치로 차단하는 지문. 완전일치로 열거하면 버전만 바꿔 즉시 우회되는 경우에만 쓴다.
-// `Firefox/`: 공격자가 Chrome 차단을 인지한 뒤 Firefox로 전환, 150/152/153 버전을 섞어 로테이션(2026-07-30 추가).
-// 국내 정상 사용자 UA(삼성 브라우저·인앱 웹뷰·Edge·웨일)에는 `Firefox/`가 등장하지 않아 오탐 없음.
-const BLOCKED_UA_INCLUDES = ['Firefox/']
+// ── SMS 펌핑 대응: UA 화이트리스트 (Tier 1 국내 인앱 브라우저만 허용) ──
+// 근거: docs/sms-pumping-2026-08-31-incident-and-strategy.md, docs/blocked-ua-list.md
+// 공격자는 데스크톱 Edge 정품 UA로 유입되고, 실고객은 대부분 모바일 인앱 브라우저다.
+// 아래 토큰 중 하나라도 UA에 포함돼야 발송을 허용한다(부분일치). 전 UA 완전일치는
+// 기기·앱버전 조합이 수백 종이라 운영 불가 → 인앱 마커 토큰으로 판별한다.
+// 로그 검증(8/31): 공격 100% 차단, 정상 후보 통과율 ~75%(데스크톱·일반 모바일 크롬 25% 차단 감수).
+// ⚠️ UA는 위조 가능 → 이 화이트리스트는 스토프갭이다. 공격자가 아래 토큰을 UA에 복사해
+//    넣으면 무력화된다(7월 stock 크롬·웨일 모바일 위장 전례). 근본 대응은 총량 상한.
+// 채널 확대 시(인스타/페북/라인 광고 등) 해당 인앱 토큰(FBAN/, FBAV/, Instagram, Line/)을 추가.
+const ALLOWED_UA_INCLUDES = [
+  'SamsungBrowser/', // 삼성 인터넷
+  'NAVER(inapp', // 네이버 앱 인앱브라우저
+  'KAKAOTALK/', // 카카오톡 인앱
+  'DaumApps/', // 다음 앱
+]
 
 function normalize(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
@@ -60,16 +58,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: '올바른 연락처를 입력해주세요.' }, { status: 400 })
   }
 
-  // 봇 지문 차단 (임시 응급조치)
-  if (
-    BLOCKED_UA_EXACT.has(userAgent) ||
-    BLOCKED_UA_INCLUDES.some((fingerprint) => userAgent.includes(fingerprint))
-  ) {
+  // UA 화이트리스트: 허용 인앱 마커가 없으면 차단. 차단 사유는 응답에 노출하지 않는다
+  // (우회 힌트 금지). Turnstile 이전에 검사해 차단된 요청은 Turnstile 비용도 안 낸다.
+  if (!ALLOWED_UA_INCLUDES.some((token) => userAgent.includes(token))) {
     console.warn(
-      `[sms/send-code] ua-blocked | ip=${ip} | phone=${phone} | referer=${referer} | ua=${userAgent}`,
+      `[sms/send-code] ua-not-allowed | ip=${ip} | phone=${phone} | referer=${referer} | ua=${userAgent}`,
     )
     return NextResponse.json(
-      { error: '보안 정책에 따라 차단되었습니다. 다른 브라우저로 시도해주세요' },
+      { error: '요청을 처리할 수 없습니다. 잠시 후 다시 시도해주세요.' },
       { status: 403 },
     )
   }
