@@ -92,6 +92,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://bzrcdn.openai.com/sdk/oaiq.min.js"
           strategy="afterInteractive"
         />
+        {/* 당근마켓 광고 픽셀 — 원본은 첫 script 태그 앞 삽입 방식이라 그대로 동적 삽입 유지 */}
+        <Script id="karrot-pixel-init" strategy="afterInteractive">
+          {`(function (w, d) {
+              if (w.karrotPixel) return;
+              var k = { stub: true, queue: [] };
+              k.init = function () { k.queue.push(['init', arguments, Date.now()]); };
+              k.track = function () { k.queue.push(['track', arguments, Date.now()]); };
+              w.karrotPixel = k;
+              var s = d.createElement('script');
+              s.async = true;
+              s.src = 'https://karrot-pixel.business.daangn.com/karrot-pixel.js';
+              var f = d.getElementsByTagName('script')[0];
+              f && f.parentNode ? f.parentNode.insertBefore(s, f) : d.head.appendChild(s);
+            })(window, document);
+            window.karrotPixel.init('1788489677638983001');
+            window.karrotPixel.track('ViewPage');`}
+        </Script>
         {/* 비즈스프링 로그분석 — 원본은 document.write 방식이라 동적 삽입으로 대체 */}
         <Script id="bslog-init" strategy="afterInteractive">
           {`(function(){
