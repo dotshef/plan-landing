@@ -19,15 +19,17 @@ export interface MailInput {
   subject: string
   text: string
   html?: string
+  /** 수신자. 미지정 시 EMAIL_TO(운영 알림함). 관리자 초대 메일 등 개별 발송에 사용. */
+  to?: string
 }
 
 /**
- * Resend REST API로 EMAIL_TO에게 메일을 발송한다.
+ * Resend REST API로 메일을 발송한다. to 미지정 시 EMAIL_TO에게.
  * 실패하면 throw — 실패를 어떻게 다룰지(응답 코드/무시)는 호출자가 결정한다.
  */
-export async function sendMail({ label, subject, text, html }: MailInput): Promise<void> {
+export async function sendMail({ label, subject, text, html, to }: MailInput): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY
-  const toEmail = process.env.EMAIL_TO
+  const toEmail = to ?? process.env.EMAIL_TO
   if (!apiKey || !toEmail) {
     throw new Error('RESEND_API_KEY / EMAIL_TO 환경변수가 설정되지 않았습니다.')
   }

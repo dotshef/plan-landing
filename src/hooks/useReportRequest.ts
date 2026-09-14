@@ -101,11 +101,18 @@ function readStoredAdAttribution(): AdAttribution {
   return UNKNOWN_ATTRIBUTION
 }
 
+export interface ReportRequestExtra {
+  /** 신청이 발생한 페이지. 미지정 시 'main'. */
+  sourcePage?: 'main' | 'trial' | 'indicators' | 'sector'
+  /** '영상 속 자료 받기'에서 선택한 자료명(쉼표 구분). */
+  requestedItems?: string | null
+}
+
 /**
  * 무료 리포트 신청 폼의 상태·검증·휴대폰 인증·제출 로직.
- * 세로형 ApplicationPanel과 가로형 CompactLeadFormSection이 공유한다.
+ * 세로형 ApplicationPanel과 가로형 CompactLeadFormSection, 신규 페이지 폼이 공유한다.
  */
-export function useReportRequest(defaultStock = '') {
+export function useReportRequest(defaultStock = '', extra?: ReportRequestExtra) {
   const [form, setForm] = useState({ name: '', phone: '', stock: defaultStock, privacy: true, agree: true })
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -323,6 +330,8 @@ export function useReportRequest(defaultStock = '') {
           adCampaignId: attribution.adCampaignId,
           adCampaignLabel: attribution.adCampaignLabel,
           landingUrl: attribution.landingUrl,
+          sourcePage: extra?.sourcePage ?? 'main',
+          requestedItems: extra?.requestedItems ?? null,
         }),
       })
       const result = await response.json().catch(() => ({}))

@@ -44,7 +44,8 @@ export async function getStockData(code: string): Promise<StockData> {
       supabase.from('price_daily').select('*').eq('code', code).order('date', { ascending: false }).limit(800),
       supabase.from('investor_trend_daily').select('*').eq('code', code).order('date', { ascending: false }).limit(30),
       supabase.from('program_trade_daily').select('*').eq('code', code).order('date', { ascending: false }).limit(30),
-      supabase.from('financial_ratio').select('*').eq('code', code).order('period', { ascending: false }),
+      // 연간만 사용 — 0015부터 분기(period_type='Q', 누적) 행이 함께 적재되므로 명시 필터
+      supabase.from('financial_ratio').select('*').eq('code', code).eq('period_type', 'A').order('period', { ascending: false }),
       supabase.from('income_statement').select('*').eq('code', code),
       supabase.from('dividend').select('base_date, per_share').eq('code', code).order('base_date', { ascending: false }),
       supabase.from('invest_opinion').select('*').eq('code', code).order('opinion_date', { ascending: false }),

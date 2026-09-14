@@ -189,29 +189,41 @@ const income: StockDataset = {
   },
 }
 
+async function fetchRatio(code: string, div: '0' | '1', type: 'A' | 'Q') {
+  // 경로 정정: 재무비율 TR(FHKST66430300)의 실제 엔드포인트는 financial-ratio.
+  // (기존 balance-sheet 표기는 TR id로 라우팅되어 동작했으나 오기)
+  const res = await kisGet<unknown>(
+    '/uapi/domestic-stock/v1/finance/financial-ratio',
+    { FID_DIV_CLS_CODE: div, fid_cond_mrkt_div_code: 'J', fid_input_iscd: code },
+    'FHKST66430300',
+  )
+  const list = (res.output ?? []) as Record<string, string>[]
+  return list
+    .map((r) => ({
+      code,
+      period_type: type,
+      period: String(r.stac_yymm ?? '').trim(),
+      roe: num(r.roe_val),
+      eps: num(r.eps),
+      bps: num(r.bps),
+      debt_ratio: num(r.lblt_rate),
+    }))
+    .filter((r) => /^\d{6}$/.test(r.period))
+}
+
 const ratio: StockDataset = {
   key: 'ratio',
   async run(code) {
-    const res = await kisGet<unknown>(
-      '/uapi/domestic-stock/v1/finance/balance-sheet',
-      { FID_DIV_CLS_CODE: '0', fid_cond_mrkt_div_code: 'J', fid_input_iscd: code },
-      'FHKST66430300',
-    )
-    const list = (res.output ?? []) as Record<string, string>[]
-    const rows = list
-      .map((r) => ({
-        code,
-        period: String(r.stac_yymm ?? '').trim(),
-        roe: num(r.roe_val),
-        eps: num(r.eps),
-        bps: num(r.bps),
-        debt_ratio: num(r.lblt_rate),
-      }))
-      .filter((r) => /^\d{6}$/.test(r.period))
+    // 연간 + 분기(누적) 모두 수집 — 분기 EPS는 섹터 TTM PER 계산의 원천(설계 §5.2).
+    const annual = await fetchRatio(code, '0', 'A')
+    const quarter = await fetchRatio(code, '1', 'Q')
+    const rows = [...annual, ...quarter]
     if (rows.length === 0) return 'unavailable'
     const { error } = await db()
       .from('financial_ratio')
-      .upsert(dedupeByKey(rows, (r) => r.period), { onConflict: 'code,period' })
+      .upsert(dedupeByKey(rows, (r) => `${r.period_type}:${r.period}`), {
+        onConflict: 'code,period_type,period',
+      })
     if (error) throw new Error(`financial_ratio upsert: ${error.message}`)
     return 'ok'
   },

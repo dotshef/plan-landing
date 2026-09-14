@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "backfill": "tsx scripts/backfill-price.ts",
-    "backfill:price": "tsx scripts/backfill-price.ts"
+    "backfill:price": "tsx scripts/backfill-price.ts",
+    "admin:create": "tsx scripts/create-admin.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.0",

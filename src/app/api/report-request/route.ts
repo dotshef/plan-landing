@@ -18,6 +18,15 @@ interface ReportRequestPayload {
   adCampaignId?: unknown
   adCampaignLabel?: unknown
   landingUrl?: unknown
+  sourcePage?: unknown
+  requestedItems?: unknown
+}
+
+const SOURCE_PAGES = ['main', 'trial', 'indicators', 'sector'] as const
+type SourcePage = (typeof SOURCE_PAGES)[number]
+
+function normalizeSourcePage(value: unknown): SourcePage {
+  return SOURCE_PAGES.includes(value as SourcePage) ? (value as SourcePage) : 'main'
 }
 
 function normalize(value: unknown) {
@@ -67,6 +76,8 @@ export async function POST(req: Request) {
   const landingUrl = trafficSource === 'unknown'
     ? null
     : normalize(payload.landingUrl).slice(0, 2000) || null
+  const sourcePage = normalizeSourcePage(payload.sourcePage)
+  const requestedItems = normalize(payload.requestedItems).slice(0, 500) || null
 
   if (!name || !phoneRaw) {
     return NextResponse.json({ error: '이름과 연락처를 입력해주세요.' }, { status: 400 })
@@ -110,6 +121,8 @@ export async function POST(req: Request) {
         ad_campaign_id: adCampaignId,
         ad_campaign_label: adCampaignLabel,
         landing_url: landingUrl,
+        source_page: sourcePage,
+        requested_items: requestedItems,
         requested_at: toKstTimestamp(requestedAt),
       })
     if (error) throw error
@@ -130,6 +143,8 @@ export async function POST(req: Request) {
     adCampaignId,
     adCampaignLabel,
     landingUrl,
+    sourcePage,
+    requestedItems,
     requestedAt,
   })
 

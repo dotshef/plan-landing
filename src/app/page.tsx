@@ -1,5 +1,6 @@
 import HeroSection from '@/components/landing/HeroSection'
 import CompactLeadFormSection from '@/components/landing/CompactLeadFormSection'
+import BenefitsSection from '@/components/landing/BenefitsSection'
 import ReportCardsSection from '@/components/landing/ReportCardsSection'
 import MarketIndexCardsSection from '@/components/landing/MarketIndexCardsSection'
 import TrustRowSection from '@/components/landing/TrustRowSection'
@@ -15,6 +16,7 @@ export default async function HomePage() {
     <div style={{ background: 'linear-gradient(180deg,#fff 0%,#fff 60%,#F5F7FB 100%)' }}>
       <HeroSection stocks={popular} />
       <CompactLeadFormSection />
+      <BenefitsSection />
       <ReportCardsSection />
       <MarketIndexCardsSection />
       <TrustRowSection />
