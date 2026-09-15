@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import {
   CalendarDays, Radar, Target, Search, Thermometer, TrendingUp, Zap, BarChart3, Ruler,
-  Play, X, Images, type LucideIcon,
+  X, type LucideIcon,
 } from 'lucide-react'
 import PageLeadForm from '@/components/common/PageLeadForm'
 
@@ -69,9 +69,6 @@ export default function IndicatorsContent() {
             boxShadow: '0 30px 70px -20px rgba(3,10,28,.55), 0 0 0 1px rgba(255,255,255,.06)',
           }}
         >
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, color: '#1B6CF2', background: '#EAF1FE', padding: '8px 14px', borderRadius: 20, marginBottom: 16 }}>
-            <Play size={13} fill="currentColor" strokeWidth={0} /> 영상에서 이어집니다
-          </span>
           <h1 style={{ fontSize: 'clamp(26px, 5vw, 35px)', fontWeight: 800, color: '#111827', lineHeight: 1.4, margin: '0 0 8px', letterSpacing: '-0.01em' }}>
             영상 속 자료 받기
           </h1>
@@ -110,18 +107,14 @@ export default function IndicatorsContent() {
 
             {/* 선택된 자료 칩 */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16, minHeight: 42, alignItems: 'center' }}>
-              {selected.length === 0 ? (
-                <span style={{ fontSize: 14.5, color: '#94A3B8' }}>위에서 원하는 자료를 눌러주세요</span>
-              ) : (
-                selected.map((n) => (
-                  <button
-                    key={n} type="button" onClick={() => toggle(n)}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 10, border: 'none', background: '#1B6CF2', color: '#fff', fontSize: 14.5, fontWeight: 700, cursor: 'pointer' }}
-                  >
-                    {n} <X size={14} strokeWidth={2.5} style={{ opacity: 0.75 }} />
-                  </button>
-                ))
-              )}
+              {selected.map((n) => (
+                <button
+                  key={n} type="button" onClick={() => toggle(n)}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 10, border: 'none', background: '#1B6CF2', color: '#fff', fontSize: 14.5, fontWeight: 700, cursor: 'pointer' }}
+                >
+                  {n} <X size={14} strokeWidth={2.5} style={{ opacity: 0.75 }} />
+                </button>
+              ))}
             </div>
           </div>
 
@@ -150,9 +143,6 @@ export default function IndicatorsContent() {
           }}
         />
         <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '0 24px', marginBottom: 30 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 13.5, fontWeight: 700, color: '#93C0FF', background: 'rgba(96,165,250,0.14)', border: '1px solid rgba(96,165,250,0.25)', padding: '7px 15px', borderRadius: 20, marginBottom: 16 }}>
-            <Images size={15} strokeWidth={2} /> 자료 미리보기
-          </span>
           <h2 style={{ fontSize: 'clamp(22px, 4vw, 29px)', fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '-0.01em' }}>
             이런 자료를 보내드립니다
           </h2>

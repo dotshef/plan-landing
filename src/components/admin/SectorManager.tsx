@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { OctagonX, Trash2, TriangleAlert, X } from 'lucide-react'
+import { ChevronDown, OctagonX, Trash2, TriangleAlert, X } from 'lucide-react'
 
 import { Toast, useToast } from './Toast'
 
@@ -47,6 +47,51 @@ function btn(kind: 'primary' | 'ghost' | 'danger' | 'publish', disabled = false)
   if (kind === 'publish') return { ...base, background: disabled ? '#B0B8C1' : '#03B26C', color: '#fff', border: 'none', height: 50, fontSize: 15 }
   if (kind === 'danger') return { ...base, background: '#fff', color: '#E8342B', border: '1px solid #F3D2D0' }
   return { ...base, background: '#fff', color: '#4E5968', border: '1px solid #E5E8EB' }
+}
+
+/** 분기 선택 드롭다운 — 네이티브 select 대신 div 기반 */
+function QuarterSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div style={{ position: 'relative', width: 100 }}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false) }}
+        style={{
+          ...inputStyle, width: '100%', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6,
+        }}
+      >
+        <span style={{ color: '#191F28' }}>{value}분기</span>
+        <ChevronDown size={16} color="#8B95A1" style={{ flexShrink: 0, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform .15s' }} />
+      </button>
+      {open && (
+        <div style={{ position: 'absolute', top: 46, left: 0, right: 0, zIndex: 20, background: '#fff', border: '1px solid #E5E8EB', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,.08)', overflow: 'hidden' }}>
+          {[1, 2, 3, 4].map((n) => {
+            const selected = String(n) === value
+            return (
+              <button
+                key={n}
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); onChange(String(n)); setOpen(false) }}
+                style={{
+                  display: 'block', width: '100%', padding: '10px 12px', border: 'none', textAlign: 'left',
+                  fontSize: 13.5, fontFamily: 'inherit', cursor: 'pointer',
+                  background: selected ? '#F2F6FF' : '#fff',
+                  fontWeight: selected ? 700 : 400,
+                  color: selected ? '#1B6CF2' : '#191F28',
+                }}
+              >
+                {n}분기
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
 }
 
 /** 종목 검색 입력 — 기존 /api/search 재활용 */
@@ -456,9 +501,7 @@ export default function SectorManager() {
           </div>
           <div>
             <div style={{ fontSize: 12.5, fontWeight: 700, color: '#6B7684', marginBottom: 6 }}>분기</div>
-            <select value={quarter} onChange={(e) => setQuarter(e.target.value)} style={{ ...inputStyle, width: 100, cursor: 'pointer' }}>
-              {[1, 2, 3, 4].map((n) => <option key={n} value={n}>{n}분기</option>)}
-            </select>
+            <QuarterSelect value={quarter} onChange={setQuarter} />
           </div>
           <div>
             <div style={{ fontSize: 12.5, fontWeight: 700, color: '#6B7684', marginBottom: 6 }}>코스피 평균 PER (TTM 공표값)</div>

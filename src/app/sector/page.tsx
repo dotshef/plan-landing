@@ -163,7 +163,7 @@ export default async function SectorPage() {
           </table>
         </div>
         <p style={{ fontSize: 12, color: '#B0B8C1', marginTop: 10, lineHeight: 1.7 }}>
-          자료: 한국투자증권 Open API(재무·시세·수급) · 영업이익은 분기보고서 확정 실적 기준(추정치 미포함) · 섹터 수치는 등록 종목의 단순 산술 평균(외국인 순매수는 합산)
+          영업이익은 분기보고서 확정 실적 기준(추정치 미포함), 섹터 수치는 등록 종목의 단순 산술 평균(외국인 순매수는 합산)
         </p>
       </div>
 
