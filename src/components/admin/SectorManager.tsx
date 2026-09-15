@@ -254,7 +254,7 @@ export default function SectorManager() {
           setKospiPer(r.kospi_avg_per != null ? String(r.kospi_avg_per) : '')
         }
         if (revalidate && r && r.sectors.some((s) => s.stocks.length > 0)) {
-          await runValidate(false)
+          await runValidate()
         } else {
           setValidation(null)
         }
@@ -303,7 +303,7 @@ export default function SectorManager() {
       body: JSON.stringify({ code: hit.code }),
     })
     if (ok) {
-      showToast(true, `${hit.name}을(를) 등록했습니다. 데이터 백필 후 검증해주세요.`)
+      showToast(true, `${hit.name}을(를) 등록했습니다. 데이터 백필을 실행해주세요.`)
       await load(true)
     }
   }
@@ -323,18 +323,15 @@ export default function SectorManager() {
       } else {
         showToast(false, `일부 종목 백필 실패: ${failed.map((f) => f.code).join(', ')}`)
       }
-      await runValidate(false)
+      await runValidate()
     }
     setBusy(null)
   }
 
-  async function runValidate(showNotice = true) {
+  async function runValidate() {
     setBusy('validate')
     const { ok, data } = await api('/api/admin/sector/validate')
-    if (ok) {
-      setValidation(data as unknown as Validation)
-      if (showNotice) showToast(true, '검증을 완료했습니다.')
-    }
+    if (ok) setValidation(data as unknown as Validation)
     setBusy(null)
   }
 
@@ -353,6 +350,7 @@ export default function SectorManager() {
 
   const issuesBySector = new Map(validation?.sectors.map((s) => [s.sectorId, s.stocks]) ?? [])
   const hasStocks = (report?.sectors ?? []).some((s) => s.stocks.length > 0)
+  const hasDataError = Boolean(validation?.sectors.some((s) => s.stocks.some((st) => st.issues.some((i) => i.level === 'error'))))
   const deployable = Boolean(validation?.deployable && report && report.kospi_avg_per != null)
 
   return (
@@ -478,6 +476,15 @@ export default function SectorManager() {
             )
           })}
 
+          {hasDataError && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8, padding: '12px 14px', borderRadius: 10,
+              background: '#FCEEED', color: '#E8342B', fontSize: 13, fontWeight: 700,
+            }}>
+              <OctagonX size={16} strokeWidth={2.2} style={{ flexShrink: 0 }} />
+              데이터베이스에 필요한 데이터가 부족합니다. 아래 &quot;데이터 백필&quot; 버튼을 눌러주세요
+            </div>
+          )}
         </div>
       )}
 
@@ -487,10 +494,7 @@ export default function SectorManager() {
       {report && (
         <div style={{ ...card, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
           <button onClick={runBackfill} disabled={busy !== null || !hasStocks} style={btn('ghost', busy !== null || !hasStocks)}>
-            {busy === 'backfill' ? '백필 중… (최대 1분)' : '1. 데이터 백필'}
-          </button>
-          <button onClick={() => void runValidate()} disabled={busy !== null || !hasStocks} style={btn('ghost', busy !== null || !hasStocks)}>
-            {busy === 'validate' ? '검증 중…' : '2. 데이터 검증'}
+            {busy === 'backfill' ? '백필 중… (최대 1분)' : '데이터 백필'}
           </button>
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
             {validation && !validation.deployable && (
