@@ -100,6 +100,81 @@ function StockSearch({ onPick, disabled }: { onPick: (hit: SearchHit) => void; d
   )
 }
 
+/** 방문 사이트 반영 확인 모달 */
+function PublishConfirmModal({ open, busy, onClose, onConfirm }: { open: boolean; busy: boolean; onClose: () => void; onConfirm: () => void }) {
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev }
+  }, [open, onClose])
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          onClick={onClose}
+          style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(17,24,39,.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: '#fff', borderRadius: 18, width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 20px 60px rgba(17,40,90,.24)' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 22px', borderBottom: '1px solid #F2F4F6' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: '#111827' }}>방문 사이트에 반영할까요?</div>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="닫기"
+                style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: 4, display: 'flex', color: '#8B95A1' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ padding: '20px 22px', fontSize: 14, color: '#4E5968', lineHeight: 1.7 }}>
+              지표 4종을 계산해 저장하고 퍼블릭 페이지에 즉시 공개됩니다.
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, padding: '14px 22px', borderTop: '1px solid #F2F4F6' }}>
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={busy}
+                style={{ flex: 1, height: 46, borderRadius: 12, background: '#fff', color: '#4E5968', fontSize: 14, fontWeight: 700, border: '1px solid #E5E8EB', cursor: busy ? 'not-allowed' : 'pointer' }}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={onConfirm}
+                disabled={busy}
+                style={{
+                  flex: 2, height: 46, border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, color: '#fff',
+                  background: busy ? '#B0B8C1' : '#03B26C',
+                  cursor: busy ? 'not-allowed' : 'pointer',
+                }}
+              >
+                {busy ? '반영 중…' : '반영하기'}
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
 /** 섹터 추가 모달 */
 function SectorAddModal({ open, onClose, onCreated }: { open: boolean; onClose: () => void; onCreated: () => Promise<void> }) {
   const [name, setName] = useState('')
@@ -237,6 +312,9 @@ export default function SectorManager() {
   // 섹터 추가 모달
   const [addOpen, setAddOpen] = useState(false)
 
+  // 방문 사이트 반영 확인 모달
+  const [publishOpen, setPublishOpen] = useState(false)
+
   const [validation, setValidation] = useState<Validation | null>(null)
   const [busy, setBusy] = useState<string | null>(null) // 'save'|'sector'|'backfill'|'validate'|'publish'
 
@@ -336,10 +414,10 @@ export default function SectorManager() {
   }
 
   async function runPublish() {
-    if (!window.confirm('방문 사이트에 반영할까요?\n지표 4종을 계산해 저장하고 퍼블릭 페이지에 즉시 공개됩니다.')) return
     setBusy('publish')
     const { ok } = await api('/api/admin/sector/publish', { method: 'POST' })
     if (ok) showToast(true, '방문 사이트에 반영되었습니다. /sector 페이지에서 확인하세요.')
+    setPublishOpen(false)
     await load(true)
     setBusy(null)
   }
@@ -489,6 +567,12 @@ export default function SectorManager() {
       )}
 
       <SectorAddModal open={addOpen} onClose={() => setAddOpen(false)} onCreated={() => load(true)} />
+      <PublishConfirmModal
+        open={publishOpen}
+        busy={busy === 'publish'}
+        onClose={() => { if (busy !== 'publish') setPublishOpen(false) }}
+        onConfirm={() => void runPublish()}
+      />
 
       {/* 액션 */}
       {report && (
@@ -503,7 +587,7 @@ export default function SectorManager() {
             {validation?.deployable && report.kospi_avg_per == null && (
               <span style={{ fontSize: 13, fontWeight: 700, color: '#92610A' }}>코스피 평균 PER을 입력해주세요</span>
             )}
-            <button onClick={runPublish} disabled={busy !== null || !deployable} style={btn('publish', busy !== null || !deployable)}>
+            <button onClick={() => setPublishOpen(true)} disabled={busy !== null || !deployable} style={btn('publish', busy !== null || !deployable)}>
               {busy === 'publish' ? '반영 중…' : '방문 사이트 반영'}
             </button>
           </div>
