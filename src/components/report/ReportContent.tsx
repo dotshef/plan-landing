@@ -1,7 +1,7 @@
 'use client'
 
 import { type CSSProperties } from 'react'
-import { TrendingUp, Lock } from 'lucide-react'
+import { TrendingUp, Lock, Target, CalendarDays, type LucideIcon } from 'lucide-react'
 import {
   BarChart, Bar, Cell, ComposedChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -35,14 +35,14 @@ export default function ReportContent() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div className="responsive-report-summary-grid" style={{ display: 'grid', gridTemplateColumns: 'var(--grid-columns, repeat(3,1fr))', gap: 12 }}>
-            {[
-              { label: '투자 의견',           icon: true,  value: r.opinion,                                                   sub: '국내 증권사 종합 투자의견', color: r.opinion === '매수' ? '#E8342B' : r.opinion === '매도' ? '#3182f6' : '#F5C900', subColor: '#8B95A1' },
-              { label: '현재가',              icon: false, value: fmt(STOCK_QUOTE.currentPrice) + '원',                       sub: `${STOCK_QUOTE.changeRate >= 0 ? '▲' : '▼'} ${Math.abs(STOCK_QUOTE.changeRate).toFixed(2)}% 전일 대비`,  color: '#111827', subColor: '#8B95A1' },
-              { label: '◎ 목표 주가 (12개월)', icon: false, value: fmt(r.targetPrice) + '원',                                 sub: `▲ ${((r.targetPrice / STOCK_QUOTE.currentPrice - 1) * 100).toFixed(1)}% 상승 여력`,  color: '#111827', subColor: '#E8342B' },
-            ].map((card) => (
+            {([
+              { label: '투자 의견',          Icon: TrendingUp, value: r.opinion,                                                   sub: '국내 증권사 종합 투자의견', color: r.opinion === '매수' ? '#E8342B' : r.opinion === '매도' ? '#3182f6' : '#F5C900', subColor: '#8B95A1' },
+              { label: '현재가',             Icon: null,       value: fmt(STOCK_QUOTE.currentPrice) + '원',                       sub: `${STOCK_QUOTE.changeRate >= 0 ? '▲' : '▼'} ${Math.abs(STOCK_QUOTE.changeRate).toFixed(2)}% 전일 대비`,  color: '#111827', subColor: '#8B95A1' },
+              { label: '목표 주가 (12개월)', Icon: Target,     value: fmt(r.targetPrice) + '원',                                  sub: `▲ ${((r.targetPrice / STOCK_QUOTE.currentPrice - 1) * 100).toFixed(1)}% 상승 여력`,  color: '#111827', subColor: '#E8342B' },
+            ] as { label: string; Icon: LucideIcon | null; value: string; sub: string; color: string; subColor: string }[]).map((card) => (
               <div key={card.label} style={{ border: '1px solid #EEF1F6', borderRadius: 12, padding: 16 }}>
                 <div style={{ fontSize: 12, color: '#8B95A1', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  {card.icon && <TrendingUp size={12} color="#8B95A1" />}{card.label}
+                  {card.Icon && <card.Icon size={12} color="#8B95A1" />}{card.label}
                 </div>
                 <div style={{ fontSize: 17, fontWeight: 800, color: card.color, marginTop: 6 }}>{card.value}</div>
                 <div style={{ fontSize: 11, color: card.subColor, fontWeight: 700, marginTop: 6 }}>{card.sub}</div>
@@ -51,7 +51,9 @@ export default function ReportContent() {
           </div>
 
           <div className="responsive-report-meta" style={{ display: 'flex', flexDirection: 'var(--report-meta-direction, row)' as CSSProperties['flexDirection'], gap: 'var(--report-meta-gap, 20px)', fontSize: 12, color: '#8B95A1' }}>
-            <span>▤ 리포트 발간일 <strong style={{ color: '#4E5968' }}>{r.publishDate}</strong></span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <CalendarDays size={12} color="#8B95A1" /> 리포트 발간일 <strong style={{ color: '#4E5968' }}>{r.publishDate}</strong>
+            </span>
             <span>다음 업데이트 <strong style={{ color: '#4E5968' }}>{r.nextUpdateDate}</strong></span>
           </div>
 

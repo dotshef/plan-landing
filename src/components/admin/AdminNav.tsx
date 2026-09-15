@@ -1,16 +1,19 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import PasswordChangeModal from './PasswordChangeModal'
 
 const MENU = [
+  { href: '/admin/trial', label: '7일 체험 관리' },
   { href: '/admin/sector', label: '4분기 섹터' },
-  { href: '/admin/trial', label: '7일 체험 이미지' },
   { href: '/admin/users', label: '관리자 관리' },
 ]
 
 export default function AdminNav({ email }: { email: string }) {
   const pathname = usePathname()
+  const [passwordOpen, setPasswordOpen] = useState(false)
 
   async function handleLogout() {
     await fetch('/api/admin/logout', { method: 'POST' }).catch(() => {})
@@ -39,7 +42,12 @@ export default function AdminNav({ email }: { email: string }) {
         })}
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontSize: 12.5, color: '#8B95A1' }}>{email}</span>
-          <Link href="/admin/password" style={{ fontSize: 12.5, color: '#6B7684', textDecoration: 'none', fontWeight: 600 }}>비밀번호 변경</Link>
+          <button
+            onClick={() => setPasswordOpen(true)}
+            style={{ border: '1px solid #E5E8EB', background: '#fff', borderRadius: 8, padding: '6px 12px', fontSize: 12.5, fontWeight: 700, color: '#4E5968', cursor: 'pointer' }}
+          >
+            비밀번호 변경
+          </button>
           <button
             onClick={handleLogout}
             style={{ border: '1px solid #E5E8EB', background: '#fff', borderRadius: 8, padding: '6px 12px', fontSize: 12.5, fontWeight: 700, color: '#4E5968', cursor: 'pointer' }}
@@ -48,6 +56,7 @@ export default function AdminNav({ email }: { email: string }) {
           </button>
         </div>
       </div>
+      <PasswordChangeModal open={passwordOpen} email={email} onClose={() => setPasswordOpen(false)} />
     </div>
   )
 }

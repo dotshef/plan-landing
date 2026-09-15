@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { ArrowLeft, ChevronRight } from 'lucide-react'
 import { getStockData } from '@/data/loader'
 import { getStockName } from '@/data/registry'
 import { StockDataProvider } from '@/context/StockDataContext'
@@ -28,10 +29,10 @@ export default async function ReportPage({ params }: { params: Promise<{ code: s
     <StockDataProvider data={data}>
       <div className="responsive-page-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--page-padding, 18px 28px 56px)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18, fontSize: 13, color: '#6B7684' }}>
-          <Link href={`/stock/${quote.code}`} style={{ cursor: 'pointer', textDecoration: 'none', color: '#6B7684' }}>
-            ← {quote.name}({quote.code}) 분석
+          <Link href={`/stock/${quote.code}`} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', textDecoration: 'none', color: '#6B7684' }}>
+            <ArrowLeft size={15} strokeWidth={2} /> {quote.name}({quote.code}) 분석
           </Link>
-          <span style={{ color: '#D1D6DB' }}>›</span>
+          <ChevronRight size={15} strokeWidth={2} color="#D1D6DB" />
           <span style={{ color: '#4E5968', fontWeight: 600 }}>전문가 리포트</span>
         </div>
 

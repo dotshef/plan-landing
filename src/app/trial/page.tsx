@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import type { LucideIcon } from 'lucide-react'
+import { Filter, UserRoundCheck, MessageSquareText, Headset, Smartphone, CandlestickChart, MessageCircle } from 'lucide-react'
 import { listTrialAssets, publicUrl } from '@/lib/storage/trialAssets'
 import PageLeadForm from '@/components/common/PageLeadForm'
 
@@ -11,10 +13,10 @@ export const metadata: Metadata = {
 }
 
 const STEPS = [
-  { n: 'STEP 1', title: '시스템 추출', desc: '수급·거래량·재무 조건으로 전 종목을 매일 자동 스크리닝합니다', num: '2,600개 → 80개' },
-  { n: 'STEP 2', title: '담당자 검토', desc: '추출된 후보를 담당자가 업종별로 다시 검토합니다', num: '80개 → 3~5개' },
-  { n: 'STEP 3', title: '타이밍 발송', desc: '진입 구간과 청산 구간에 도달하면 문자로 알려드립니다', num: '장중 실시간' },
-  { n: 'STEP 4', title: '담당자 배정', desc: '체험기간 동안 이용 방법이나 궁금한 사항은 언제든 문의 가능합니다', num: '평일 09~18시' },
+  { n: 'STEP 1', Icon: Filter, title: '시스템 추출', desc: '수급·거래량·재무 조건으로 전 종목을 매일 자동 스크리닝합니다', num: '2,600개 → 80개' },
+  { n: 'STEP 2', Icon: UserRoundCheck, title: '담당자 검토', desc: '추출된 후보를 담당자가 업종별로 다시 검토합니다', num: '80개 → 3~5개' },
+  { n: 'STEP 3', Icon: MessageSquareText, title: '타이밍 발송', desc: '진입 구간과 청산 구간에 도달하면 문자로 알려드립니다', num: '장중 실시간' },
+  { n: 'STEP 4', Icon: Headset, title: '담당자 배정', desc: '체험기간 동안 이용 방법이나 궁금한 사항은 언제든 문의 가능합니다', num: '평일 09~18시' },
 ]
 
 const SCHEDULE = [
@@ -27,23 +29,28 @@ const SCHEDULE = [
 ]
 
 const sectionTitle: React.CSSProperties = { fontSize: 26, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em', margin: '0 0 8px', textAlign: 'center' }
-const sectionKicker: React.CSSProperties = { fontSize: 14, fontWeight: 800, color: '#1B6CF2', margin: '0 0 8px', textAlign: 'center' }
 const sectionSub: React.CSSProperties = { fontSize: 15, color: '#6B7684', margin: 0, textAlign: 'center' }
+
+// 자료 업로드 전 빈 슬롯 — 섹션을 숨기지 않고 아이콘·안내문으로 자리를 채운다.
+function EmptySlot({ Icon, name, desc, minHeight }: { Icon: LucideIcon; name: string; desc: string; minHeight: number }) {
+  return (
+    <div style={{ minHeight, border: '2px dashed #CBD5E1', borderRadius: 14, background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 20, textAlign: 'center' }}>
+      <Icon size={38} strokeWidth={1.5} color="#CBD5E1" />
+      <p style={{ fontSize: 16, fontWeight: 800, color: '#64748B', margin: '14px 0 8px' }}>{name}</p>
+      <p style={{ fontSize: 14, color: '#94A3B8', lineHeight: 1.7, margin: 0, whiteSpace: 'pre-line' }}>{desc}</p>
+    </div>
+  )
+}
 
 export default async function TrialPage() {
   const assets = await listTrialAssets().catch(() => [])
-  const sms = assets.filter((a) => a.kind === 'sms')
-  const charts = assets.filter((a) => a.kind === 'chart')
   const reviews = assets.filter((a) => a.kind === 'review')
 
-  // 문자캡처·차트 세트 — group_no 기준 짝. 둘 다 있는 세트만 노출.
-  const groupNos = [...new Set([...sms, ...charts].map((a) => a.group_no ?? 0))].sort((a, b) => a - b)
-  const pairs = groupNos
-    .map((g) => ({
-      sms: sms.find((a) => (a.group_no ?? 0) === g),
-      chart: charts.find((a) => (a.group_no ?? 0) === g),
-    }))
-    .filter((p) => p.sms || p.chart)
+  // 발송 기록 세트 — 문자 캡처·차트 각 1장, 세트 하나만 노출.
+  const pair = {
+    sms: assets.find((a) => a.kind === 'sms'),
+    chart: assets.find((a) => a.kind === 'chart'),
+  }
 
   return (
     <div style={{ background: '#fff' }}>
@@ -59,21 +66,19 @@ export default async function TrialPage() {
           <p style={{ fontSize: 16.5, color: '#93A6C9', marginTop: 14, lineHeight: 1.7 }}>
             보유 종목 상담 1회, 매매 타이밍 알림 7일.<br />7일 뒤 자동으로 종료됩니다.
           </p>
-          <div style={{ display: 'flex', gap: 8, marginTop: 22, flexWrap: 'wrap' }}>
-            <span style={{ background: '#1E2B4F', borderRadius: 10, padding: '12px 16px', fontSize: 14.5, color: '#DBE7FE' }}>📞 1:1 상담 1회</span>
-            <span style={{ background: '#1E2B4F', borderRadius: 10, padding: '12px 16px', fontSize: 14.5, color: '#DBE7FE' }}>💬 진입·청산 구간 알림</span>
-          </div>
         </div>
       </div>
 
       {/* 선정 4단계 */}
       <div style={{ maxWidth: 1120, margin: '0 auto', padding: '56px 24px' }}>
-        <p style={sectionKicker}>어떻게 종목을 고르나</p>
         <h2 style={sectionTitle}>시스템이 걸러내고, 사람이 다시 봅니다</h2>
         <p style={sectionSub}>알림 하나가 나가기까지 네 단계를 거칩니다</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, marginTop: 30 }}>
           {STEPS.map((s) => (
             <div key={s.n} style={{ border: '1px solid #EEF1F6', borderRadius: 14, padding: '24px 20px', textAlign: 'center', background: '#fff' }}>
+              <div style={{ width: 52, height: 52, margin: '0 auto 14px', borderRadius: 14, background: '#EEF3FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <s.Icon size={24} strokeWidth={2} color="#1B6CF2" />
+              </div>
               <p style={{ fontSize: 13, fontWeight: 800, color: '#8B95A1', margin: '0 0 6px' }}>{s.n}</p>
               <p style={{ fontSize: 18, fontWeight: 800, color: '#111827', margin: '0 0 8px' }}>{s.title}</p>
               <p style={{ fontSize: 14, color: '#4E5968', lineHeight: 1.65, margin: 0 }}>{s.desc}</p>
@@ -86,7 +91,6 @@ export default async function TrialPage() {
       {/* 7일 일정 */}
       <div style={{ background: '#F5F7FB' }}>
         <div style={{ maxWidth: 1120, margin: '0 auto', padding: '56px 24px' }}>
-          <p style={sectionKicker}>7일 동안</p>
           <h2 style={sectionTitle}>받아보실 내용 전부입니다</h2>
           <p style={sectionSub}>체험 기간에만 열리는 자료가 함께 나갑니다</p>
           <div style={{ marginTop: 30, overflowX: 'auto' }}>
@@ -112,50 +116,68 @@ export default async function TrialPage() {
         </div>
       </div>
 
-      {/* 발송 기록 (동적 이미지 — 없으면 섹션 숨김) */}
-      {pairs.length > 0 && (
-        <div style={{ maxWidth: 1120, margin: '0 auto', padding: '56px 24px' }}>
-          <p style={sectionKicker}>발송 기록</p>
-          <h2 style={sectionTitle}>실제 발송 내역</h2>
-          <p style={sectionSub}>보낸 문자와 그 뒤 차트를 그대로 공개합니다</p>
-          <div style={{ display: 'grid', gap: 24, marginTop: 30 }}>
-            {pairs.map((p, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, alignItems: 'stretch' }}>
-                {p.sms && (
-                  <div style={{ border: '1px solid #EEF1F6', borderRadius: 14, overflow: 'hidden', background: '#F8FAFC' }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={publicUrl(p.sms.storage_path)} alt={p.sms.alt ?? '발송 문자 캡처'} style={{ display: 'block', width: '100%', height: 'auto' }} />
-                  </div>
-                )}
-                {p.chart && (
-                  <div style={{ border: '1px solid #EEF1F6', borderRadius: 14, overflow: 'hidden', background: '#F8FAFC' }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={publicUrl(p.chart.storage_path)} alt={p.chart.alt ?? '발송 시점 차트'} style={{ display: 'block', width: '100%', height: 'auto' }} />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 참여자 후기 (동적 이미지 — 없으면 섹션 숨김) */}
-      {reviews.length > 0 && (
-        <div style={{ background: '#F5F7FB' }}>
-          <div style={{ maxWidth: 1120, margin: '0 auto', padding: '56px 24px' }}>
-            <p style={sectionKicker}>참여자 후기</p>
-            <h2 style={sectionTitle}>체험해보신 분들의 이야기</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16, marginTop: 30 }}>
-              {reviews.map((r) => (
-                <div key={r.id} style={{ border: '1px solid #EEF1F6', borderRadius: 14, overflow: 'hidden', background: '#fff' }}>
+      {/* 발송 기록 (자료 없으면 빈 슬롯 노출) */}
+      <div style={{ maxWidth: 1120, margin: '0 auto', padding: '56px 24px' }}>
+        <h2 style={sectionTitle}>실제 발송 내역</h2>
+        <p style={sectionSub}>보낸 문자와 그 뒤 차트를 그대로 공개합니다</p>
+        <div style={{ display: 'grid', gap: 24, marginTop: 30 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'stretch' }}>
+            <div style={{ flex: '1 1 240px', maxWidth: 300 }}>
+              {pair.sms ? (
+                <div style={{ border: '1px solid #EEF1F6', borderRadius: 14, overflow: 'hidden', background: '#F8FAFC' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={publicUrl(r.storage_path)} alt={r.alt ?? '참여자 후기'} style={{ display: 'block', width: '100%', height: 'auto' }} />
+                  <img src={publicUrl(pair.sms.storage_path)} alt={pair.sms.alt ?? '발송 문자 캡처'} style={{ display: 'block', width: '100%', height: 'auto' }} />
                 </div>
-              ))}
+              ) : (
+                <EmptySlot Icon={Smartphone} name="문자 캡처 이미지" desc={'발송 일시가 보이는\n원본 캡처 권장\n280 × 400px'} minHeight={380} />
+              )}
+            </div>
+            <div style={{ flex: '3 1 320px' }}>
+              {pair.chart ? (
+                <div style={{ border: '1px solid #EEF1F6', borderRadius: 14, overflow: 'hidden', background: '#F8FAFC' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={publicUrl(pair.chart.storage_path)} alt={pair.chart.alt ?? '발송 시점 차트'} style={{ display: 'block', width: '100%', height: 'auto' }} />
+                </div>
+              ) : (
+                <EmptySlot Icon={CandlestickChart} name="차트 이미지" desc={'진입·청산 발송 시점을 화살표로 표시한 일봉 차트\n620 × 400px'} minHeight={380} />
+              )}
             </div>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* 참여자 후기 (자료 없으면 빈 슬롯 노출, 3개 초과 시 슬라이딩) */}
+      <div style={{ background: '#F5F7FB', overflow: 'hidden' }}>
+        <div style={{ maxWidth: 1120, margin: '0 auto', padding: '56px 24px' }}>
+          <h2 style={sectionTitle}>체험해보신 분들의 이야기</h2>
+          {reviews.length > 3 ? (
+            <div className="mat-marq review-marq" style={{ marginTop: 30 }}>
+              {/* 목록을 두 번 이어붙여 끊김 없이 순환시킨다 */}
+              <div className="mat-track">
+                {[...reviews, ...reviews].map((r, i) => (
+                  <div className="mat-card review-card" key={`${r.id}-${i}`}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={publicUrl(r.storage_path)} alt={i < reviews.length ? (r.alt ?? '참여자 후기') : ''} loading="lazy" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16, marginTop: 30 }}>
+              {reviews.length > 0
+                ? reviews.map((r) => (
+                    <div key={r.id} style={{ border: '1px solid #EEF1F6', borderRadius: 14, overflow: 'hidden', background: '#fff' }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={publicUrl(r.storage_path)} alt={r.alt ?? '참여자 후기'} style={{ display: 'block', width: '100%', height: 'auto' }} />
+                    </div>
+                  ))
+                : [0, 1, 2].map((i) => (
+                    <EmptySlot key={i} Icon={MessageCircle} name="후기 이미지" desc="340 × 220px" minHeight={220} />
+                  ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* CTA + 신청 폼 */}
       <div style={{ background: '#0F1C3D' }}>

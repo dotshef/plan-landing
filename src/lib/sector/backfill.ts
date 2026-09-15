@@ -23,12 +23,16 @@ function prevDayYyyymmdd(iso: string): string {
   return d.toISOString().slice(0, 10).replace(/-/g, '')
 }
 
-/** N-1분기 시작 ~ N분기 끝(미래면 오늘)의 시세·수급을 채운다. */
+/** N-1분기 시작 ~ N분기 끝(미래면 전일)의 시세·수급을 채운다. */
 async function backfillDaily(code: string, q: QuarterRef): Promise<void> {
   const { from } = quarterRange(prevQuarter(q))
   const { to } = quarterRange(q)
-  const today = new Date().toISOString().slice(0, 10)
-  const end = to < today ? to : today
+  // 당일을 기준일로 주면 KIS가 집계 완료(15:40) 전까지 OPSQ2001(TIME LIMIT)로 거절한다.
+  // 백필은 과거 구간용이므로 항상 전일(KST)까지만 조회 — 당일 행은 야간 cron이 채운다.
+  const kstYesterday = new Date(Date.now() + 9 * 60 * 60 * 1000 - 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10)
+  const end = to < kstYesterday ? to : kstYesterday
 
   let cursor = yyyymmdd(end)
   // 2개 분기 ≈ 120영업일, 1회 30영업일 → 4~5회. 이상 응답 대비 상한.

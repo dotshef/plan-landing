@@ -9,7 +9,6 @@ export const TRIAL_BUCKET = 'public-assets'
 
 export type TrialAssetKind = 'sms' | 'chart' | 'review'
 export const TRIAL_KINDS: TrialAssetKind[] = ['sms', 'chart', 'review']
-export const REVIEW_MAX = 3
 
 const ALLOWED_TYPES: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -54,12 +53,16 @@ export async function uploadTrialAsset(input: {
   if (!ext) throw new Error('JPG·PNG·WebP 이미지만 업로드할 수 있습니다.')
   if (input.file.size > MAX_FILE_BYTES) throw new Error('파일 크기는 5MB 이하여야 합니다.')
 
-  if (input.kind === 'review') {
+  // 발송 기록 세트는 하나만 — 문자 캡처·차트 각 1장으로 제한. 참여자 후기는 개수 제한 없음.
+  if (input.kind === 'sms' || input.kind === 'chart') {
     const { count } = await db()
       .from('trial_asset')
       .select('id', { count: 'exact', head: true })
-      .eq('kind', 'review')
-    if ((count ?? 0) >= REVIEW_MAX) throw new Error(`참여자 후기는 최대 ${REVIEW_MAX}개까지 등록할 수 있습니다.`)
+      .eq('kind', input.kind)
+    if ((count ?? 0) >= 1) {
+      const label = input.kind === 'sms' ? '문자 캡처' : '차트'
+      throw new Error(`발송 기록 세트는 하나만 등록할 수 있습니다. 기존 ${label} 이미지를 삭제한 뒤 다시 등록해주세요.`)
+    }
   }
 
   const path = `trial/${input.kind}/${randomUUID()}.${ext}`

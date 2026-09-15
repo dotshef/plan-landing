@@ -1,13 +1,14 @@
 .footer {
   --footer-max-width: 1320px;
   --footer-padding-x: 28px;
-  --footer-padding-top: 44px;
+  /* 본문과의 간격(기존 margin-top 80px)을 padding 으로 흡수 — margin 은 투명이라
+     body 배경(#F5F7FB)이 비쳐 푸터 위에 색이 다른 띠가 생겼다. */
+  --footer-padding-top: 124px;
   --footer-padding-bottom: 34px;
   --footer-column-gap: 28px;
   --footer-section-gap: 24px;
   --footer-readable-width: 900px;
 
-  margin-top: 80px;
   border-top: 1px solid var(--color-grey-200);
   background: var(--color-grey-50);
 }
@@ -112,7 +113,7 @@
 @media (max-width: 620px) {
   .footer {
     --footer-padding-x: 16px;
-    --footer-padding-top: 36px;
+    --footer-padding-top: 116px;
     --footer-padding-bottom: 28px;
   }
 

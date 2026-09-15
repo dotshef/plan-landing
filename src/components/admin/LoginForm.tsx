@@ -24,7 +24,7 @@ export default function LoginForm() {
         setError(result.error ?? '로그인에 실패했습니다.')
         return
       }
-      window.location.href = result.mustChangePassword ? '/admin/password' : '/admin/sector'
+      window.location.href = result.mustChangePassword ? '/admin/password' : '/admin/trial'
     } catch {
       setError('네트워크 오류가 발생했습니다.')
     } finally {

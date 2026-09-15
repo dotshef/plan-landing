@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Newspaper, Lock } from 'lucide-react'
 import { db } from '@/lib/db/server'
 import { loadPublishedReport, type SectorRow } from '@/lib/sector/report'
 import PageLeadForm from '@/components/common/PageLeadForm'
@@ -137,10 +138,7 @@ export default async function SectorPage() {
 
       {/* 비교 표 */}
       <div style={{ maxWidth: 1120, margin: '0 auto', padding: '48px 24px 8px' }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: '#111827', margin: '0 0 6px' }}>섹터 한눈에 비교</h2>
-        <p style={{ fontSize: 13.5, color: '#8B95A1', margin: '0 0 18px' }}>
-          {baseDateLabel} · 영업이익 증가율은 직전 분기 대비, 업종 PER은 최근 4개 분기 실적(TTM) 기준
-        </p>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: '#111827', margin: '0 0 18px' }}>섹터 한눈에 비교</h2>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #EEF1F6', borderRadius: 14, overflow: 'hidden', minWidth: 640 }}>
             <thead>
@@ -229,7 +227,9 @@ export default async function SectorPage() {
 
               <div>
                 {/* 최근 뉴스 */}
-                <div style={{ fontSize: 13.5, fontWeight: 800, color: '#4E5968', marginBottom: 10 }}>📰 최근 관련 뉴스</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 800, color: '#4E5968', marginBottom: 10 }}>
+                  <Newspaper size={15} strokeWidth={2} color="#8B95A1" /> 최근 관련 뉴스
+                </div>
                 {newsPerSector[idx].length === 0 ? (
                   <div style={{ fontSize: 13.5, color: '#B0B8C1', padding: '14px 0' }}>표시할 뉴스가 없습니다.</div>
                 ) : (
@@ -247,7 +247,7 @@ export default async function SectorPage() {
 
                 {/* 주도종목 잠금 카드 */}
                 <div style={{ marginTop: 18, display: 'flex', alignItems: 'center', gap: 12, background: '#F5F8FE', border: '1px solid #E3EDFD', borderRadius: 12, padding: '16px 18px' }}>
-                  <span style={{ fontSize: 22 }}>🔒</span>
+                  <Lock size={22} strokeWidth={2} color="#1B6CF2" style={{ flexShrink: 0 }} />
                   <div>
                     <div style={{ fontSize: 14.5, fontWeight: 800, color: '#191F28' }}>이 섹터 주도종목</div>
                     <div style={{ fontSize: 13, color: '#6B7684', marginTop: 2 }}>종목명과 선정 근거를 신청 시 문자로 보내드립니다</div>

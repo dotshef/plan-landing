@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { Toast, useToast } from './Toast'
+
 interface Asset {
   id: number
   kind: 'sms' | 'chart' | 'review'
@@ -55,7 +57,7 @@ function Slot({ asset, label, onUpload, onDelete, uploading, uploadingKey }: {
 export default function TrialManager() {
   const [assets, setAssets] = useState<Asset[]>([])
   const [loading, setLoading] = useState(true)
-  const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null)
+  const { toast, showToast } = useToast()
   const [uploading, setUploading] = useState<string | null>(null) // 'sms:1' | 'chart:1' | 'review'
   const fileRef = useRef<HTMLInputElement | null>(null)
   const pendingRef = useRef<{ kind: Asset['kind']; groupNo: number | null } | null>(null)
@@ -84,7 +86,6 @@ export default function TrialManager() {
     if (!file || !pending) return
     const key = `${pending.kind}:${pending.groupNo ?? ''}`
     setUploading(key)
-    setNotice(null)
     try {
       const fd = new FormData()
       fd.set('file', file)
@@ -92,11 +93,11 @@ export default function TrialManager() {
       if (pending.groupNo != null) fd.set('groupNo', String(pending.groupNo))
       const res = await fetch('/api/admin/trial-assets', { method: 'POST', body: fd })
       const data = await res.json().catch(() => ({}))
-      if (!res.ok) { setNotice({ ok: false, text: data.error ?? '업로드에 실패했습니다.' }); return }
-      setNotice({ ok: true, text: '이미지를 등록했습니다. 퍼블릭 페이지에 즉시 반영됩니다.' })
+      if (!res.ok) { showToast(false, data.error ?? '업로드에 실패했습니다.'); return }
+      showToast(true, '이미지를 등록했습니다. 퍼블릭 페이지에 즉시 반영됩니다.')
       await load()
     } catch {
-      setNotice({ ok: false, text: '네트워크 오류가 발생했습니다.' })
+      showToast(false, '네트워크 오류가 발생했습니다.')
     } finally {
       setUploading(null)
       if (fileRef.current) fileRef.current.value = ''
@@ -107,21 +108,19 @@ export default function TrialManager() {
     if (!window.confirm('이 이미지를 삭제할까요? 퍼블릭 페이지에서 즉시 사라집니다.')) return
     const res = await fetch(`/api/admin/trial-assets?id=${asset.id}`, { method: 'DELETE' })
     const data = await res.json().catch(() => ({}))
-    setNotice(res.ok ? { ok: true, text: '삭제했습니다.' } : { ok: false, text: data.error ?? '삭제에 실패했습니다.' })
+    if (res.ok) showToast(true, '삭제했습니다.')
+    else showToast(false, data.error ?? '삭제에 실패했습니다.')
     await load()
   }
 
-  const sms = assets.filter((a) => a.kind === 'sms')
-  const charts = assets.filter((a) => a.kind === 'chart')
+  // 발송 기록 세트는 하나만 — 문자 캡처·차트 각 1장. 참여자 후기는 개수 제한 없음.
+  const smsAsset = assets.find((a) => a.kind === 'sms')
+  const chartAsset = assets.find((a) => a.kind === 'chart')
   const reviews = assets.filter((a) => a.kind === 'review')
-
-  // 문자캡처·차트 세트: 존재하는 group_no 모음 + 새 세트 추가 슬롯
-  const groupNos = [...new Set([...sms, ...charts].map((a) => a.group_no ?? 0))].sort((a, b) => a - b)
-  const nextGroupNo = groupNos.length ? Math.max(...groupNos) + 1 : 1
 
   return (
     <div>
-      <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', margin: '4px 0 6px' }}>추천주 7일 체험 이미지</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', margin: '4px 0 6px' }}>추천주 7일 체험 관리</h1>
       <p style={{ fontSize: 13.5, color: '#6B7684', margin: '0 0 20px' }}>
         JPG·PNG·WebP, 5MB 이하. 등록·삭제 즉시 퍼블릭 페이지(/trial)에 반영됩니다.
       </p>
@@ -131,15 +130,6 @@ export default function TrialManager() {
         onChange={(e) => void handleFile(e.target.files?.[0])}
       />
 
-      {notice && (
-        <div style={{
-          marginBottom: 16, padding: '12px 16px', borderRadius: 12, fontSize: 13.5, fontWeight: 600,
-          background: notice.ok ? '#EAF7F1' : '#FCEEED', color: notice.ok ? '#03B26C' : '#E8342B',
-        }}>
-          {notice.text}
-        </div>
-      )}
-
       {loading ? (
         <div style={{ ...card, textAlign: 'center', color: '#8B95A1' }}>불러오는 중…</div>
       ) : (
@@ -147,42 +137,31 @@ export default function TrialManager() {
           <div style={card}>
             <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 4 }}>발송 기록 세트 (문자 캡처 ↔ 차트)</div>
             <p style={{ fontSize: 12.5, color: '#8B95A1', margin: '0 0 16px' }}>
-              같은 세트의 문자 캡처와 차트가 좌우로 짝지어 노출됩니다.
+              세트는 하나만 등록됩니다. 문자 캡처와 차트가 좌우로 짝지어 노출됩니다.
             </p>
-            {[...groupNos, nextGroupNo].map((g) => {
-              const s = sms.find((a) => (a.group_no ?? 0) === g)
-              const c = charts.find((a) => (a.group_no ?? 0) === g)
-              const isNew = !s && !c
-              return (
-                <div key={g} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', flexWrap: 'wrap', padding: '14px 0', borderTop: g === groupNos[0] || (isNew && groupNos.length === 0) ? 'none' : '1px solid #F2F4F6' }}>
-                  <div style={{ width: 60, paddingTop: 24, fontSize: 13, fontWeight: 800, color: isNew ? '#B0B8C1' : '#1B6CF2' }}>
-                    {isNew ? '새 세트' : `세트 ${g}`}
-                  </div>
-                  <Slot asset={s} label="문자 캡처 이미지" onUpload={() => pickFile('sms', g)} onDelete={(a) => void handleDelete(a)} uploading={uploading} uploadingKey={`sms:${g}`} />
-                  <Slot asset={c} label="차트 이미지" onUpload={() => pickFile('chart', g)} onDelete={(a) => void handleDelete(a)} uploading={uploading} uploadingKey={`chart:${g}`} />
-                </div>
-              )
-            })}
+            <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <Slot asset={smsAsset} label="문자 캡처 이미지" onUpload={() => pickFile('sms', 1)} onDelete={(a) => void handleDelete(a)} uploading={uploading} uploadingKey="sms:1" />
+              <Slot asset={chartAsset} label="차트 이미지" onUpload={() => pickFile('chart', 1)} onDelete={(a) => void handleDelete(a)} uploading={uploading} uploadingKey="chart:1" />
+            </div>
           </div>
 
           <div style={card}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 4 }}>참여자 후기 (최대 3개)</div>
-            <p style={{ fontSize: 12.5, color: '#8B95A1', margin: '0 0 16px' }}>등록된 순서대로 노출됩니다.</p>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 4 }}>참여자 후기</div>
+            <p style={{ fontSize: 12.5, color: '#8B95A1', margin: '0 0 16px' }}>
+              등록된 순서대로 노출됩니다. 3개를 초과하면 퍼블릭 페이지에서 슬라이딩으로 노출됩니다.
+            </p>
+            {/* 4열 고정 그리드 — 줄바꿈된 업로드 슬롯도 카드와 같은 너비를 유지한다 */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
               {reviews.map((r) => (
-                <div key={r.id} style={{ flex: '1 1 200px', maxWidth: 320 }}>
-                  <Slot asset={r} label="후기 이미지" onUpload={() => {}} onDelete={(a) => void handleDelete(a)} uploading={uploading} uploadingKey="review" />
-                </div>
+                <Slot key={r.id} asset={r} label="후기 이미지" onUpload={() => {}} onDelete={(a) => void handleDelete(a)} uploading={uploading} uploadingKey="review" />
               ))}
-              {reviews.length < 3 && (
-                <div style={{ flex: '1 1 200px', maxWidth: 320 }}>
-                  <Slot asset={undefined} label="후기 이미지" onUpload={() => pickFile('review', null)} onDelete={() => {}} uploading={uploading} uploadingKey="review:" />
-                </div>
-              )}
+              <Slot asset={undefined} label="후기 이미지" onUpload={() => pickFile('review', null)} onDelete={() => {}} uploading={uploading} uploadingKey="review:" />
             </div>
           </div>
         </>
       )}
+
+      <Toast toast={toast} />
     </div>
   )
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState, type CSSProperties } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import LoadingOverlay from '@/components/common/LoadingOverlay'
 import { useStockData } from '@/context/StockDataContext'
 import StockSidebar from '@/components/stock/StockSidebar'
@@ -102,7 +103,7 @@ export default function StockPageContent() {
       <div className="responsive-page-shell" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--page-padding, 18px 28px 56px)' }}>
 
         <div className="responsive-breadcrumb" style={{ display: 'flex', alignItems: 'center', flexWrap: 'var(--breadcrumb-wrap, nowrap)' as CSSProperties['flexWrap'], gap: 12, marginBottom: 16, fontSize: 13 }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#6B7684', textDecoration: 'none' }}>← 검색 결과</Link>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#6B7684', textDecoration: 'none' }}><ArrowLeft size={15} strokeWidth={2} /> 검색 결과</Link>
           <span style={{ color: '#D1D6DB' }}>|</span>
           <span style={{ fontWeight: 700, color: '#1B6CF2' }}>{STOCK_QUOTE.code}</span>
           <span style={{ fontWeight: 600, color: '#4E5968' }}>{STOCK_QUOTE.name}</span>

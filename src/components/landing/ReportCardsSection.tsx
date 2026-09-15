@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import { getReportCards } from '@/data/registry'
 
 export default async function ReportCardsSection() {
@@ -66,7 +67,7 @@ export default async function ReportCardsSection() {
                 href={`/report/${r.code}`}
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, width: '100%', height: 52, border: 'none', borderRadius: 12, background: '#EAF1FE', color: '#1B6CF2', fontSize: 14, fontWeight: 800, cursor: 'pointer', textDecoration: 'none' }}
               >
-                무료 리포트 확인하기 ›
+                무료 리포트 확인하기 <ChevronRight size={16} strokeWidth={2.5} />
               </Link>
             </div>
           ))}

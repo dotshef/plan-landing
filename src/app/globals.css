@@ -324,3 +324,118 @@ a {
   }
 }
 
+
+/* 자료 미리보기 슬라이딩 스트립 (IndicatorsContent) */
+.mat-marq {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  padding: 10px 0;
+}
+
+.mat-marq::before,
+.mat-marq::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 150px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.mat-marq::before {
+  left: 0;
+  background: linear-gradient(90deg, #1E2E5A 12%, rgba(30, 46, 90, 0));
+}
+
+.mat-marq::after {
+  right: 0;
+  background: linear-gradient(270deg, #1E2E5A 12%, rgba(30, 46, 90, 0));
+}
+
+/* 목록을 두 번 이어붙인 트랙을 -50% 이동. padding-right 는 gap 과 같은 값이어야 이음매가 벌어지지 않는다. */
+.mat-track {
+  display: flex;
+  gap: 20px;
+  padding-right: 20px;
+  width: max-content;
+  animation: mat-slide 62s linear infinite;
+}
+
+.mat-marq:hover .mat-track {
+  animation-play-state: paused;
+}
+
+@keyframes mat-slide {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.mat-card {
+  position: relative;
+  flex: 0 0 auto;
+  width: 346px;
+  height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 18px 38px -18px rgba(4, 12, 32, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+.mat-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .mat-card {
+    width: 254px;
+    height: 220px;
+  }
+
+  .mat-marq::before,
+  .mat-marq::after {
+    width: 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mat-track {
+    animation: none;
+  }
+}
+
+/* 참여자 후기 슬라이딩 스트립 (/trial) — mat-marq 의 밝은 배경(#F5F7FB) 변형 */
+.review-marq::before,
+.review-marq::after {
+  width: 40px;
+}
+
+.review-marq::before {
+  background: linear-gradient(90deg, #F5F7FB, rgba(245, 247, 251, 0));
+}
+
+.review-marq::after {
+  background: linear-gradient(270deg, #F5F7FB, rgba(245, 247, 251, 0));
+}
+
+.review-marq .mat-track {
+  animation-duration: 36s;
+}
+
+.review-card {
+  width: 340px;
+  height: 220px;
+  border: 1px solid #EEF1F6;
+  box-shadow: 0 2px 8px -4px rgba(15, 23, 42, 0.08);
+}
+
+@media (max-width: 640px) {
+  .review-card {
+    width: 272px;
+    height: 176px;
+  }
+}

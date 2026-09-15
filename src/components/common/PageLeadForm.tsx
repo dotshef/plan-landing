@@ -13,10 +13,12 @@ interface Props {
   subtitle?: string
   submitLabel: string
   successMessage?: string
+  /** 카드 테두리·그림자 없이 본문만 렌더 — 부모가 이미 카드 컨테이너일 때 사용. */
+  bare?: boolean
 }
 
 /** 신규 페이지(체험·자료·섹터) 공용 세로형 신청 폼 — 기존 리드 플로우(SMS 인증·Turnstile) 그대로. */
-export default function PageLeadForm({ sourcePage, requestedItems, title, subtitle, submitLabel, successMessage }: Props) {
+export default function PageLeadForm({ sourcePage, requestedItems, title, subtitle, submitLabel, successMessage, bare }: Props) {
   const {
     form, setForm,
     submitted, submitting, errors,
@@ -42,7 +44,9 @@ export default function PageLeadForm({ sourcePage, requestedItems, title, subtit
 
   if (submitted) {
     return (
-      <div style={{ background: '#fff', border: '1.5px solid #1B6CF2', borderRadius: 18, padding: '40px 28px', textAlign: 'center', boxShadow: '0 8px 24px rgba(27,108,242,.10)' }}>
+      <div style={bare
+        ? { textAlign: 'center', padding: '24px 0' }
+        : { background: '#fff', border: '1.5px solid #1B6CF2', borderRadius: 18, padding: '40px 28px', textAlign: 'center', boxShadow: '0 8px 24px rgba(27,108,242,.10)' }}>
         <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#EAF7F1', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
           <Check size={26} color="#03B26C" strokeWidth={3} />
         </div>
@@ -55,7 +59,7 @@ export default function PageLeadForm({ sourcePage, requestedItems, title, subtit
   }
 
   return (
-    <div style={{ background: '#fff', border: '1.5px solid #1B6CF2', borderRadius: 18, padding: 26, boxShadow: '0 8px 24px rgba(27,108,242,.10)' }}>
+    <div style={bare ? undefined : { background: '#fff', border: '1.5px solid #1B6CF2', borderRadius: 18, padding: 26, boxShadow: '0 8px 24px rgba(27,108,242,.10)' }}>
       <div style={{ fontSize: 18, fontWeight: 800, color: '#111827', marginBottom: 4 }}>{title}</div>
       {subtitle && <div style={{ fontSize: 13, color: '#6B7684', marginBottom: 4 }}>{subtitle}</div>}
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#8B95A1', margin: '6px 0 16px' }}>
