@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin/session'
 import { loadLatestReport } from '@/lib/sector/report'
 import { backfillStocks } from '@/lib/sector/backfill'
+import { prevQuarter } from '@/lib/sector/quarter'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -21,7 +22,8 @@ export async function POST() {
   }
 
   try {
-    const results = await backfillStocks(codes, { year: report.year, quarter: report.quarter })
+    // report.quarter는 발표 분기 — 백필은 직전 분기 기준
+    const results = await backfillStocks(codes, prevQuarter({ year: report.year, quarter: report.quarter }))
     const failed = results.filter((r) => !r.ok)
     return NextResponse.json({
       ok: failed.length === 0,

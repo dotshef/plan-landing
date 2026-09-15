@@ -4,6 +4,7 @@ import { requireAdmin, toKstTimestamp } from '@/lib/admin/session'
 import { loadLatestReport } from '@/lib/sector/report'
 import { validateSectors } from '@/lib/sector/validate'
 import { computeSectorMetrics } from '@/lib/sector/compute'
+import { prevQuarter } from '@/lib/sector/quarter'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -24,7 +25,8 @@ export async function POST() {
     return NextResponse.json({ error: '코스피 평균 PER을 먼저 입력해주세요.' }, { status: 400 })
   }
 
-  const q = { year: report.year, quarter: report.quarter }
+  // report.quarter는 발표 분기 — 검증·지표 계산은 직전 분기 기준
+  const q = prevQuarter({ year: report.year, quarter: report.quarter })
 
   // 1) 서버 재검증
   let validation

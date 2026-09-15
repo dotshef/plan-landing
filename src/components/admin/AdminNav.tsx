@@ -7,7 +7,7 @@ import PasswordChangeModal from './PasswordChangeModal'
 
 const MENU = [
   { href: '/admin/trial', label: '7일 체험 관리' },
-  { href: '/admin/sector', label: '4분기 섹터' },
+  { href: '/admin/sector', label: '주도 섹터' },
   { href: '/admin/users', label: '관리자 관리' },
 ]
 

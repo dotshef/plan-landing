@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin/session'
 import { loadLatestReport } from '@/lib/sector/report'
 import { validateSectors } from '@/lib/sector/validate'
+import { prevQuarter } from '@/lib/sector/quarter'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -15,8 +16,9 @@ export async function GET() {
   if (!report) return NextResponse.json({ error: '보고서가 없습니다. 연도·분기를 먼저 저장해주세요.' }, { status: 400 })
 
   try {
+    // report.quarter는 발표 분기 — 데이터 검증은 직전 분기 기준
     const result = await validateSectors(
-      { year: report.year, quarter: report.quarter },
+      prevQuarter({ year: report.year, quarter: report.quarter }),
       report.sectors.map((s) => ({ sectorId: s.id, name: s.name, stocks: s.stocks })),
     )
     return NextResponse.json(result)

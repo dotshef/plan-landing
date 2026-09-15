@@ -434,7 +434,7 @@ export default function SectorManager() {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '4px 0 20px', flexWrap: 'wrap' }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', margin: 0 }}>4분기 섹터 관리</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', margin: 0 }}>주도 섹터 관리</h1>
         {report && (
           <span style={{
             padding: '4px 10px', borderRadius: 7, fontSize: 12, fontWeight: 800,
@@ -468,6 +468,9 @@ export default function SectorManager() {
             {busy === 'save' ? '저장 중…' : '저장'}
           </button>
         </div>
+        <p style={{ margin: '10px 0 0', fontSize: 12.5, color: '#8B95A1', lineHeight: 1.7 }}>
+          입력한 연도·분기는 방문 사이트에 표시되는 <b>발표 분기</b>이며, 데이터 수집과 지표 계산은 <b>직전 분기</b> 기준으로 진행됩니다.
+        </p>
         {validation && (
           <p style={{ margin: '14px 0 0', fontSize: 12.5, color: '#8B95A1', lineHeight: 1.7 }}>
             보유 데이터 시작일 — 시세: <b>{validation.dataStart.price ?? '없음'}</b> · 수급: <b>{validation.dataStart.investor ?? '없음'}</b>
