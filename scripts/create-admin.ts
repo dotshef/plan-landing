@@ -52,7 +52,7 @@ async function main() {
     process.exit(1)
   }
 
-  const res = await fetch(`${url}/rest/v1/admin_user`, {
+  const res = await fetch(`${url}/rest/v1/user`, {
     method: 'POST',
     headers: {
       apikey: key,

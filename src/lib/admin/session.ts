@@ -5,6 +5,7 @@ import { db } from '@/lib/db/server'
 
 // 관리자 세션. 인가 판정은 이 모듈(getAdmin/requireAdmin) 한 곳에서만 한다.
 // middleware.ts는 쿠키 유무만 보는 UX 보조이며 실제 검증을 하지 않는다.
+// 계정 테이블은 "user"(hard delete), 세션은 user_session(FK cascade).
 
 export const SESSION_COOKIE = 'admin_session'
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000 // 12시간
@@ -32,16 +33,16 @@ export function toKstTimestamp(date: Date = new Date()): string {
 }
 
 /** 세션 발급: DB에 해시 저장 + httpOnly 쿠키 설정. Route Handler에서만 호출. */
-export async function createSession(adminId: number): Promise<void> {
+export async function createSession(userId: number): Promise<void> {
   const token = randomBytes(32).toString('base64url')
   const expiresAt = new Date(Date.now() + SESSION_TTL_MS)
 
-  const { error } = await db().from('admin_session').insert({
+  const { error } = await db().from('user_session').insert({
     token_hash: sha256(token),
-    admin_id: adminId,
+    user_id: userId,
     expires_at: expiresAt.toISOString(),
   })
-  if (error) throw new Error(`admin_session insert: ${error.message}`)
+  if (error) throw new Error(`user_session insert: ${error.message}`)
 
   const store = await cookies()
   store.set(SESSION_COOKIE, token, {
@@ -58,14 +59,14 @@ export async function destroySession(): Promise<void> {
   const store = await cookies()
   const token = store.get(SESSION_COOKIE)?.value
   if (token) {
-    await db().from('admin_session').delete().eq('token_hash', sha256(token))
+    await db().from('user_session').delete().eq('token_hash', sha256(token))
   }
   store.delete(SESSION_COOKIE)
 }
 
-/** 특정 관리자의 모든 세션 폐기 — 비밀번호 변경·삭제·임시 비번 재발급 시 호출. */
-export async function destroyAllSessions(adminId: number): Promise<void> {
-  await db().from('admin_session').delete().eq('admin_id', adminId)
+/** 특정 관리자의 모든 세션 폐기 — 비밀번호 변경·임시 비번 재발급 시 호출. */
+export async function destroyAllSessions(userId: number): Promise<void> {
+  await db().from('user_session').delete().eq('user_id', userId)
 }
 
 /** 쿠키 → 세션 검증 → 관리자 행. 미로그인/만료/삭제 계정이면 null. */
@@ -75,20 +76,21 @@ export async function getAdmin(): Promise<AdminUser | null> {
   if (!token) return null
 
   const { data: session } = await db()
-    .from('admin_session')
-    .select('admin_id, expires_at')
+    .from('user_session')
+    .select('user_id, expires_at')
     .eq('token_hash', sha256(token))
     .maybeSingle()
   if (!session) return null
   if (new Date(session.expires_at as string) <= new Date()) return null
 
-  const { data: admin } = await db()
-    .from('admin_user')
+  // hard delete 전략 — 계정이 지워지면 세션도 cascade로 사라지므로 여기 도달하지 않지만,
+  // 조회 시점 경합 대비 maybeSingle로 방어한다.
+  const { data: user } = await db()
+    .from('user')
     .select('id, email, name, must_change_password, temp_password_expires_at, fail_count, locked_until, last_login_at, created_at')
-    .eq('id', session.admin_id as number)
-    .is('deleted_at', null)
+    .eq('id', session.user_id as number)
     .maybeSingle()
-  return (admin as AdminUser | null) ?? null
+  return (user as AdminUser | null) ?? null
 }
 
 /**

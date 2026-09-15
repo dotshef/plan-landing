@@ -27,58 +27,37 @@ export async function POST(req: Request) {
   }
 
   const { data: existing } = await db()
-    .from('admin_user')
-    .select('id, deleted_at')
+    .from('user')
+    .select('id')
     .eq('email', email)
     .maybeSingle()
-  if (existing && !existing.deleted_at) {
+  if (existing) {
     return NextResponse.json({ error: '이미 등록된 관리자입니다.' }, { status: 409 })
   }
 
   const tempPassword = generateTempPassword()
-  const fields = {
-    name,
-    password_hash: await hashPassword(tempPassword),
-    must_change_password: true,
-    temp_password_expires_at: new Date(Date.now() + TEMP_TTL_MS).toISOString(),
-    fail_count: 0,
-    locked_until: null,
-    invited_by: admin.id,
-    deleted_at: null,
-  }
-
-  let userId: number
-  if (existing) {
-    // 삭제됐던 계정 재초대 — 같은 행을 되살린다
-    const { error } = await db().from('admin_user').update(fields).eq('id', existing.id as number)
-    if (error) {
-      console.error('[admin/invite] revive failed:', error)
-      return NextResponse.json({ error: '초대에 실패했습니다.' }, { status: 502 })
-    }
-    userId = existing.id as number
-  } else {
-    const { data, error } = await db()
-      .from('admin_user')
-      .insert({ email, ...fields })
-      .select('id')
-      .single()
-    if (error || !data) {
-      console.error('[admin/invite] insert failed:', error)
-      return NextResponse.json({ error: '초대에 실패했습니다.' }, { status: 502 })
-    }
-    userId = data.id as number
+  const { data: created, error } = await db()
+    .from('user')
+    .insert({
+      email,
+      name,
+      password_hash: await hashPassword(tempPassword),
+      must_change_password: true,
+      temp_password_expires_at: new Date(Date.now() + TEMP_TTL_MS).toISOString(),
+    })
+    .select('id')
+    .single()
+  if (error || !created) {
+    console.error('[admin/invite] insert failed:', error)
+    return NextResponse.json({ error: '초대에 실패했습니다.' }, { status: 502 })
   }
 
   try {
     await sendInviteMail(email, tempPassword)
   } catch (e) {
     console.error('[admin/invite] mail failed:', e)
-    // 메일이 안 나가면 초대가 성립하지 않는다 — 방금 만든 계정은 제거(신규)·비활성(재초대)
-    if (existing) {
-      await db().from('admin_user').update({ deleted_at: new Date().toISOString() }).eq('id', userId)
-    } else {
-      await db().from('admin_user').delete().eq('id', userId)
-    }
+    // 메일이 안 나가면 초대가 성립하지 않는다 — 방금 만든 계정은 hard delete
+    await db().from('user').delete().eq('id', created.id as number)
     return NextResponse.json({ error: '초대 메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.' }, { status: 502 })
   }
 

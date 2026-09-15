@@ -19,16 +19,15 @@ export async function POST(_req: Request, ctx: { params: Promise<{ id: string }>
   if (!Number.isInteger(id)) return NextResponse.json({ error: '잘못된 요청입니다.' }, { status: 400 })
 
   const { data: target } = await db()
-    .from('admin_user')
+    .from('user')
     .select('id, email')
     .eq('id', id)
-    .is('deleted_at', null)
     .maybeSingle()
   if (!target) return NextResponse.json({ error: '대상을 찾을 수 없습니다.' }, { status: 404 })
 
   const tempPassword = generateTempPassword()
   const { error } = await db()
-    .from('admin_user')
+    .from('user')
     .update({
       password_hash: await hashPassword(tempPassword),
       must_change_password: true,

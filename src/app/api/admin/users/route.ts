@@ -10,9 +10,8 @@ export async function GET() {
   if (!admin) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
   const { data, error } = await db()
-    .from('admin_user')
+    .from('user')
     .select('id, email, name, must_change_password, temp_password_expires_at, last_login_at, created_at')
-    .is('deleted_at', null)
     .order('created_at', { ascending: true })
   if (error) {
     console.error('[admin/users] list failed:', error)

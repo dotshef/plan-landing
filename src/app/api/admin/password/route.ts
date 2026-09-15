@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   const newPassword = typeof body.newPassword === 'string' ? body.newPassword : ''
 
   const { data: row } = await db()
-    .from('admin_user')
+    .from('user')
     .select('password_hash')
     .eq('id', admin.id)
     .maybeSingle()
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   }
 
   const { error } = await db()
-    .from('admin_user')
+    .from('user')
     .update({
       password_hash: await hashPassword(newPassword),
       must_change_password: false,

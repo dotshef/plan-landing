@@ -24,10 +24,9 @@ export async function POST(req: Request) {
   }
 
   const { data: admin } = await db()
-    .from('admin_user')
+    .from('user')
     .select('id, email, password_hash, must_change_password, temp_password_expires_at, fail_count, locked_until')
     .eq('email', email)
-    .is('deleted_at', null)
     .maybeSingle()
 
   // 계정 존재 여부를 응답으로 구분하지 않는다.
@@ -45,7 +44,7 @@ export async function POST(req: Request) {
   if (!ok) {
     const fails = (admin.fail_count as number) + 1
     await db()
-      .from('admin_user')
+      .from('user')
       .update({
         fail_count: fails,
         locked_until: fails >= MAX_FAILS ? new Date(Date.now() + LOCK_MS).toISOString() : null,
@@ -67,7 +66,7 @@ export async function POST(req: Request) {
   }
 
   await db()
-    .from('admin_user')
+    .from('user')
     .update({ fail_count: 0, locked_until: null, last_login_at: toKstTimestamp() })
     .eq('id', admin.id as number)
 
