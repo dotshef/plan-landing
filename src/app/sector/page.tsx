@@ -260,7 +260,7 @@ export default async function SectorPage() {
       </div>
 
       {/* CTA */}
-      <div style={{ background: '#1B6CF2' }}>
+      <div style={{ background: '#0F1C3D' }}>
         <div style={{ maxWidth: 1120, margin: '0 auto', padding: '48px 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 32, alignItems: 'center' }}>
           <div>
             <h2 style={{ fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: 800, color: '#fff', lineHeight: 1.4, margin: 0 }}>

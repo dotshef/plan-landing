@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import {
   CalendarDays, Radar, Target, Search, Thermometer, TrendingUp, Zap, BarChart3, Ruler,
-  Play, X, Send, Images, type LucideIcon,
+  Play, X, Images, type LucideIcon,
 } from 'lucide-react'
 import PageLeadForm from '@/components/common/PageLeadForm'
 
@@ -125,23 +125,17 @@ export default function IndicatorsContent() {
             </div>
           </div>
 
-          {/* 신청 폼 — 카드 안에 직접 렌더 */}
-          <PageLeadForm
-            bare
-            sourcePage="indicators"
-            requestedItems={selected.length ? selected.join(',') : null}
-            title="무료로 받아보기"
-            submitLabel="무료로 받아보기"
-            successMessage="선택하신 자료를 입력하신 연락처로 보내드리겠습니다."
-          />
-
-          {/* 신뢰 지표 */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 24, paddingTop: 20, borderTop: '1px solid #F1F5F9' }}>
-            <Send size={19} color="#1B6CF2" strokeWidth={2} />
-            <span style={{ fontSize: 16.5, fontWeight: 700, color: '#334155' }}>
-              누적 발송 <b style={{ color: '#1B6CF2', fontSize: 19 }}>1,240건</b>
-            </span>
+          {/* 신청 폼 — 카드 내부의 별도 카드. 다른 페이지와 비슷한 폭으로 제한 */}
+          <div style={{ maxWidth: 500, margin: '0 auto' }}>
+            <PageLeadForm
+              sourcePage="indicators"
+              requestedItems={selected.length ? selected.join(',') : null}
+              title="무료로 받아보기"
+              submitLabel="무료로 받아보기"
+              successMessage="선택하신 자료를 입력하신 연락처로 보내드리겠습니다."
+            />
           </div>
+
         </div>
       </div>
 
