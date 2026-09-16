@@ -8,7 +8,7 @@ export interface ReportRequestEmailInput {
   adCampaignLabel?: string | null
   landingUrl?: string | null
   sourcePage?: 'main' | 'trial' | 'indicators' | 'sector'
-  requestedItems?: string | null
+  indicatorItems?: string | null
   requestedAt: Date
 }
 
@@ -70,7 +70,7 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
   const adCampaignLabel = input.adCampaignLabel?.trim() || '없음'
   const landingUrl = input.landingUrl?.trim() || '없음'
   const sourcePage = SOURCE_PAGE_LABEL[input.sourcePage ?? 'main']
-  const requestedItems = input.requestedItems?.trim() || '없음'
+  const indicatorItems = input.indicatorItems?.trim() || '없음'
   const requestedAt = formatDate(input.requestedAt)
   const safe = {
     name: escapeHtml(input.name),
@@ -82,7 +82,7 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
     adCampaignLabel: escapeHtml(adCampaignLabel),
     landingUrl: escapeHtml(landingUrl),
     sourcePage: escapeHtml(sourcePage),
-    requestedItems: escapeHtml(requestedItems),
+    indicatorItems: escapeHtml(indicatorItems),
     requestedAt: escapeHtml(requestedAt),
   }
 
@@ -114,7 +114,7 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
                   ${row('연락처', safe.phone)}
                   ${row('관심 종목', safe.stock)}
                   ${row('유입 페이지', safe.sourcePage)}
-                  ${row('요청 자료', safe.requestedItems)}
+                  ${row('요청 자료', safe.indicatorItems)}
                   ${row('유입 광고 매체', safe.trafficSource)}
                   ${row('광고 키워드', safe.adKeyword)}
                   ${row('캠페인 ID', safe.adCampaignId)}
@@ -143,7 +143,7 @@ export function buildReportRequestEmailTemplate(input: ReportRequestEmailInput) 
     `연락처: ${input.phone}`,
     `관심 종목: ${stock}`,
     `유입 페이지: ${sourcePage}`,
-    `요청 자료: ${requestedItems}`,
+    `요청 자료: ${indicatorItems}`,
     `유입 광고 매체: ${trafficSource}`,
     `광고 키워드: ${adKeyword}`,
     `캠페인 ID: ${adCampaignId}`,

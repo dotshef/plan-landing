@@ -104,8 +104,8 @@ function readStoredAdAttribution(): AdAttribution {
 export interface ReportRequestExtra {
   /** 신청이 발생한 페이지. 미지정 시 'main'. */
   sourcePage?: 'main' | 'trial' | 'indicators' | 'sector'
-  /** '영상 속 자료 받기'에서 선택한 자료명(쉼표 구분). */
-  requestedItems?: string | null
+  /** '영상 속 자료 받기'에서 선택한 지표/자료명. */
+  indicatorItems?: string | null
 }
 
 /**
@@ -331,7 +331,7 @@ export function useReportRequest(defaultStock = '', extra?: ReportRequestExtra) 
           adCampaignLabel: attribution.adCampaignLabel,
           landingUrl: attribution.landingUrl,
           sourcePage: extra?.sourcePage ?? 'main',
-          requestedItems: extra?.requestedItems ?? null,
+          indicatorItems: extra?.indicatorItems ?? null,
         }),
       })
       const result = await response.json().catch(() => ({}))

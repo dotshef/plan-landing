@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import PageLeadForm from '@/components/common/PageLeadForm'
 
-// 자료 목록 — 정적 상수. 선택값은 requested_items로 접수된다.
+// 자료 목록 — 정적 상수. 선택값(1개)은 indicator_items로 접수된다.
 const INDICATORS: { name: string; desc: string; icon: LucideIcon }[] = [
   { name: '증시 캘린더', desc: '놓치면 안 되는 일정', icon: CalendarDays },
   { name: '엑스레이 지표', desc: '캔들에 안 보이는 것', icon: Radar },
@@ -35,10 +35,10 @@ const MATERIALS: { file: string; alt: string }[] = [
 ]
 
 export default function IndicatorsContent() {
-  const [selected, setSelected] = useState<string[]>([])
+  const [selected, setSelected] = useState<string | null>(null)
 
   function toggle(name: string) {
-    setSelected((prev) => (prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]))
+    setSelected((prev) => (prev === name ? null : name))
   }
 
   return (
@@ -76,10 +76,10 @@ export default function IndicatorsContent() {
 
           {/* 자료 선택 — 전체 목록 그리드 */}
           <div style={{ background: '#F8FAFC', borderRadius: 13, padding: '20px 22px', margin: '26px 0' }}>
-            <p style={{ fontSize: 15, fontWeight: 700, color: '#6B7684', margin: '0 0 13px' }}>받아보실 자료를 선택하세요</p>
+            <p style={{ fontSize: 15, fontWeight: 700, color: '#6B7684', margin: '0 0 13px' }}>받아보실 자료를 하나 선택하세요</p>
             <div className="ind-grid">
               {INDICATORS.map((ind) => {
-                const on = selected.includes(ind.name)
+                const on = selected === ind.name
                 const Icon = ind.icon
                 return (
                   <button
@@ -106,14 +106,14 @@ export default function IndicatorsContent() {
 
             {/* 선택된 자료 칩 */}
             <div className="ind-chips">
-              {selected.map((n) => (
+              {selected && (
                 <button
-                  key={n} type="button" onClick={() => toggle(n)}
+                  type="button" onClick={() => toggle(selected)}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 10, border: 'none', background: '#1B6CF2', color: '#fff', fontSize: 14.5, fontWeight: 700, cursor: 'pointer' }}
                 >
-                  {n} <X size={14} strokeWidth={2.5} style={{ opacity: 0.75 }} />
+                  {selected} <X size={14} strokeWidth={2.5} style={{ opacity: 0.75 }} />
                 </button>
-              ))}
+              )}
             </div>
           </div>
 
@@ -121,7 +121,7 @@ export default function IndicatorsContent() {
           <div style={{ maxWidth: 500, margin: '0 auto' }}>
             <PageLeadForm
               sourcePage="indicators"
-              requestedItems={selected.length ? selected.join(',') : null}
+              indicatorItems={selected}
               title="무료로 받아보기"
               submitLabel="무료로 받아보기"
               successMessage="선택하신 자료를 입력하신 연락처로 보내드리겠습니다."

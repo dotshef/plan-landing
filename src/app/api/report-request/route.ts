@@ -19,7 +19,7 @@ interface ReportRequestPayload {
   adCampaignLabel?: unknown
   landingUrl?: unknown
   sourcePage?: unknown
-  requestedItems?: unknown
+  indicatorItems?: unknown
 }
 
 const SOURCE_PAGES = ['main', 'trial', 'indicators', 'sector'] as const
@@ -77,7 +77,8 @@ export async function POST(req: Request) {
     ? null
     : normalize(payload.landingUrl).slice(0, 2000) || null
   const sourcePage = normalizeSourcePage(payload.sourcePage)
-  const requestedItems = normalize(payload.requestedItems).slice(0, 500) || null
+  // 요청 자료는 1개만 허용 — 콤마 목록이 와도 첫 항목만 접수
+  const indicatorItems = (normalize(payload.indicatorItems).split(',')[0] ?? '').trim().slice(0, 500) || null
 
   if (!name || !phoneRaw) {
     return NextResponse.json({ error: '이름과 연락처를 입력해주세요.' }, { status: 400 })
@@ -122,7 +123,7 @@ export async function POST(req: Request) {
         ad_campaign_label: adCampaignLabel,
         landing_url: landingUrl,
         source_page: sourcePage,
-        requested_items: requestedItems,
+        indicator_items: indicatorItems,
         requested_at: toKstTimestamp(requestedAt),
       })
     if (error) throw error
@@ -144,7 +145,7 @@ export async function POST(req: Request) {
     adCampaignLabel,
     landingUrl,
     sourcePage,
-    requestedItems,
+    indicatorItems,
     requestedAt,
   })
 

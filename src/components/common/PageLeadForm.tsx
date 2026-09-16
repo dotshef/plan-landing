@@ -8,7 +8,7 @@ import ConsentModal, { type ConsentKind } from '@/components/landing/ConsentModa
 
 interface Props {
   sourcePage: NonNullable<ReportRequestExtra['sourcePage']>
-  requestedItems?: string | null
+  indicatorItems?: string | null
   title: string
   subtitle?: string
   submitLabel: string
@@ -18,7 +18,7 @@ interface Props {
 }
 
 /** 신규 페이지(체험·자료·섹터) 공용 세로형 신청 폼 — 기존 리드 플로우(SMS 인증·Turnstile) 그대로. */
-export default function PageLeadForm({ sourcePage, requestedItems, title, subtitle, submitLabel, successMessage, bare }: Props) {
+export default function PageLeadForm({ sourcePage, indicatorItems, title, subtitle, submitLabel, successMessage, bare }: Props) {
   const {
     form, setForm,
     submitted, submitting, errors,
@@ -26,7 +26,7 @@ export default function PageLeadForm({ sourcePage, requestedItems, title, subtit
     phoneValid, mmss,
     handlePhoneChange, handleSendCode, handleVerifyCode, handleSubmit,
     turnstileRef,
-  } = useReportRequest('', { sourcePage, requestedItems })
+  } = useReportRequest('', { sourcePage, indicatorItems })
 
   const [focused, setFocused] = useState<string | null>(null)
   const [modal, setModal] = useState<ConsentKind | null>(null)
