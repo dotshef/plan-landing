@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { db } from '@/lib/db/server'
 
 // 관리자 세션. 인가 판정은 이 모듈(getAdmin/requireAdmin) 한 곳에서만 한다.
-// middleware.ts는 쿠키 유무만 보는 UX 보조이며 실제 검증을 하지 않는다.
+// proxy.ts는 쿠키 유무만 보는 UX 보조이며 실제 검증을 하지 않는다.
 // 계정 테이블은 "user"(hard delete), 세션은 user_session(FK cascade).
 
 export const SESSION_COOKIE = 'admin_session'

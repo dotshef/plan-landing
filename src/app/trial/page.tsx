@@ -73,9 +73,9 @@ export default async function TrialPage() {
       <div style={{ maxWidth: 1120, margin: '0 auto', padding: '56px 24px' }}>
         <h2 style={sectionTitle}>시스템이 걸러내고, 사람이 다시 봅니다</h2>
         <p style={sectionSub}>알림 하나가 나가기까지 네 단계를 거칩니다</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, marginTop: 30 }}>
+        <div className="trial-steps" style={{ display: 'grid', gap: 14, marginTop: 30 }}>
           {STEPS.map((s) => (
-            <div key={s.n} style={{ border: '1px solid #EEF1F6', borderRadius: 14, padding: '24px 20px', textAlign: 'center', background: '#fff' }}>
+            <div key={s.n} className="trial-step-card" style={{ border: '1px solid #EEF1F6', borderRadius: 14, textAlign: 'center', background: '#fff' }}>
               <div style={{ width: 52, height: 52, margin: '0 auto 14px', borderRadius: 14, background: '#EEF3FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <s.Icon size={24} strokeWidth={2} color="#1B6CF2" />
               </div>
@@ -121,8 +121,8 @@ export default async function TrialPage() {
         <h2 style={sectionTitle}>실제 발송 내역</h2>
         <p style={sectionSub}>보낸 문자와 그 뒤 차트를 그대로 공개합니다</p>
         <div style={{ display: 'grid', gap: 24, marginTop: 30 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'stretch' }}>
-            <div style={{ flex: '1 1 240px', maxWidth: 300 }}>
+          <div style={{ display: 'flex', flexWrap: 'nowrap', gap: 16, alignItems: 'stretch' }}>
+            <div style={{ flex: '1 1 0', minWidth: 0, maxWidth: 300 }}>
               {pair.sms ? (
                 <div style={{ border: '1px solid #EEF1F6', borderRadius: 14, overflow: 'hidden', background: '#F8FAFC' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -132,7 +132,7 @@ export default async function TrialPage() {
                 <EmptySlot Icon={Smartphone} name="문자 캡처 이미지" desc={'발송 일시가 보이는\n원본 캡처 권장\n280 × 400px'} minHeight={380} />
               )}
             </div>
-            <div style={{ flex: '3 1 320px' }}>
+            <div style={{ flex: '2.2 1 0', minWidth: 0 }}>
               {pair.chart ? (
                 <div style={{ border: '1px solid #EEF1F6', borderRadius: 14, overflow: 'hidden', background: '#F8FAFC' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}

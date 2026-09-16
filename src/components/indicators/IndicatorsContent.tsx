@@ -77,7 +77,7 @@ export default function IndicatorsContent() {
           {/* 자료 선택 — 전체 목록 그리드 */}
           <div style={{ background: '#F8FAFC', borderRadius: 13, padding: '20px 22px', margin: '26px 0' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: '#6B7684', margin: '0 0 13px' }}>받아보실 자료를 선택하세요</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
+            <div className="ind-grid">
               {INDICATORS.map((ind) => {
                 const on = selected.includes(ind.name)
                 const Icon = ind.icon
@@ -86,19 +86,18 @@ export default function IndicatorsContent() {
                     key={ind.name}
                     type="button"
                     onClick={() => toggle(ind.name)}
+                    className="ind-card"
                     style={{
-                      display: 'flex', alignItems: 'center', gap: 12,
-                      padding: '13px 17px', textAlign: 'left',
                       border: on ? '1.5px solid #1B6CF2' : '1.5px solid #E2E8F0',
-                      borderRadius: 12, background: on ? '#EAF1FE' : '#fff', cursor: 'pointer',
+                      background: on ? '#EAF1FE' : '#fff',
                     }}
                   >
-                    <span style={{ width: 38, height: 38, borderRadius: 10, background: '#EAF1FE', color: '#1B6CF2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <span className="ind-card-icon">
                       <Icon size={20} strokeWidth={2} />
                     </span>
                     <span>
-                      <span style={{ display: 'block', fontSize: 15.5, fontWeight: 800, color: on ? '#1B6CF2' : '#191F28', whiteSpace: 'nowrap' }}>{ind.name}</span>
-                      <span style={{ display: 'block', fontSize: 12.5, color: '#6B7684', marginTop: 3, whiteSpace: 'nowrap' }}>{ind.desc}</span>
+                      <span className="ind-card-name" style={{ color: on ? '#1B6CF2' : '#191F28' }}>{ind.name}</span>
+                      <span className="ind-card-desc">{ind.desc}</span>
                     </span>
                   </button>
                 )
@@ -106,7 +105,7 @@ export default function IndicatorsContent() {
             </div>
 
             {/* 선택된 자료 칩 */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16, minHeight: 42, alignItems: 'center' }}>
+            <div className="ind-chips">
               {selected.map((n) => (
                 <button
                   key={n} type="button" onClick={() => toggle(n)}
