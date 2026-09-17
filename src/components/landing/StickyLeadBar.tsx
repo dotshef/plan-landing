@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Check } from 'lucide-react'
-import { useReportRequest } from '@/hooks/useReportRequest'
+import { useReportRequest, type ReportRequestExtra } from '@/hooks/useReportRequest'
 import { formatPhone } from '@/lib/phone'
 import ConsentModal, { type ConsentKind } from './ConsentModal'
 
@@ -38,7 +38,7 @@ const secondaryBtn: CSSProperties = {
 // 하단 고정 리드 폼 바. 데스크톱은 한 줄, 모바일(≤768px)은 여러 줄로 재배치
 // (globals.css의 .slb-* 규칙 담당). 인증번호·확인 행은 발송 후에만 노출된다(점진 노출).
 // 폼 로직(인증·제출·전환추적)은 useReportRequest 훅이 담당한다.
-export default function StickyLeadBar() {
+export default function StickyLeadBar({ sourcePage = 'main' }: { sourcePage?: ReportRequestExtra['sourcePage'] }) {
   const {
     form, setForm,
     submitted, submitting, errors,
@@ -46,9 +46,25 @@ export default function StickyLeadBar() {
     phoneValid, mmss,
     handlePhoneChange, handleSendCode, handleVerifyCode, handleSubmit,
     turnstileRef,
-  } = useReportRequest()
+  } = useReportRequest('', { sourcePage })
 
   const [modal, setModal] = useState<ConsentKind | null>(null)
+
+  // 바가 푸터 하단(사업자정보·카피라이트)을 가리지 않도록 실제 높이를 CSS 변수로 노출한다.
+  // 모바일은 인증번호 행 노출 여부·에러 문구에 따라 높이가 달라져 고정값 대신 측정한다.
+  const barRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    const el = barRef.current
+    if (!el) return
+    const apply = () => document.body.style.setProperty('--sticky-bar-height', `${el.offsetHeight}px`)
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      document.body.style.removeProperty('--sticky-bar-height')
+    }
+  }, [])
 
   const canSubmit = !submitting && form.privacy && form.agree && verified
   const canSend = phoneValid && !sending && !verified
@@ -60,6 +76,7 @@ export default function StickyLeadBar() {
   return (
     <>
       <motion.div
+        ref={barRef}
         initial={{ y: '100%' }}
         animate={{ y: 0 }}
         transition={{ type: 'spring', stiffness: 320, damping: 34 }}

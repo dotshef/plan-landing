@@ -3,6 +3,7 @@ import { Newspaper, Lock } from 'lucide-react'
 import { db } from '@/lib/db/server'
 import { loadPublishedReport, type SectorRow } from '@/lib/sector/report'
 import PageLeadForm from '@/components/common/PageLeadForm'
+import StickyLeadBar from '@/components/landing/StickyLeadBar'
 
 export const dynamic = 'force-dynamic'
 
@@ -99,6 +100,7 @@ export default async function SectorPage() {
             submitLabel="발행되면 바로 받아보기"
           />
         </div>
+        <StickyLeadBar sourcePage="sector" />
       </div>
     )
   }
@@ -278,6 +280,7 @@ export default async function SectorPage() {
           />
         </div>
       </div>
+      <StickyLeadBar sourcePage="sector" />
     </div>
   )
 }

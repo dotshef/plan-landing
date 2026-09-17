@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import type { CSSProperties, ReactNode } from 'react'
+import StickyLeadBar from '@/components/landing/StickyLeadBar'
 
 export const metadata: Metadata = {
   title: '개인정보처리방침 · 투자그룹플랜',
@@ -438,6 +439,7 @@ export default function PrivacyPage() {
           시행일자 : 2021년 7월 1일
         </p>
       </div>
+      <StickyLeadBar sourcePage="main" />
     </div>
   )
 }

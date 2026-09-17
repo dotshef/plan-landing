@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import ApplicationPanel from '@/components/report/ApplicationPanel'
+import StickyLeadBar from '@/components/landing/StickyLeadBar'
 
 export const metadata: Metadata = {
   title: '무료 리포트 신청 | 투자그룹 플랜',
@@ -14,6 +15,7 @@ export default function ReportPage() {
       <div style={{ maxWidth: 480, margin: '0 auto' }}>
         <ApplicationPanel />
       </div>
+      <StickyLeadBar sourcePage="main" />
     </div>
   )
 }

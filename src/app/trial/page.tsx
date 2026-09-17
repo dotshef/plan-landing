@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react'
 import { Filter, UserRoundCheck, MessageSquareText, Headset, Smartphone, CandlestickChart, MessageCircle } from 'lucide-react'
 import { listTrialAssets, publicUrl } from '@/lib/storage/trialAssets'
 import PageLeadForm from '@/components/common/PageLeadForm'
+import StickyLeadBar from '@/components/landing/StickyLeadBar'
 
 export const dynamic = 'force-dynamic'
 
@@ -199,6 +200,7 @@ export default async function TrialPage() {
           />
         </div>
       </div>
+      <StickyLeadBar sourcePage="trial" />
     </div>
   )
 }

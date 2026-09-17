@@ -20,7 +20,7 @@ export default async function HomePage() {
       <ReportCardsSection />
       <MarketIndexCardsSection />
       <TrustRowSection />
-      <StickyLeadBar />
+      <StickyLeadBar sourcePage="main" />
     </div>
   )
 }

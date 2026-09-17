@@ -48,12 +48,9 @@ export default function HeroSection({ stocks }: { stocks: PopularStock[] }) {
   return (
     <div className="responsive-home-hero" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--home-hero-padding, 52px 28px 30px)', display: 'grid', gridTemplateColumns: 'var(--home-hero-columns, 1fr 1.15fr)', gap: 'var(--home-hero-gap, 56px)', alignItems: 'start' }}>
       <div>
-        <div style={{ display: 'inline-block', background: 'transparent', color: '#111827', fontSize: 20, fontWeight: 600, marginBottom: 10, fontFamily: 'var(--font-maruburi)' }}>
-          지금 가장 많이 찾는
-        </div>
         <h1 className="responsive-hero-title" style={{ margin: 0, fontSize: 'var(--hero-title-size, 50px)', lineHeight: 1.18, fontWeight: 800, letterSpacing: '-0.03em', color: '#111827' }}>
-          종목 분석하고,<br />
-          <span style={{ color: '#1B6CF2' }}>무료 리포트</span> 받아보세요!
+          매일 찾아보던 투자정보,<br />
+          이제 <span style={{ color: '#1B6CF2' }}>한곳에서</span> 확인하세요
         </h1>
         <p style={{ margin: '22px 0 0', fontSize: 18, lineHeight: 1.6, color: '#6B7684', fontWeight: 500 }}>
           실시간 시세, 수급, AI 분석까지 한눈에!<br />전문가 리포트를 무료로 확인하세요.

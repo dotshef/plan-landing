@@ -3,7 +3,7 @@
   --footer-padding-x: 28px;
   /* 본문과의 간격(기존 margin-top 80px)을 padding 으로 흡수 — margin 은 투명이라
      body 배경(#F5F7FB)이 비쳐 푸터 위에 색이 다른 띠가 생겼다. */
-  --footer-padding-top: 124px;
+  --footer-padding-top: 48px;
   --footer-padding-bottom: 34px;
   --footer-column-gap: 28px;
   --footer-section-gap: 24px;
@@ -19,8 +19,10 @@
   width: 100%;
   max-width: var(--footer-max-width);
   margin: 0 auto;
+  /* 하단 고정 리드 바(StickyLeadBar)가 있는 페이지에서는 그 높이만큼 더 띄운다.
+     바깥에 스페이서를 두면 푸터 배경(grey-50) 아래로 body 배경 띠가 생겨 패딩으로 흡수. */
   padding: var(--footer-padding-top) var(--footer-padding-x)
-    var(--footer-padding-bottom);
+    calc(var(--footer-padding-bottom) + var(--sticky-bar-height, 0px));
   column-gap: var(--footer-column-gap);
   color: var(--color-grey-500);
   line-height: 1.7;
@@ -113,7 +115,7 @@
 @media (max-width: 620px) {
   .footer {
     --footer-padding-x: 16px;
-    --footer-padding-top: 116px;
+    --footer-padding-top: 40px;
     --footer-padding-bottom: 28px;
   }
 

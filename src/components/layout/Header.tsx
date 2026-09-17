@@ -15,9 +15,6 @@ export default function Header() {
       <div className="responsive-header-inner" style={{ maxWidth: 1320, margin: '0 auto', padding: 'var(--header-padding, 14px 28px)', display: 'flex', alignItems: 'center', gap: 'var(--header-gap, 32px)' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', minWidth: 0 }}>
           <Image src="/images/plan-logo.png" alt="투자그룹 플랜" width={34} height={34} style={{ borderRadius: 9, width: 'var(--header-logo-size, 34px)', height: 'var(--header-logo-size, 34px)' }} />
-          <div style={{ lineHeight: 1.1 }}>
-            <div style={{ fontSize: 'var(--header-brand-size, 19px)', fontWeight: 800, color: '#111827', letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>투자그룹 플랜</div>
-          </div>
         </Link>
         <div style={{ marginLeft: 'auto' }}>
           <Link
