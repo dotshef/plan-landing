@@ -38,7 +38,15 @@ const secondaryBtn: CSSProperties = {
 // 하단 고정 리드 폼 바. 데스크톱은 한 줄, 모바일(≤768px)은 여러 줄로 재배치
 // (globals.css의 .slb-* 규칙 담당). 인증번호·확인 행은 발송 후에만 노출된다(점진 노출).
 // 폼 로직(인증·제출·전환추적)은 useReportRequest 훅이 담당한다.
-export default function StickyLeadBar({ sourcePage = 'main' }: { sourcePage?: ReportRequestExtra['sourcePage'] }) {
+export default function StickyLeadBar({
+  sourcePage = 'main',
+  // 종목이 특정되는 페이지(리포트 상세 등)에서 '관심 종목'을 자동으로 채운다.
+  // 바에는 종목 입력칸이 없고, 제출 시 이 값이 그대로 함께 전송된다.
+  defaultStock = '',
+}: {
+  sourcePage?: ReportRequestExtra['sourcePage']
+  defaultStock?: string
+}) {
   const {
     form, setForm,
     submitted, submitting, errors,
@@ -46,7 +54,7 @@ export default function StickyLeadBar({ sourcePage = 'main' }: { sourcePage?: Re
     phoneValid, mmss,
     handlePhoneChange, handleSendCode, handleVerifyCode, handleSubmit,
     turnstileRef,
-  } = useReportRequest('', { sourcePage })
+  } = useReportRequest(defaultStock, { sourcePage })
 
   const [modal, setModal] = useState<ConsentKind | null>(null)
 

@@ -6,6 +6,7 @@ import { getStockName } from '@/data/registry'
 import { StockDataProvider } from '@/context/StockDataContext'
 import ReportContent from '@/components/report/ReportContent'
 import ApplicationPanel from '@/components/report/ApplicationPanel'
+import StickyLeadBar from '@/components/landing/StickyLeadBar'
 
 export async function generateMetadata({ params }: { params: Promise<{ code: string }> }): Promise<Metadata> {
   const { code } = await params
@@ -42,6 +43,9 @@ export default async function ReportPage({ params }: { params: Promise<{ code: s
           </div>
           <ApplicationPanel defaultStock={`${quote.name}(${quote.code})`} />
         </div>
+
+        {/* 하단 고정 바 — 관심 종목은 현재 보고 있는 종목으로 자동 입력 */}
+        <StickyLeadBar sourcePage="main" defaultStock={`${quote.name}(${quote.code})`} />
       </div>
     </StockDataProvider>
   )
