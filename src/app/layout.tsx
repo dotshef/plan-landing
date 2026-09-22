@@ -28,11 +28,11 @@ const maruBuri = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.plankor.kr'),
-  title: '투자그룹 플랜 — 종목 분석 & 무료 리포트',
+  title: '투자그룹 플랜 - 종목 분석 & 무료 리포트',
   description: '실시간 시세, 수급, AI 분석까지 한눈에! 전문가 리포트를 무료로 확인하세요.',
   alternates: { canonical: '/' },
   openGraph: {
-    title: '투자그룹 플랜 — 종목 분석 & 무료 리포트',
+    title: '투자그룹 플랜 - 종목 분석 & 무료 리포트',
     description: '실시간 시세, 수급, AI 분석까지 한눈에! 전문가 리포트를 무료로 확인하세요.',
     type: 'website',
     locale: 'ko_KR',
