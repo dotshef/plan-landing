@@ -189,6 +189,10 @@
   padding: 22px;
 }
 
+.proofHead {
+  font-size: 24px;
+}
+
 .proofShot {
   height: 150px;
 }
@@ -381,6 +385,10 @@
 
   .proof {
     padding: 16px;
+  }
+
+  .proofHead {
+    font-size: 19px;
   }
 
   .proofShot {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Playfair_Display } from 'next/font/google'
 import { Wallet, CreditCard, ShieldCheck, ArrowRight, type LucideIcon } from 'lucide-react'
+import FadeUp from '@/components/common/FadeUp'
 import PageLeadForm from '@/components/common/PageLeadForm'
 import StickyLeadBar from '@/components/landing/StickyLeadBar'
 import s from './income.module.css'
@@ -327,7 +328,7 @@ export default function IncomePage() {
                   <span style={{ width: 44, height: 44, borderRadius: 12, background: C.redBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}>
                     <p.Icon size={24} color={C.red} strokeWidth={2} aria-hidden />
                   </span>
-                  <div style={{ fontSize: 24, fontWeight: 900, lineHeight: 1.3, letterSpacing: '-0.03em', whiteSpace: 'pre-line' }}>{p.head}</div>
+                  <div className={s.proofHead} style={{ fontWeight: 900, lineHeight: 1.3, letterSpacing: '-0.03em', whiteSpace: 'pre-line' }}>{p.head}</div>
                 </div>
                 <div className={s.proofShot} style={{ background: '#EEF1F5', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: C.gray }}>
                   {p.shot}
@@ -356,11 +357,11 @@ export default function IncomePage() {
               const last = i === STEPS.length - 1
               return [
                 i > 0 && (
-                  <div key={`arrow-${st.no}`} className={s.arrow} aria-hidden>
-                    <ArrowRight size={28} color="#9DBDF8" strokeWidth={2.5} />
-                  </div>
+                  <FadeUp key={`arrow-${st.no}`} className={s.arrow} delay={i * 0.15 - 0.075}>
+                    <ArrowRight size={28} color="#9DBDF8" strokeWidth={2.5} aria-hidden />
+                  </FadeUp>
                 ),
-                <div key={st.no} className={s.step} style={{ borderRadius: 20, border: `1px solid ${last ? C.blue : C.blueLine}`, background: last ? C.blue : '#fff', color: last ? '#fff' : C.ink }}>
+                <FadeUp key={st.no} className={s.step} delay={i * 0.15} style={{ borderRadius: 20, border: `1px solid ${last ? C.blue : C.blueLine}`, background: last ? C.blue : '#fff', color: last ? '#fff' : C.ink }}>
                   <div className={`${s.num} ${s.stepNo}`} style={{ borderRadius: 16, background: last ? 'rgba(255,255,255,.2)' : C.blue100, color: last ? '#fff' : C.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
                     {st.no}
                   </div>
@@ -368,7 +369,7 @@ export default function IncomePage() {
                     <h3 className={s.stepTitle} style={{ letterSpacing: '-0.02em' }}>{st.title}</h3>
                     <p className={s.stepDesc} style={{ color: last ? '#DCE8FE' : C.gray, lineHeight: 1.65 }}>{st.desc}</p>
                   </div>
-                </div>,
+                </FadeUp>,
               ]
             })}
           </div>

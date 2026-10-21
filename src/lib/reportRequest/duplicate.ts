@@ -28,13 +28,16 @@ function twoMonthsAgo(date: Date): Date {
   return new Date(targetMonth.getTime() - 9 * 60 * 60 * 1000)
 }
 
+export type LeadTable = 'report_request' | 'income_request'
+
 export async function hasRecentReportRequest(
   name: string,
   phone: string,
   now = new Date(),
+  table: LeadTable = 'report_request',
 ): Promise<boolean> {
   const { data, error } = await db()
-    .from('report_request')
+    .from(table)
     .select('id')
     .eq('name', name)
     .eq('phone', phone)

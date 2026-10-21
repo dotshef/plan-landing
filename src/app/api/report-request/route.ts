@@ -3,7 +3,7 @@ import { buildReportRequestEmailTemplate } from '@/lib/email/emailTemplate'
 import { isMailConfigured, sendMail } from '@/lib/email/sender'
 import { isPhoneVerified } from '@/lib/sms/verificationStore'
 import { db } from '@/lib/db/server'
-import { hasRecentReportRequest } from '@/lib/reportRequest/duplicate'
+import { hasRecentReportRequest, type LeadTable } from '@/lib/reportRequest/duplicate'
 import { normalizePhone } from '@/lib/phone'
 
 export const runtime = 'nodejs'
@@ -79,6 +79,8 @@ export async function POST(req: Request) {
   const sourcePage = normalizeSourcePage(payload.sourcePage)
   // 요청 자료는 1개만 허용 — 콤마 목록이 와도 첫 항목만 접수
   const indicatorItems = (normalize(payload.indicatorItems).split(',')[0] ?? '').trim().slice(0, 500) || null
+  // '두 번째 월급'(/income) 리드는 기존 리드와 분리된 income_request 테이블에 적재한다.
+  const table: LeadTable = sourcePage === 'income' ? 'income_request' : 'report_request'
 
   if (!name || !phoneRaw) {
     return NextResponse.json({ error: '이름과 연락처를 입력해주세요.' }, { status: 400 })
@@ -99,7 +101,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    if (await hasRecentReportRequest(name, phone, requestedAt)) {
+    if (await hasRecentReportRequest(name, phone, requestedAt, table)) {
       return NextResponse.json(
         { error: '이미 접수된 이력이 있습니다' },
         { status: 409 },
@@ -111,21 +113,23 @@ export async function POST(req: Request) {
   }
 
   try {
+    const lead = {
+      name,
+      phone,
+      traffic_source: trafficSource,
+      ad_keyword: adKeyword,
+      ad_campaign_id: adCampaignId,
+      ad_campaign_label: adCampaignLabel,
+      landing_url: landingUrl,
+      requested_at: toKstTimestamp(requestedAt),
+    }
+    // income_request 에는 stock / source_page / indicator_items 컬럼이 없다.
+    const row: Record<string, string | null> = table === 'income_request'
+      ? lead
+      : { ...lead, stock: stock || null, source_page: sourcePage, indicator_items: indicatorItems }
     const { error } = await db()
-      .from('report_request')
-      .insert({
-        name,
-        phone,
-        stock: stock || null,
-        traffic_source: trafficSource,
-        ad_keyword: adKeyword,
-        ad_campaign_id: adCampaignId,
-        ad_campaign_label: adCampaignLabel,
-        landing_url: landingUrl,
-        source_page: sourcePage,
-        indicator_items: indicatorItems,
-        requested_at: toKstTimestamp(requestedAt),
-      })
+      .from(table)
+      .insert(row)
     if (error) throw error
   } catch (error) {
     console.error('[report-request] DB insert failed:', error)
