@@ -7,7 +7,7 @@ export interface ReportRequestEmailInput {
   adCampaignId?: string | null
   adCampaignLabel?: string | null
   landingUrl?: string | null
-  sourcePage?: 'main' | 'trial' | 'indicators' | 'sector'
+  sourcePage?: 'main' | 'trial' | 'indicators' | 'sector' | 'income'
   indicatorItems?: string | null
   requestedAt: Date
 }
@@ -17,6 +17,7 @@ const SOURCE_PAGE_LABEL: Record<NonNullable<ReportRequestEmailInput['sourcePage'
   trial: '추천주 7일 체험',
   indicators: '영상 속 자료 받기',
   sector: '4분기 섹터',
+  income: '두 번째 월급',
 }
 
 const BRAND = '#1B6CF2'

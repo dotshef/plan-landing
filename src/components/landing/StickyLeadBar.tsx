@@ -43,9 +43,16 @@ export default function StickyLeadBar({
   // 종목이 특정되는 페이지(리포트 상세 등)에서 '관심 종목'을 자동으로 채운다.
   // 바에는 종목 입력칸이 없고, 제출 시 이 값이 그대로 함께 전송된다.
   defaultStock = '',
+  // 지정하면 해당 id 요소(첫 화면 신청 폼)가 화면 위로 지나간 뒤에만 바를 띄운다.
+  revealAfterId,
+  submitLabel = '무료 리포트 신청',
+  successMessage = '신청이 완료되었습니다! 영업일 기준 1~2일 이내에 리포트 안내를 보내드리겠습니다.',
 }: {
   sourcePage?: ReportRequestExtra['sourcePage']
   defaultStock?: string
+  revealAfterId?: string
+  submitLabel?: string
+  successMessage?: string
 }) {
   const {
     form, setForm,
@@ -57,6 +64,18 @@ export default function StickyLeadBar({
   } = useReportRequest(defaultStock, { sourcePage })
 
   const [modal, setModal] = useState<ConsentKind | null>(null)
+  const [revealed, setRevealed] = useState(!revealAfterId)
+
+  useEffect(() => {
+    if (!revealAfterId) return
+    const target = document.getElementById(revealAfterId)
+    if (!target) return
+    const observer = new IntersectionObserver(([e]) => {
+      setRevealed(!e.isIntersecting && e.boundingClientRect.top < 0)
+    })
+    observer.observe(target)
+    return () => observer.disconnect()
+  }, [revealAfterId])
 
   // 바가 푸터 하단(사업자정보·카피라이트)을 가리지 않도록 실제 높이를 CSS 변수로 노출한다.
   // 모바일은 인증번호 행 노출 여부·에러 문구에 따라 높이가 달라져 고정값 대신 측정한다.
@@ -86,8 +105,10 @@ export default function StickyLeadBar({
       <motion.div
         ref={barRef}
         initial={{ y: '100%' }}
-        animate={{ y: 0 }}
+        animate={{ y: revealed ? 0 : '110%' }}
         transition={{ type: 'spring', stiffness: 320, damping: 34 }}
+        aria-hidden={!revealed}
+        inert={!revealed}
         style={{
           position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 90,
           background: '#1B6CF2',
@@ -210,7 +231,7 @@ export default function StickyLeadBar({
                           cursor: canSubmit ? 'pointer' : 'not-allowed',
                         }}
                       >
-                        {submitting ? '전송 중…' : '무료 리포트 신청'}
+                        {submitting ? '전송 중…' : submitLabel}
                       </button>
                     </div>
 
@@ -232,7 +253,7 @@ export default function StickyLeadBar({
                       <Check size={18} color="#1B6CF2" strokeWidth={3} />
                     </div>
                     <div style={{ fontSize: 14.5, fontWeight: 700 }}>
-                      신청이 완료되었습니다! 영업일 기준 1~2일 이내에 리포트 안내를 보내드리겠습니다.
+                      {successMessage}
                     </div>
                   </motion.div>
                 )}

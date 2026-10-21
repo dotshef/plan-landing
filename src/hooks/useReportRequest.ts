@@ -103,14 +103,14 @@ function readStoredAdAttribution(): AdAttribution {
 
 export interface ReportRequestExtra {
   /** 신청이 발생한 페이지. 미지정 시 'main'. */
-  sourcePage?: 'main' | 'trial' | 'indicators' | 'sector'
+  sourcePage?: 'main' | 'trial' | 'indicators' | 'sector' | 'income'
   /** '영상 속 자료 받기'에서 선택한 지표/자료명. */
   indicatorItems?: string | null
 }
 
 /**
  * 무료 리포트 신청 폼의 상태·검증·휴대폰 인증·제출 로직.
- * 세로형 ApplicationPanel과 가로형 CompactLeadFormSection, 신규 페이지 폼이 공유한다.
+ * 세로형 ApplicationPanel과 하단 고정 바(StickyLeadBar), 페이지 폼(PageLeadForm)이 공유한다.
  */
 export function useReportRequest(defaultStock = '', extra?: ReportRequestExtra) {
   const [form, setForm] = useState({ name: '', phone: '', stock: defaultStock, privacy: true, agree: true })

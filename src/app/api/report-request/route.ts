@@ -22,7 +22,7 @@ interface ReportRequestPayload {
   indicatorItems?: unknown
 }
 
-const SOURCE_PAGES = ['main', 'trial', 'indicators', 'sector'] as const
+const SOURCE_PAGES = ['main', 'trial', 'indicators', 'sector', 'income'] as const
 type SourcePage = (typeof SOURCE_PAGES)[number]
 
 function normalizeSourcePage(value: unknown): SourcePage {
