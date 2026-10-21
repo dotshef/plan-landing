@@ -1,5 +1,5 @@
 // 파생값 계산 (db-schema.md §파생값). 저장하지 않고 읽기 시 계산.
-// 순수 함수 모음 — DB 행 배열을 받아 UI 타입 조각을 만든다.
+// 순수 함수 모음 - DB 행 배열을 받아 UI 타입 조각을 만든다.
 import type { CandleData, TechnicalIndicator } from './types'
 
 function sma(values: number[], period: number): number[] {

@@ -1,4 +1,4 @@
--- 0016_rename_requested_items.sql — requested_items → indicator_items
+-- 0016_rename_requested_items.sql - requested_items → indicator_items
 -- 이 컬럼은 '영상 속 자료 받기'(source_page='indicators')에서 고른 지표/자료명만 담는다.
 -- 다른 유입 페이지는 값을 채우지 않으므로 용도를 이름에 명시한다.
 

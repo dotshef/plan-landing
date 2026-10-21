@@ -1,6 +1,6 @@
 import { ImageIcon } from 'lucide-react'
 
-// 운영 원칙 — photo 는 현장 사진 수령 전까지 자리표시 문구로 노출된다.
+// 운영 원칙 - photo 는 현장 사진 수령 전까지 자리표시 문구로 노출된다.
 const PRINCIPLES = [
   {
     no: '01',

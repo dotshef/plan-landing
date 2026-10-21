@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ code: str
   const { code } = await params
   const name = await getStockName(code).catch(() => null)
   const label = name ? `${name}(${code})` : code
-  const title = `${label} 전문가 리포트 — 투자의견·목표주가 | 투자그룹 플랜`
+  const title = `${label} 전문가 리포트 - 투자의견·목표주가 | 투자그룹 플랜`
   const description = `${label}의 증권사 투자의견 컨센서스, 목표주가, 재무 분석을 담은 전문가 리포트. 무료로 확인하세요.`
   return {
     title,
@@ -44,7 +44,7 @@ export default async function ReportPage({ params }: { params: Promise<{ code: s
           <ApplicationPanel defaultStock={`${quote.name}(${quote.code})`} />
         </div>
 
-        {/* 하단 고정 바 — 관심 종목은 현재 보고 있는 종목으로 자동 입력 */}
+        {/* 하단 고정 바 - 관심 종목은 현재 보고 있는 종목으로 자동 입력 */}
         <StickyLeadBar sourcePage="main" defaultStock={`${quote.name}(${quote.code})`} />
       </div>
     </StockDataProvider>

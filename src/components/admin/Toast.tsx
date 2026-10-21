@@ -6,7 +6,7 @@ import { CircleCheck, OctagonX } from 'lucide-react'
 
 export interface ToastData { ok: boolean; text: string }
 
-/** 액션 결과(성공/실패)를 하단 토스트로 표시 — 성공 4초, 실패 6초 후 자동 사라짐 */
+/** 액션 결과(성공/실패)를 하단 토스트로 표시 - 성공 4초, 실패 6초 후 자동 사라짐 */
 export function useToast() {
   const [toast, setToast] = useState<ToastData | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)

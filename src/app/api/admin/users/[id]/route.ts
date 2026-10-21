@@ -5,7 +5,7 @@ import { requireAdmin } from '@/lib/admin/session'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// 관리자 삭제 — hard delete. 세션은 user_session FK cascade로 함께 제거된다.
+// 관리자 삭제 - hard delete. 세션은 user_session FK cascade로 함께 제거된다.
 export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string }> }) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })

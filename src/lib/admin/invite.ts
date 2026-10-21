@@ -3,13 +3,13 @@ import { sendMail } from '@/lib/email/sender'
 
 const LOGIN_URL = 'https://www.plankor.kr/admin/login'
 
-// 임시 비밀번호는 이 메일 본문에만 평문으로 존재한다 — DB·로그에 남기지 않는다.
+// 임시 비밀번호는 이 메일 본문에만 평문으로 존재한다 - DB·로그에 남기지 않는다.
 export async function sendInviteMail(to: string, tempPassword: string, isReissue = false): Promise<void> {
   const title = isReissue ? '임시 비밀번호가 재발급되었습니다' : '관리자로 초대되었습니다'
   const subject = `[투자그룹 플랜] ${title}`
 
   const text = [
-    `투자그룹 플랜 관리자 사이트 — ${title}`,
+    `투자그룹 플랜 관리자 사이트 - ${title}`,
     '',
     `로그인 페이지: ${LOGIN_URL}`,
     `이메일: ${to}`,

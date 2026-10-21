@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     await sendInviteMail(email, tempPassword)
   } catch (e) {
     console.error('[admin/invite] mail failed:', e)
-    // 메일이 안 나가면 초대가 성립하지 않는다 — 방금 만든 계정은 hard delete
+    // 메일이 안 나가면 초대가 성립하지 않는다 - 방금 만든 계정은 hard delete
     await db().from('user').delete().eq('id', created.id as number)
     return NextResponse.json({ error: '초대 메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.' }, { status: 502 })
   }

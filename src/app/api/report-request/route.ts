@@ -33,7 +33,7 @@ function normalize(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
 }
 
-// KST(UTC+9) 벽시계 문자열 'YYYY-MM-DD HH:MM:SS' — requested_at(timestamp, tz 없음) 컬럼용
+// KST(UTC+9) 벽시계 문자열 'YYYY-MM-DD HH:MM:SS' - requested_at(timestamp, tz 없음) 컬럼용
 function toKstTimestamp(date: Date): string {
   const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000)
   return kst.toISOString().slice(0, 19).replace('T', ' ')
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
     ? null
     : normalize(payload.landingUrl).slice(0, 2000) || null
   const sourcePage = normalizeSourcePage(payload.sourcePage)
-  // 요청 자료는 1개만 허용 — 콤마 목록이 와도 첫 항목만 접수
+  // 요청 자료는 1개만 허용 - 콤마 목록이 와도 첫 항목만 접수
   const indicatorItems = (normalize(payload.indicatorItems).split(',')[0] ?? '').trim().slice(0, 500) || null
   // '두 번째 월급'(/income) 리드는 기존 리드와 분리된 income_request 테이블에 적재한다.
   const table: LeadTable = sourcePage === 'income' ? 'income_request' : 'report_request'

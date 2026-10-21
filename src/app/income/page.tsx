@@ -8,12 +8,12 @@ import StickyLeadBar from '@/components/landing/StickyLeadBar'
 import s from './income.module.css'
 
 export const metadata: Metadata = {
-  title: '두 번째 월급 — 투자그룹 플랜',
+  title: '투자그룹 플랜 - 두 번째 월급',
   description: '월급만으로는 아쉽다면, 돈이 돈을 버는 구조를 시작하세요. 투자 전자책·자산 황금비율 리포트·재테크 진단 3종을 무료로 드립니다.',
   alternates: { canonical: '/income' },
 }
 
-// 'Forbes' 워드마크·메달 영문 문구에만 사용 — 굵기 하나만 로드
+// 'Forbes' 워드마크·메달 영문 문구에만 사용 - 굵기 하나만 로드
 const playfair = Playfair_Display({ subsets: ['latin'], weight: '900', display: 'swap' })
 
 const APPLY_ID = 'apply'

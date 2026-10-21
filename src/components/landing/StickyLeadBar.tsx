@@ -116,7 +116,7 @@ export default function StickyLeadBar({
         }}
       >
             <div className="slb-bar" style={{ maxWidth: 1320, margin: '0 auto', padding: '12px 24px' }}>
-              {/* Cloudflare Turnstile 위젯 컨테이너 — 체크박스 챌린지가 필요한 방문자에게만 표시됨 */}
+              {/* Cloudflare Turnstile 위젯 컨테이너 - 체크박스 챌린지가 필요한 방문자에게만 표시됨 */}
               <div ref={turnstileRef} style={{ width: '100%' }} />
               <AnimatePresence mode="wait">
                 {!submitted ? (
@@ -170,7 +170,7 @@ export default function StickyLeadBar({
                       </button>
                     </div>
 
-                    {/* 인증번호 · 확인 — 데스크톱은 항상(발송 전 비활성), 모바일은 발송 후에만(.slb-code-idle→hidden) */}
+                    {/* 인증번호 · 확인 - 데스크톱은 항상(발송 전 비활성), 모바일은 발송 후에만(.slb-code-idle→hidden) */}
                     <div className={`slb-code${codeRowOpen ? '' : ' slb-code-idle'}`} style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '1.2 1 210px', minWidth: 0 }}>
                       <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
                         <input

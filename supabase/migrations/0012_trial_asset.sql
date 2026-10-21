@@ -1,4 +1,4 @@
--- 0012_trial_asset.sql — 추천주 7일 체험 페이지 동적 이미지 (Supabase Storage 연동)
+-- 0012_trial_asset.sql - 추천주 7일 체험 페이지 동적 이미지 (Supabase Storage 연동)
 -- 접근 제어: 서버 서비스롤 전용. RLS 미사용(v1).
 -- review 최대 3개 제한은 DB 제약이 아니라 업로드 API에서 검사한다(명확한 에러 메시지 목적).
 

@@ -1,4 +1,4 @@
--- 0017_income_request.sql — 신규 페이지 '두 번째 월급'(/income) 신청 고객 정보 적재
+-- 0017_income_request.sql - 신규 페이지 '두 번째 월급'(/income) 신청 고객 정보 적재
 -- 기존 리드(report_request)와 분리된 별도 테이블. 컬럼 구성은 report_request를 따르되
 -- income 페이지에서 쓰지 않는 값은 제외한다.
 --   - stock           : income 폼에는 관심 종목 입력이 없음

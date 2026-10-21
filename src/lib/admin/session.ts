@@ -26,7 +26,7 @@ function sha256(value: string): string {
   return createHash('sha256').update(value).digest('hex')
 }
 
-// KST(UTC+9) 벽시계 'YYYY-MM-DD HH:MM:SS' — timestamp(tz 없음) 컬럼용 (report-request와 동일 규칙)
+// KST(UTC+9) 벽시계 'YYYY-MM-DD HH:MM:SS' - timestamp(tz 없음) 컬럼용 (report-request와 동일 규칙)
 export function toKstTimestamp(date: Date = new Date()): string {
   const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000)
   return kst.toISOString().slice(0, 19).replace('T', ' ')
@@ -64,7 +64,7 @@ export async function destroySession(): Promise<void> {
   store.delete(SESSION_COOKIE)
 }
 
-/** 특정 관리자의 모든 세션 폐기 — 비밀번호 변경·임시 비번 재발급 시 호출. */
+/** 특정 관리자의 모든 세션 폐기 - 비밀번호 변경·임시 비번 재발급 시 호출. */
 export async function destroyAllSessions(userId: number): Promise<void> {
   await db().from('user_session').delete().eq('user_id', userId)
 }
@@ -83,7 +83,7 @@ export async function getAdmin(): Promise<AdminUser | null> {
   if (!session) return null
   if (new Date(session.expires_at as string) <= new Date()) return null
 
-  // hard delete 전략 — 계정이 지워지면 세션도 cascade로 사라지므로 여기 도달하지 않지만,
+  // hard delete 전략 - 계정이 지워지면 세션도 cascade로 사라지므로 여기 도달하지 않지만,
   // 조회 시점 경합 대비 maybeSingle로 방어한다.
   const { data: user } = await db()
     .from('user')
@@ -94,7 +94,7 @@ export async function getAdmin(): Promise<AdminUser | null> {
 }
 
 /**
- * API 라우트용 가드. 로그인 상태가 아니면 null — 호출자가 401 응답.
+ * API 라우트용 가드. 로그인 상태가 아니면 null - 호출자가 401 응답.
  * 비밀번호 변경이 강제된 계정은 password API 외에는 차단한다.
  */
 export async function requireAdmin(opts: { allowMustChange?: boolean } = {}): Promise<AdminUser | null> {

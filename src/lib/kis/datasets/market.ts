@@ -124,7 +124,7 @@ const topView: MarketDataset = {
     const codes = list.map((r) => String(r.mksc_shrn_iscd ?? '').trim()).filter(Boolean)
     if (codes.length === 0) return 'unavailable'
 
-    // 보통주(is_common)만 통과 — stock 테이블에서 판정
+    // 보통주(is_common)만 통과 - stock 테이블에서 판정
     const { data: commons } = await db()
       .from('stock')
       .select('code')

@@ -1,4 +1,4 @@
-// AUTO-GENERATED — KIS 종목마스터(KOSPI/KOSDAQ) 스냅샷. 수기 편집 금지.
+// AUTO-GENERATED - KIS 종목마스터(KOSPI/KOSDAQ) 스냅샷. 수기 편집 금지.
 // 원본: scripts/master-kospi.csv, scripts/master-kosdaq.csv (4374 종목)
 // 나중에 DB로 이관 예정. 갱신 시 원본 CSV에서 재생성.
 //

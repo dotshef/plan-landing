@@ -149,7 +149,7 @@ export async function POST(req: Request) {
     )
   }
 
-  // 발송량 급증 시 경보(로그+메일)만 — 차단하지 않음
+  // 발송량 급증 시 경보(로그+메일)만 - 차단하지 않음
   await maybeAlertHighVolume()
 
   return NextResponse.json({ ok: true, ttlMs: CODE_TTL_MS })

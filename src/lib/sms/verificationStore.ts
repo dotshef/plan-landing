@@ -10,7 +10,7 @@ import {
 
 const TABLE = 'phone_verification'
 
-// KST(UTC+9) 벽시계 문자열 'YYYY-MM-DDTHH:mm:ss' — created_at/verified_at(timestamp, tz 없음) 컬럼용
+// KST(UTC+9) 벽시계 문자열 'YYYY-MM-DDTHH:mm:ss' - created_at/verified_at(timestamp, tz 없음) 컬럼용
 function toKstTimestamp(date: Date): string {
   const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000)
   return kst.toISOString().slice(0, 19).replace('T', ' ')

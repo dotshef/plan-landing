@@ -65,7 +65,7 @@ export default function ReportContent() {
                 <div style={{ fontSize: 11, color: '#8B95A1' }}>증권사 {oc.total}곳 최신 의견 기준</div>
               </div>
 
-              {/* 100% 스택 가로 막대 — 컨테이너 overflow로 양끝 라운딩 */}
+              {/* 100% 스택 가로 막대 - 컨테이너 overflow로 양끝 라운딩 */}
               <div style={{ borderRadius: 8, overflow: 'hidden' }}>
                 <ResponsiveContainer width="100%" height={30}>
                   <BarChart

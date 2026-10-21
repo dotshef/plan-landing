@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import PageLeadForm from '@/components/common/PageLeadForm'
 
-// 헤더 CTA·'플랜을 선택한 이유' 섹션 버튼이 이 이벤트로 모달을 연다 — 모달은 메인 페이지에만 마운트된다.
+// 헤더 CTA·'플랜을 선택한 이유' 섹션 버튼이 이 이벤트로 모달을 연다 - 모달은 메인 페이지에만 마운트된다.
 const OPEN_EVENT = 'plan:open-trial-modal'
 
 export function openTrialModal() {
@@ -25,9 +25,9 @@ export function TrialModalTrigger({ className, style, children }: {
 }
 
 /**
- * 추천주 무료 체험 신청 모달 — 첫 화면 폼과 같은 PageLeadForm(SMS 인증·Turnstile) 사용.
+ * 추천주 무료 체험 신청 모달 - 첫 화면 폼과 같은 PageLeadForm(SMS 인증·Turnstile) 사용.
  * 처음 열 때 마운트한 뒤 닫아도 유지한다: 입력값·완료 상태를 보존하고 Turnstile 위젯을 중복 렌더하지 않기 위함.
- * 패널에 transform 애니메이션을 쓰지 않는다 — 내부 ConsentModal(position: fixed)이 뷰포트 기준으로 뜨도록.
+ * 패널에 transform 애니메이션을 쓰지 않는다 - 내부 ConsentModal(position: fixed)이 뷰포트 기준으로 뜨도록.
  */
 export default function TrialFormModal() {
   const [open, setOpen] = useState(false)

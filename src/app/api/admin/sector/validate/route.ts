@@ -16,7 +16,7 @@ export async function GET() {
   if (!report) return NextResponse.json({ error: '보고서가 없습니다. 연도·분기를 먼저 저장해주세요.' }, { status: 400 })
 
   try {
-    // report.quarter는 발표 분기 — 데이터 검증은 직전 분기 기준
+    // report.quarter는 발표 분기 - 데이터 검증은 직전 분기 기준
     const result = await validateSectors(
       prevQuarter({ year: report.year, quarter: report.quarter }),
       report.sectors.map((s) => ({ sectorId: s.id, name: s.name, stocks: s.stocks })),

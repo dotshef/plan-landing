@@ -43,7 +43,7 @@ export default function ApplicationPanel({ defaultStock = '' }: { defaultStock?:
               <div style={{ fontSize: 20, fontWeight: 800, color: '#111827' }}>무료 리포트 신청하기</div>
               <div style={{ fontSize: 13, color: '#8B95A1', marginTop: 5 }}>입력하신 정보는 리포트 발송 용도로만 사용됩니다.</div>
 
-              {/* Cloudflare Turnstile 위젯 컨테이너 — 체크박스 챌린지가 필요한 방문자에게만 표시됨.
+              {/* Cloudflare Turnstile 위젯 컨테이너 - 체크박스 챌린지가 필요한 방문자에게만 표시됨.
                   gap:16 flex column 안에 두면 숨김 상태에서도 빈 gap이 생겨 form 밖에 배치 */}
               <div ref={turnstileRef} />
               <form onSubmit={handleSubmit} style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 16 }}>

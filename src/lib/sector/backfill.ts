@@ -8,7 +8,7 @@ import { prevQuarter, quarterRange, type QuarterRef } from './quarter'
 // - 시세+수급: investor-trade-by-stock-daily(FHPTJ04160001) 하나로 동시 적재
 //   (기준일부터 과거 30영업일 반환 → 기준일을 뒤로 밀며 반복)
 // - 분기 재무: income-statement / financial-ratio DIV=1 (호출 1회에 최근 30개 분기)
-// 모든 적재는 기존 PK 기준 upsert — 멱등.
+// 모든 적재는 기존 PK 기준 upsert - 멱등.
 
 // 거래일 달력 기준 종목(삼성전자). 검증의 완전성 판정 기준이므로 백필 대상에 항상 포함한다.
 export const CALENDAR_CODE = '005930'
@@ -28,7 +28,7 @@ async function backfillDaily(code: string, q: QuarterRef): Promise<void> {
   const { from } = quarterRange(prevQuarter(q))
   const { to } = quarterRange(q)
   // 당일을 기준일로 주면 KIS가 집계 완료(15:40) 전까지 OPSQ2001(TIME LIMIT)로 거절한다.
-  // 백필은 과거 구간용이므로 항상 전일(KST)까지만 조회 — 당일 행은 야간 cron이 채운다.
+  // 백필은 과거 구간용이므로 항상 전일(KST)까지만 조회 - 당일 행은 야간 cron이 채운다.
   const kstYesterday = new Date(Date.now() + 9 * 60 * 60 * 1000 - 24 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10)

@@ -35,7 +35,7 @@ export default function UsersManager() {
   const { toast, showToast } = useToast()
 
   const load = useCallback(async () => {
-    // 최초 로딩 상태는 useState(true)가 담당 — 이펙트 내 동기 setState 회피
+    // 최초 로딩 상태는 useState(true)가 담당 - 이펙트 내 동기 setState 회피
     try {
       const res = await fetch('/api/admin/users')
       const data = await res.json().catch(() => ({}))
@@ -101,7 +101,7 @@ export default function UsersManager() {
                   <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6', fontWeight: 700, color: '#191F28' }}>
                     {u.email}{u.id === me && <span style={{ marginLeft: 6, fontSize: 11, color: '#1B6CF2', fontWeight: 800 }}>나</span>}
                   </td>
-                  <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6', color: '#4E5968' }}>{u.name ?? '—'}</td>
+                  <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6', color: '#4E5968' }}>{u.name ?? '-'}</td>
                   <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6' }}>
                     {u.must_change_password ? (
                       <span style={{ padding: '3px 8px', borderRadius: 6, fontSize: 11.5, fontWeight: 700, background: tempExpired ? '#FCEEED' : '#FFF4E0', color: tempExpired ? '#E8342B' : '#92610A' }}>
@@ -112,7 +112,7 @@ export default function UsersManager() {
                     )}
                   </td>
                   <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6', color: '#6B7684' }}>
-                    {u.last_login_at ? u.last_login_at.slice(0, 16).replace('T', ' ') : '—'}
+                    {u.last_login_at ? u.last_login_at.slice(0, 16).replace('T', ' ') : '-'}
                   </td>
                   <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6', color: '#6B7684' }}>{u.created_at.slice(0, 10)}</td>
                   <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6', textAlign: 'right', whiteSpace: 'nowrap' }}>

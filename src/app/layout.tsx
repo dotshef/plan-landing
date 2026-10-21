@@ -17,7 +17,7 @@ const pretendard = localFont({
   display: 'swap',
 })
 
-// 특정 문구(히어로 배지)에만 사용 — 필요한 굵기 하나만 로드
+// 특정 문구(히어로 배지)에만 사용 - 필요한 굵기 하나만 로드
 const maruBuri = localFont({
   src: '../../public/fonts/MaruBuri-SemiBold.otf',
   weight: '600',
@@ -28,11 +28,11 @@ const maruBuri = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.plankor.kr'),
-  title: '투자그룹 플랜 - 종목 분석 & 무료 리포트',
+  title: '투자그룹 플랜 - 무료 추천주 & 무료 리포트',
   description: '실시간 시세, 수급, AI 분석까지 한눈에! 전문가 리포트를 무료로 확인하세요.',
   alternates: { canonical: '/' },
   openGraph: {
-    title: '투자그룹 플랜 - 종목 분석 & 무료 리포트',
+    title: '투자그룹 플랜 - 무료 추천주 & 무료 리포트',
     description: '실시간 시세, 수급, AI 분석까지 한눈에! 전문가 리포트를 무료로 확인하세요.',
     type: 'website',
     locale: 'ko_KR',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
         url: '/images/og-image.png',
         width: 1731,
         height: 909,
-        alt: '투자그룹 플랜 — 종목 분석 & 무료 리포트',
+        alt: '투자그룹 플랜 - 종목 분석 & 무료 리포트',
       },
     ],
   },
@@ -92,7 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://bzrcdn.openai.com/sdk/oaiq.min.js"
           strategy="afterInteractive"
         />
-        {/* 당근마켓 광고 픽셀 — 원본은 첫 script 태그 앞 삽입 방식이라 그대로 동적 삽입 유지 */}
+        {/* 당근마켓 광고 픽셀 - 원본은 첫 script 태그 앞 삽입 방식이라 그대로 동적 삽입 유지 */}
         <Script id="karrot-pixel-init" strategy="afterInteractive">
           {`(function (w, d) {
               if (w.karrotPixel) return;
@@ -109,7 +109,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             window.karrotPixel.init('1788489677638983001');
             window.karrotPixel.track('ViewPage');`}
         </Script>
-        {/* 비즈스프링 로그분석 — 원본은 document.write 방식이라 동적 삽입으로 대체 */}
+        {/* 비즈스프링 로그분석 - 원본은 document.write 방식이라 동적 삽입으로 대체 */}
         <Script id="bslog-init" strategy="afterInteractive">
           {`(function(){
               if (document.getElementById('bslog_script')) return;
@@ -121,7 +121,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               document.getElementsByTagName('head')[0].appendChild(s);
             })();`}
         </Script>
-        {/* 에이스카운터 로그분석 — 원본의 첫 script 태그 앞 삽입을 head appendChild로 대체 */}
+        {/* 에이스카운터 로그분석 - 원본의 첫 script 태그 앞 삽입을 head appendChild로 대체 */}
         <Script id="acecounter-init" strategy="afterInteractive">
           {`window._AceGID = (function () {
               var Inf = ['plankor.kr', 'www.plankor.kr,plankor.kr', 'AZ3A106068', '1', 'NaPm,Ncisy', '1'];
@@ -142,7 +142,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               return _sc.src;
             })();`}
         </Script>
-        {/* Cloudflare Turnstile (봇 방지) — explicit 렌더로 발송 시점에 실행 */}
+        {/* Cloudflare Turnstile (봇 방지) - explicit 렌더로 발송 시점에 실행 */}
         <Script
           src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
           strategy="afterInteractive"

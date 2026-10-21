@@ -214,7 +214,7 @@ async function fetchRatio(code: string, div: '0' | '1', type: 'A' | 'Q') {
 const ratio: StockDataset = {
   key: 'ratio',
   async run(code) {
-    // 연간 + 분기(누적) 모두 수집 — 분기 EPS는 섹터 TTM PER 계산의 원천(설계 §5.2).
+    // 연간 + 분기(누적) 모두 수집 - 분기 EPS는 섹터 TTM PER 계산의 원천(설계 §5.2).
     const annual = await fetchRatio(code, '0', 'A')
     const quarter = await fetchRatio(code, '1', 'Q')
     const rows = [...annual, ...quarter]

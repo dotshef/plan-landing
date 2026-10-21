@@ -1,14 +1,14 @@
 import { ClipboardList, ShieldCheck, TrendingUp, type LucideIcon } from 'lucide-react'
 import PageLeadForm from '@/components/common/PageLeadForm'
 
-// 첫 화면 체험 폼 앵커 — 헤더 CTA·하단 고정 바(revealAfterId)가 이 id 를 참조한다.
+// 첫 화면 체험 폼 앵커 - 헤더 CTA·하단 고정 바(revealAfterId)가 이 id 를 참조한다.
 export const TRIAL_FORM_ID = 'trial-form'
 
-// 추천 성과 수치 — 공증 자료 기준. 갱신 시 이 값만 바꾼다.
+// 추천 성과 수치 - 공증 자료 기준. 갱신 시 이 값만 바꾼다.
 const STATS = { period: '2026년 상반기', total: 287, hit: 253 }
 const HIT_RATE = ((STATS.hit / STATS.total) * 100).toFixed(1)
 
-// 공증 자료 카드 — 원본 스캔·수치 수령 전까지 대괄호 자리표시를 유지한다.
+// 공증 자료 카드 - 원본 스캔·수치 수령 전까지 대괄호 자리표시를 유지한다.
 interface Proof { shot: string; value: string; meta: string; org: string; date: string }
 const PROOFS: Proof[] = [
   { shot: '수익률 공증서 스캔', value: '+[ ]%', meta: '[종목] · [보유 기간]', org: '[공증 기관] 공증', date: '[공증일]' },
@@ -97,7 +97,7 @@ function ProofCard({ p }: { p: Proof }) {
   )
 }
 
-// 금박 인증 마크 — 카드마다 <use> 로 재사용하도록 정의는 한 번만 렌더한다.
+// 금박 인증 마크 - 카드마다 <use> 로 재사용하도록 정의는 한 번만 렌더한다.
 function SealDefs() {
   const rays = Array.from({ length: 48 }, (_, i) => {
     const r = i % 2 === 0 ? 48 : 42.6

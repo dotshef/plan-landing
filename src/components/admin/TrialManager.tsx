@@ -27,7 +27,7 @@ function Slot({ asset, label, onUpload, onDelete, uploading, uploadingKey }: {
       <div style={{ fontSize: 12.5, fontWeight: 700, color: '#6B7684', marginBottom: 6 }}>{label}</div>
       {asset ? (
         <div style={{ position: 'relative', border: '1px solid #E5E8EB', borderRadius: 12, overflow: 'hidden', background: '#F8FAFC' }}>
-          {/* Storage 공개 URL 렌더 — next/image 미사용(v1, remotePatterns 불필요) */}
+          {/* Storage 공개 URL 렌더 - next/image 미사용(v1, remotePatterns 불필요) */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={asset.url} alt={asset.alt ?? label} style={{ display: 'block', width: '100%', height: 180, objectFit: 'contain', background: '#fff' }} />
           <button
@@ -63,7 +63,7 @@ export default function TrialManager() {
   const pendingRef = useRef<{ kind: Asset['kind']; groupNo: number | null } | null>(null)
 
   const load = useCallback(async () => {
-    // 최초 로딩 상태는 useState(true)가 담당 — 이펙트 내 동기 setState 회피
+    // 최초 로딩 상태는 useState(true)가 담당 - 이펙트 내 동기 setState 회피
     try {
       const res = await fetch('/api/admin/trial-assets')
       const data = await res.json().catch(() => ({}))
@@ -113,7 +113,7 @@ export default function TrialManager() {
     await load()
   }
 
-  // 발송 기록 세트는 하나만 — 문자 캡처·차트 각 1장. 참여자 후기는 개수 제한 없음.
+  // 발송 기록 세트는 하나만 - 문자 캡처·차트 각 1장. 참여자 후기는 개수 제한 없음.
   const smsAsset = assets.find((a) => a.kind === 'sms')
   const chartAsset = assets.find((a) => a.kind === 'chart')
   const reviews = assets.filter((a) => a.kind === 'review')
@@ -150,7 +150,7 @@ export default function TrialManager() {
             <p style={{ fontSize: 12.5, color: '#8B95A1', margin: '0 0 16px' }}>
               등록된 순서대로 노출됩니다. 3개를 초과하면 퍼블릭 페이지에서 슬라이딩으로 노출됩니다.
             </p>
-            {/* 4열 고정 그리드 — 줄바꿈된 업로드 슬롯도 카드와 같은 너비를 유지한다 */}
+            {/* 4열 고정 그리드 - 줄바꿈된 업로드 슬롯도 카드와 같은 너비를 유지한다 */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
               {reviews.map((r) => (
                 <Slot key={r.id} asset={r} label="후기 이미지" onUpload={() => {}} onDelete={(a) => void handleDelete(a)} uploading={uploading} uploadingKey="review" />

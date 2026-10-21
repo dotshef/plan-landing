@@ -13,15 +13,15 @@ interface Props {
   subtitle?: string
   submitLabel: string
   successMessage?: string
-  /** 카드 테두리·그림자 없이 본문만 렌더 — 부모가 이미 카드 컨테이너일 때 사용. */
+  /** 카드 테두리·그림자 없이 본문만 렌더 - 부모가 이미 카드 컨테이너일 때 사용. */
   bare?: boolean
   /** 제목 오른쪽 태그(예: 선착순 마감). */
   badge?: React.ReactNode
-  /** 모바일(≤768px)에서 인증번호·동의 행을 인증번호 발송 후에만 노출 — 첫 화면 폼 높이를 줄인다. */
+  /** 모바일(≤768px)에서 인증번호·동의 행을 인증번호 발송 후에만 노출 - 첫 화면 폼 높이를 줄인다. */
   progressive?: boolean
 }
 
-/** 신규 페이지(체험·자료·섹터) 공용 세로형 신청 폼 — 기존 리드 플로우(SMS 인증·Turnstile) 그대로. */
+/** 신규 페이지(체험·자료·섹터) 공용 세로형 신청 폼 - 기존 리드 플로우(SMS 인증·Turnstile) 그대로. */
 export default function PageLeadForm({ sourcePage, indicatorItems, title, subtitle, submitLabel, successMessage, bare, badge, progressive }: Props) {
   const {
     form, setForm,

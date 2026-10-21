@@ -4,7 +4,7 @@ import { isMailConfigured, sendMail } from '@/lib/email/sender'
 
 const TABLE = 'phone_verification'
 
-// KST(UTC+9) 벽시계 문자열 'YYYY-MM-DDTHH:mm:ss' — created_at(timestamp, tz 없음) 컬럼용
+// KST(UTC+9) 벽시계 문자열 'YYYY-MM-DDTHH:mm:ss' - created_at(timestamp, tz 없음) 컬럼용
 function toKstTimestamp(date: Date): string {
   const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000)
   return kst.toISOString().slice(0, 19).replace('T', ' ')
@@ -12,7 +12,7 @@ function toKstTimestamp(date: Date): string {
 
 const VOLUME_WINDOW_MS = 24 * 60 * 60 * 1000
 const VOLUME_THRESHOLD = 100
-/** 경보 재발송 쿨다운 (밀리초) — 공격 지속 시 메일 폭주 방지 */
+/** 경보 재발송 쿨다운 (밀리초) - 공격 지속 시 메일 폭주 방지 */
 const ALERT_COOLDOWN_MS = 60 * 60 * 1000
 let lastAlertAt = 0
 
@@ -33,7 +33,7 @@ async function countSendsInWindow(): Promise<number> {
 
 async function sendAlertEmail(count: number): Promise<void> {
   if (!isMailConfigured()) {
-    console.error('[sms/volumeAlert] RESEND_API_KEY / EMAIL_TO 미설정 — 경보 메일 생략')
+    console.error('[sms/volumeAlert] RESEND_API_KEY / EMAIL_TO 미설정 - 경보 메일 생략')
     return
   }
 

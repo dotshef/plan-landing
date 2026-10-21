@@ -96,7 +96,7 @@ a {
   width: 100%;
 }
 
-/* 하단 고정 리드 바 (StickyLeadBar) — 데스크톱 한 줄 기본, 모바일 재배치 */
+/* 하단 고정 리드 바 (StickyLeadBar) - 데스크톱 한 줄 기본, 모바일 재배치 */
 .slb-send-short { display: none; }
 
 @media (max-width: 1024px) {
@@ -145,7 +145,7 @@ a {
     --card-padding: 18px 16px;
   }
 
-  /* PageLeadForm progressive — 인증번호·동의 행은 인증번호 발송 후에만 노출 */
+  /* PageLeadForm progressive - 인증번호·동의 행은 인증번호 발송 후에만 노출 */
   .plf-reveal-idle {
     display: none !important;
   }
@@ -243,7 +243,7 @@ a {
 }
 
 
-/* 자료 선택 칩 카드 그리드 (IndicatorsContent) — 모바일에서 2컬럼 세로형으로 전환 */
+/* 자료 선택 칩 카드 그리드 (IndicatorsContent) - 모바일에서 2컬럼 세로형으로 전환 */
 .ind-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -305,7 +305,7 @@ a {
   }
 }
 
-/* 선택된 자료 칩 영역 — 선택 시 레이아웃 점프를 막기 위해 높이를 예약 */
+/* 선택된 자료 칩 영역 - 선택 시 레이아웃 점프를 막기 위해 높이를 예약 */
 .ind-chips {
   display: flex;
   flex-wrap: wrap;
@@ -398,7 +398,7 @@ a {
   }
 }
 
-/* 참여자 후기 슬라이딩 스트립 (/trial) — mat-marq 의 밝은 배경(#F5F7FB) 변형 */
+/* 참여자 후기 슬라이딩 스트립 (/trial) - mat-marq 의 밝은 배경(#F5F7FB) 변형 */
 .review-marq::before,
 .review-marq::after {
   width: 40px;
@@ -430,7 +430,7 @@ a {
   }
 }
 
-/* 선정 4단계 카드 (/trial) — 데스크톱 4열, 모바일 2×2 */
+/* 선정 4단계 카드 (/trial) - 데스크톱 4열, 모바일 2×2 */
 .trial-steps {
   grid-template-columns: repeat(4, 1fr);
 }
@@ -496,7 +496,7 @@ a {
   scroll-margin-top: 96px;
 }
 
-/* 공증 자료 2×2 — 오른쪽 열 높이에 맞춰 늘어나고 카드 묶음은 세로 중앙 */
+/* 공증 자료 2×2 - 오른쪽 열 높이에 맞춰 늘어나고 카드 묶음은 세로 중앙 */
 .home-hero-wall {
   grid-area: wall;
   min-width: 0;
@@ -858,7 +858,7 @@ a {
     display: inline;
   }
 
-  /* 공증 자료 2×2 — 한 칸 폭이 좁아 머리글 날짜는 숨기고(하단 문구에 포함) 글자·마크를 줄인다 */
+  /* 공증 자료 2×2 - 한 칸 폭이 좁아 머리글 날짜는 숨기고(하단 문구에 포함) 글자·마크를 줄인다 */
   .home-hero-wall {
     padding: 10px;
     gap: 8px;
@@ -911,7 +911,7 @@ a {
     width: 100%;
   }
 
-  /* 리포트 카드: 2×2 — 한 칸 폭(약 160px)에 맞춰 카드 안쪽을 줄인다 */
+  /* 리포트 카드: 2×2 - 한 칸 폭(약 160px)에 맞춰 카드 안쪽을 줄인다 */
   .home-report-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px 10px;
@@ -1018,7 +1018,7 @@ a {
   }
 }
 
-/* 추천주 체험 신청 모달 — 패널에 transform 을 두지 않아 내부 동의 모달(fixed)이 뷰포트 기준으로 뜬다. */
+/* 추천주 체험 신청 모달 - 패널에 transform 을 두지 않아 내부 동의 모달(fixed)이 뷰포트 기준으로 뜬다. */
 .trial-modal-overlay {
   position: fixed;
   inset: 0;

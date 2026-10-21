@@ -2,7 +2,7 @@ import 'server-only'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 // 서버 전용 Supabase 클라이언트(서비스롤). 요청 경로·cron 모두 이 커넥션으로만 DB 접근.
-// 자격증명은 NEXT_PUBLIC_ 금지 — 클라이언트 번들에 노출되면 안 됨(db-schema §접근 제어).
+// 자격증명은 NEXT_PUBLIC_ 금지 - 클라이언트 번들에 노출되면 안 됨(db-schema §접근 제어).
 
 let client: SupabaseClient | null = null
 

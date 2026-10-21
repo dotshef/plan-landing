@@ -43,7 +43,7 @@ export function lastNQuarters(q: QuarterRef, n: number): QuarterRef[] {
 }
 
 /**
- * 단독 분기값 파생 — KIS 분기 재무는 YTD 누적.
+ * 단독 분기값 파생 - KIS 분기 재무는 YTD 누적.
  * 1분기는 누적 그대로, 그 외에는 누적(N) − 누적(직전분기).
  * 필요한 누적값이 없으면 null.
  */
@@ -60,7 +60,7 @@ export function soloFromCumulative(
 }
 
 /**
- * TTM(최근 4개 분기 합) 파생 — 누적값만으로 계산.
+ * TTM(최근 4개 분기 합) 파생 - 누적값만으로 계산.
  * TTM(N) = 누적(N) + 누적(전년 4분기) − 누적(전년 동분기).
  * 4분기는 누적(N) 자체가 연간이므로 동일 식이 그대로 성립한다.
  */

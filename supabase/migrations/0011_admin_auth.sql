@@ -1,7 +1,7 @@
--- 0011_admin_auth.sql — 관리자 계정("user")·세션(user_session) (자체 세션 인증)
+-- 0011_admin_auth.sql - 관리자 계정("user")·세션(user_session) (자체 세션 인증)
 -- 접근 제어: 서버 서비스롤 전용. RLS 미사용(v1, 0001과 동일).
 -- 인가 판정은 앱 서버 requireAdmin() 한 곳에서만 수행한다.
--- 삭제는 hard delete — 삭제 시 user_session은 FK cascade로 함께 제거된다.
+-- 삭제는 hard delete - 삭제 시 user_session은 FK cascade로 함께 제거된다.
 -- 주의: user는 Postgres 예약어라 DDL에서는 "user"로 따옴표 필요. supabase-js 호출은 그대로 'user'.
 
 create table if not exists "user" (
