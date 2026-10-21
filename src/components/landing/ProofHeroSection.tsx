@@ -1,4 +1,4 @@
-import { ClipboardList, ShieldCheck, TrendingUp, type LucideIcon } from 'lucide-react'
+import { ClipboardList, ImageIcon, ShieldCheck, TrendingUp, type LucideIcon } from 'lucide-react'
 import PageLeadForm from '@/components/common/PageLeadForm'
 
 // 첫 화면 체험 폼 앵커 - 헤더 CTA·하단 고정 바(revealAfterId)가 이 id 를 참조한다.
@@ -8,14 +8,12 @@ export const TRIAL_FORM_ID = 'trial-form'
 const STATS = { period: '2026년 상반기', total: 287, hit: 253 }
 const HIT_RATE = ((STATS.hit / STATS.total) * 100).toFixed(1)
 
-// 공증 자료 카드 - 원본 스캔·수치 수령 전까지 대괄호 자리표시를 유지한다.
-interface Proof { shot: string; value: string; meta: string; org: string; date: string }
-const PROOFS: Proof[] = [
-  { shot: '수익률 공증서 스캔', value: '+[ ]%', meta: '[종목] · [보유 기간]', org: '[공증 기관] 공증', date: '[공증일]' },
-  { shot: '체결 내역 + 공증 확인서', value: '+[ ]%', meta: '[종목] · [보유 기간]', org: '[공증 기관] 공증', date: '[공증일]' },
-  { shot: '추천 문자 원본 + 공증', value: '+[ ]%', meta: '[종목] · [보유 기간]', org: '[공증 기관] 공증', date: '[공증일]' },
-  { shot: '계좌 수익률 화면 + 공증', value: '+[ ]%', meta: '[종목] · [보유 기간]', org: '[공증 기관] 공증', date: '[공증일]' },
-]
+// 공증 자료 이미지 - 원본 수령 시 src 를 채운다(/public 경로). src 가 없으면 빈 자리표시 카드로 렌더한다.
+interface ProofImage { src?: string; alt: string }
+const PROOF_IMAGES: ProofImage[] = Array.from({ length: 8 }, (_, i) => ({ alt: `회원 수익률 공증 자료 ${i + 1}` }))
+
+// 지그재그 2열 - 짝수 번째는 왼쪽, 홀수 번째는 오른쪽 열에 놓는다.
+const PROOF_COLUMNS = [0, 1].map((c) => PROOF_IMAGES.filter((_, i) => i % 2 === c))
 
 const FEATURES: { icon: LucideIcon; title: string; desc: string; bg: string; color: string }[] = [
   { icon: ShieldCheck,   title: '실제 매매내역', desc: '발송 기록 대조', bg: '#EAF1FE', color: '#1B6CF2' },
@@ -26,10 +24,23 @@ const FEATURES: { icon: LucideIcon; title: string; desc: string; bg: string; col
 export default function ProofHeroSection() {
   return (
     <section style={{ background: '#fff' }}>
-      <SealDefs />
       <div className="home-hero">
         <div className="home-hero-wall" aria-label="회원 수익률 공증 자료">
-          {PROOFS.map((p, i) => <ProofCard key={i} p={p} />)}
+          {PROOF_COLUMNS.map((col, c) => (
+            <div key={c} className="home-proof-col">
+              {/* 열 목록을 두 번 이어붙여 끊김 없이 순환. 오른쪽 열은 반 칸 앞서 출발해 지그재그로 엇갈린다. */}
+              <div className="home-proof-track" style={c === 1 ? { animationDelay: `calc(var(--proof-dur) / ${-2 * col.length})` } : undefined}>
+                {[...col, ...col].map((p, i) => (
+                  <div key={i} className="home-proof" aria-hidden={i >= col.length || undefined}>
+                    {p.src
+                      // eslint-disable-next-line @next/next/no-img-element
+                      ? <img src={p.src} alt={i < col.length ? p.alt : ''} />
+                      : <ImageIcon size={28} color="#C9D6EC" aria-label={i < col.length ? p.alt : undefined} />}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="home-hero-copy">
@@ -75,55 +86,5 @@ export default function ProofHeroSection() {
         </div>
       </div>
     </section>
-  )
-}
-
-function ProofCard({ p }: { p: Proof }) {
-  return (
-    <article className="home-proof">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-        <span className="home-proof-chip" style={{ padding: '4px 10px', borderRadius: 6, background: '#EAF1FE', color: '#1B6CF2', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>수익률 공증 자료</span>
-        <span className="home-proof-date" style={{ fontSize: 12.5, color: '#8B95A1' }}>{p.date}</span>
-      </div>
-      <div className="home-proof-doc" aria-label={p.shot}>
-        <div style={{ fontSize: 13, fontWeight: 700, textAlign: 'center', color: '#4E5968' }}>[{p.shot}]</div>
-        <i /><i style={{ width: '85%' }} /><i /><i style={{ width: '60%' }} />
-      </div>
-      <div className="home-proof-value">{p.value}</div>
-      <div className="home-proof-meta">{p.meta}</div>
-      <div className="home-proof-org">{p.org} · {p.date}</div>
-      <svg className="home-proof-seal" role="img" aria-label="수익률 공증 인증 마크"><use href="#cert-seal" /></svg>
-    </article>
-  )
-}
-
-// 금박 인증 마크 - 카드마다 <use> 로 재사용하도록 정의는 한 번만 렌더한다.
-function SealDefs() {
-  const rays = Array.from({ length: 48 }, (_, i) => {
-    const r = i % 2 === 0 ? 48 : 42.6
-    const a = (Math.PI * 2 * i) / 48 - Math.PI / 2
-    return `${(50 + r * Math.cos(a)).toFixed(1)},${(50 + r * Math.sin(a)).toFixed(1)}`
-  }).join(' ')
-  return (
-    <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
-      <defs>
-        <linearGradient id="cert-seal-gold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#FBE9A6" /><stop offset=".35" stopColor="#D9A92E" /><stop offset=".6" stopColor="#F6D879" /><stop offset="1" stopColor="#A47312" />
-        </linearGradient>
-        <linearGradient id="cert-seal-gold2" x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0" stopColor="#B8861B" /><stop offset=".5" stopColor="#F1CF6A" /><stop offset="1" stopColor="#C79524" />
-        </linearGradient>
-        <symbol id="cert-seal" viewBox="0 0 100 124">
-          <polygon points="30,70 22,122 36,112 46,124 50,80" fill="#1B6CF2" />
-          <polygon points="70,70 78,122 64,112 54,124 50,80" fill="#0B3E9E" />
-          <polygon fill="url(#cert-seal-gold)" points={rays} />
-          <circle cx="50" cy="50" r="36" fill="url(#cert-seal-gold2)" stroke="#8C6310" strokeWidth="1" />
-          <circle cx="50" cy="50" r="31" fill="none" stroke="#FFF3C4" strokeWidth="1.2" strokeDasharray="2 2.5" />
-          <text x="50" y="44" textAnchor="middle" fontSize="10" fontWeight="700" fill="#5C3D00">수익률</text>
-          <text x="50" y="60" textAnchor="middle" fontSize="14" fontWeight="800" fill="#5C3D00">공증</text>
-          <text x="50" y="71" textAnchor="middle" fontSize="7" fontWeight="700" fill="#6B4A06">CERTIFIED</text>
-        </symbol>
-      </defs>
-    </svg>
   )
 }

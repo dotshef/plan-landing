@@ -496,77 +496,73 @@ a {
   scroll-margin-top: 96px;
 }
 
-/* 공증 자료 2×2 - 오른쪽 열 높이에 맞춰 늘어나고 카드 묶음은 세로 중앙 */
+/* 공증 자료 이미지 월 - 2열이 위로 흐르고, 오른쪽 열은 반 칸 어긋나 지그재그.
+   contain: size 로 트랙 높이가 그리드 행을 늘리지 않게 하고, 높이는 오른쪽 열(stretch)·min-height 로 정한다. */
 .home-hero-wall {
+  --proof-dur: 40s;
   grid-area: wall;
   min-width: 0;
-  padding: 24px;
+  min-height: 600px;
+  contain: size;
+  overflow: hidden;
+  padding: 0 24px;
   background: #EAF1FE;
   border: 1px solid #D6E4FC;
   border-radius: 24px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-auto-rows: auto;
-  align-content: center;
   gap: 20px;
 }
 
+.home-proof-col {
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+/* 목록을 두 번 이어붙인 트랙을 -50% 이동. padding-bottom 은 gap 과 같은 값이어야 이음매가 벌어지지 않는다. */
+.home-proof-track {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 20px;
+  animation: home-proof-rise var(--proof-dur) linear infinite;
+}
+
+.home-hero-wall:hover .home-proof-track {
+  animation-play-state: paused;
+}
+
+@keyframes home-proof-rise {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
 .home-proof {
-  position: relative;
+  flex: 0 0 auto;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
   background: #fff;
   border: 1px solid #D6E4FC;
   border-radius: 16px;
-  padding: 20px;
   box-shadow: 0 10px 28px rgba(27, 108, 242, 0.08);
-  word-break: keep-all;
 }
 
-.home-proof-doc {
-  height: 150px;
-  padding: 16px;
-  border: 1px solid #EEF1F6;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.home-proof-doc i {
+.home-proof img {
   display: block;
-  height: 6px;
-  border-radius: 3px;
-  background: #F2F4F6;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
 }
 
-.home-proof-value {
-  margin-top: 14px;
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #E8342B;
-  white-space: nowrap;
-}
-
-.home-proof-meta {
-  margin-top: 2px;
-  font-size: 14px;
-  color: #4E5968;
-}
-
-/* 우하단 인증 마크와 겹치지 않도록 오른쪽 여백 확보 */
-.home-proof-org {
-  margin-top: 10px;
-  padding-right: 88px;
-  font-size: 12.5px;
-  color: #8B95A1;
-}
-
-.home-proof-seal {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  width: 72px;
-  height: 90px;
+@media (prefers-reduced-motion: reduce) {
+  .home-proof-track {
+    animation: none;
+  }
 }
 
 /* 검색 + 인기 리포트 */
@@ -587,37 +583,74 @@ a {
   display: none;
 }
 
-/* 선택 이유: 매매일지와 문자 화면을 나란히, 체험 혜택은 아래에 배치 */
+/* 선택 이유: 왼쪽 매매일지(문자 화면이 겹쳐 뜸) + 오른쪽 체험 혜택 */
 .home-why-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 32px;
+  grid-template-columns: minmax(0, 1.24fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.home-why-record {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  background: #fff;
+  border: 1px solid #E5E8EB;
+  border-radius: 20px;
 }
 
 .home-why-benefits {
   min-width: 0;
-  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
   background: #F2F4F6;
   border-radius: 20px;
 }
 
 .home-why-benefits-heading {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px 12px;
-  margin: 0 0 20px;
-  font-size: var(--home-h3-size, 24px);
+  margin: 6px 0 24px;
+  font-size: 36px;
   font-weight: 800;
-  line-height: 1.35;
+  line-height: 1.3;
   letter-spacing: -0.03em;
   color: #111827;
 }
 
-.home-why-benefits-actions {
+.home-why-benefit-list {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 24px;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 32px;
+  padding: 0;
+  list-style: none;
+}
+
+.home-why-benefit-card {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px;
+  background: #fff;
+  border-radius: 14px;
+  word-break: keep-all;
+}
+
+.home-why-num {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #F5B822;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 800;
 }
 
 .home-why-apply {
@@ -625,70 +658,47 @@ a {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 50px;
+  width: 100%;
+  min-height: 56px;
+  margin-top: auto;
   padding: 12px 28px;
-  border-radius: 12px;
-  background: var(--color-brand, #1B6CF2);
+  border-radius: 10px;
+  background: #0F1C3D;
   color: #fff;
   font-size: 16px;
   font-weight: 800;
-  text-decoration: none;
   border: 0;
   font-family: inherit;
   cursor: pointer;
 }
 
 .home-why-apply:hover {
-  background: color-mix(in srgb, var(--color-brand) 88%, #000);
+  background: #1A2B55;
 }
 
 .home-why-apply:focus-visible {
-  outline: 2px solid var(--color-brand);
+  outline: 2px solid #0F1C3D;
   outline-offset: 3px;
 }
 
-.home-why-benefit-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.home-why-benefit-card {
-  min-width: 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 20px 16px;
-  background: #fff;
-  border-radius: 14px;
-  word-break: keep-all;
-}
-
-.home-why-icon {
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 14px;
-  background: #FFF2C6;
-  color: #0F1C3D;
-}
-
+/* 표와 문자 화면을 같은 grid 칸에 겹쳐 놓는다 - 칸 높이가 둘 중 큰 쪽을 따라가 아래 안내문을 가리지 않는다 */
 .home-journal {
   display: grid;
-  grid-template-columns: minmax(0, 8fr) minmax(0, 3fr);
-  align-items: start;
-  gap: 28px;
-  margin-top: 22px;
+  margin-top: 24px;
+}
+
+.home-journal-table,
+.home-journal-phone {
+  grid-area: 1 / 1;
+  min-width: 0;
 }
 
 .home-journal-table {
-  min-width: 0;
+  width: 78%;
+  align-self: start;
   background: #fff;
-  border: 1px solid #C9D4CD;
-  border-radius: 6px;
+  border: 1px solid #DCE3EE;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 8px 22px rgba(17, 40, 90, 0.06);
 }
@@ -704,10 +714,15 @@ a {
 }
 
 .home-journal-phone {
-  min-width: 0;
+  position: relative;
+  z-index: 1;
+  width: 36%;
+  margin-top: 108px;
+  justify-self: end;
+  align-self: start;
   background: #fff;
-  border: 1px solid #E5E8EB;
-  border-radius: 12px;
+  border: 4px solid #1E293B;
+  border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 16px 36px rgba(17, 24, 39, 0.18);
 }
@@ -752,6 +767,11 @@ a {
 }
 
 @media (max-width: 1024px) {
+  /* 선택 이유: 매매일지 → 체험 혜택 세로 배치 */
+  .home-why-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   /* 히어로: 문구(좌)·특징 카드(우) → 공증 자료 → 체험 폼 */
   .home-hero {
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
@@ -784,37 +804,23 @@ a {
     display: none;
   }
 
-  /* 공증 자료: 2×2 유지, 문서 미리보기는 접어 높이를 줄인다 */
+  /* 공증 자료: 행 높이를 직접 지정 (데스크톱의 오른쪽 열 stretch 가 없어짐) */
   .home-hero-wall {
-    padding: 12px;
+    min-height: 0;
+    height: 460px;
+    padding: 0 12px;
     gap: 10px;
     border-radius: 18px;
   }
 
+  .home-proof-track {
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+
   .home-proof {
-    padding: 14px;
     border-radius: 14px;
     box-shadow: none;
-  }
-
-  .home-proof-doc {
-    display: none;
-  }
-
-  .home-proof-value {
-    margin-top: 4px;
-    font-size: 22px;
-  }
-
-  .home-proof-seal {
-    right: 10px;
-    bottom: 10px;
-    width: 50px;
-    height: 62px;
-  }
-
-  .home-proof-org {
-    padding-right: 56px;
   }
 
   .home-search-grid {
@@ -858,45 +864,19 @@ a {
     display: inline;
   }
 
-  /* 공증 자료 2×2 - 한 칸 폭이 좁아 머리글 날짜는 숨기고(하단 문구에 포함) 글자·마크를 줄인다 */
   .home-hero-wall {
-    padding: 10px;
+    height: 380px;
+    padding: 0 10px;
     gap: 8px;
   }
 
+  .home-proof-track {
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+
   .home-proof {
-    padding: 12px 10px;
     border-radius: 12px;
-  }
-
-  .home-proof-chip {
-    padding: 3px 7px !important;
-    font-size: 11px !important;
-  }
-
-  .home-proof-date {
-    display: none;
-  }
-
-  .home-proof-value {
-    font-size: 19px;
-  }
-
-  .home-proof-meta {
-    font-size: 12px;
-  }
-
-  .home-proof-org {
-    margin-top: 6px;
-    padding-right: 34px;
-    font-size: 11px;
-  }
-
-  .home-proof-seal {
-    right: 8px;
-    bottom: 8px;
-    width: 32px;
-    height: 40px;
   }
 
   .home-shell {
@@ -905,10 +885,6 @@ a {
     --home-h2-size: 22px;
     --home-h2s-size: 21px;
     --home-h3-size: 19px;
-  }
-
-  .home-why-apply {
-    width: 100%;
   }
 
   /* 리포트 카드: 2×2 - 한 칸 폭(약 160px)에 맞춰 카드 안쪽을 줄인다 */
@@ -977,23 +953,34 @@ a {
   }
 
   .home-journal {
-    margin-top: 14px;
-    gap: 16px;
+    margin-top: 16px;
   }
 
+  .home-why-record,
   .home-why-benefits {
-    padding: 16px 12px;
+    padding: 20px 16px;
     border-radius: 16px;
   }
 
-  .home-why-benefit-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+  .home-why-benefits-heading {
+    font-size: 28px;
+    margin-bottom: 18px;
   }
 
-  .home-why-icon {
-    width: 44px;
-    height: 44px;
+  .home-why-benefit-list {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .home-why-benefit-card {
+    gap: 14px;
+    padding: 14px 16px;
+  }
+
+  .home-why-num {
+    width: 48px;
+    height: 48px;
+    font-size: 15px;
   }
 
   .home-principles {
@@ -1007,14 +994,16 @@ a {
 }
 
 @media (max-width: 640px) {
-  .home-journal {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
+  /* 좁은 화면: 표는 꽉 채우고 문자 화면은 표 아래쪽에 겹쳐 띄운다 */
+  .home-journal-table {
+    width: 100%;
   }
 
   .home-journal-phone {
-    width: min(100%, 300px);
-    justify-self: center;
+    width: min(40%, 160px);
+    margin-top: 96px;
+    border-width: 3px;
+    border-radius: 18px;
   }
 }
 

@@ -15,9 +15,9 @@ export default async function HomePage() {
   return (
     <div style={{ background: '#F5F7FB' }}>
       <ProofHeroSection />
+      <SearchReportsSection stocks={popular} />
       <WhyPlanSection />
       <PrinciplesSection />
-      <SearchReportsSection stocks={popular} />
       <div style={{ padding: '40px 0 24px' }}>
         <MarketIndexCardsSection />
       </div>
