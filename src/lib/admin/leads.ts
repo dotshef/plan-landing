@@ -66,7 +66,7 @@ export async function listLeads(kind: LeadKind, query: LeadQuery): Promise<{ row
 
   if (query.q) {
     // PostgREST or() 문법을 깨는 문자는 제거한다. 연락처는 숫자만 저장되므로 숫자만 뽑아 비교.
-    const term = query.q.replace(/[,()*%"\]/g, '').trim()
+    const term = query.q.replace(/[,()*%"\\]/g, '').trim()
     const digits = term.replace(/\D/g, '')
     const conds = term ? [`name.ilike."*${term}*"`] : []
     if (digits.length >= 3) conds.push(`phone.like.*${digits}*`)
