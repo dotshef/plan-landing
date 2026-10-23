@@ -5,6 +5,7 @@ import { isPhoneVerified } from '@/lib/sms/verificationStore'
 import { db } from '@/lib/db/server'
 import { hasRecentReportRequest, type LeadTable } from '@/lib/reportRequest/duplicate'
 import { normalizePhone } from '@/lib/phone'
+import { clientIp } from '@/lib/clientIp'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -122,6 +123,8 @@ export async function POST(req: Request) {
       ad_campaign_label: adCampaignLabel,
       landing_url: landingUrl,
       requested_at: toKstTimestamp(requestedAt),
+      ip_address: clientIp(req),
+      user_agent: req.headers.get('user-agent')?.slice(0, 500) || null,
     }
     // income_request 에는 stock / source_page / indicator_items 컬럼이 없다.
     const row: Record<string, string | null> = table === 'income_request'
