@@ -1,5 +1,6 @@
-import { ClipboardList, ImageIcon, ShieldCheck, TrendingUp, type LucideIcon } from 'lucide-react'
+import { ClipboardList, ShieldCheck, TrendingUp, type LucideIcon } from 'lucide-react'
 import PageLeadForm from '@/components/common/PageLeadForm'
+import type { MainProofRow } from '@/lib/main/proofs'
 
 // 첫 화면 체험 폼 앵커 - 헤더 CTA·하단 고정 바(revealAfterId)가 이 id 를 참조한다.
 export const TRIAL_FORM_ID = 'trial-form'
@@ -8,34 +9,29 @@ export const TRIAL_FORM_ID = 'trial-form'
 const STATS = { period: '2026년 상반기', total: 287, hit: 253 }
 const HIT_RATE = ((STATS.hit / STATS.total) * 100).toFixed(1)
 
-// 공증 자료 이미지 - 원본 수령 시 src 를 채운다(/public 경로). src 가 없으면 빈 자리표시 카드로 렌더한다.
-interface ProofImage { src?: string; alt: string }
-const PROOF_IMAGES: ProofImage[] = Array.from({ length: 8 }, (_, i) => ({ alt: `회원 수익률 공증 자료 ${i + 1}` }))
-
-// 지그재그 2열 - 짝수 번째는 왼쪽, 홀수 번째는 오른쪽 열에 놓는다.
-const PROOF_COLUMNS = [0, 1].map((c) => PROOF_IMAGES.filter((_, i) => i % 2 === c))
-
 const FEATURES: { icon: LucideIcon; title: string; desc: string; bg: string; color: string }[] = [
   { icon: ShieldCheck,   title: '실제 매매내역', desc: '발송 기록 대조', bg: '#EAF1FE', color: '#1B6CF2' },
   { icon: TrendingUp,    title: `목표가 도달 ${HIT_RATE}%`, desc: '청산 종목 기준', bg: '#FCEEED', color: '#E8342B' },
   { icon: ClipboardList, title: '손절까지 공개', desc: '전체 이력 열람', bg: '#FFF4E0', color: '#D97706' },
 ]
 
-export default function ProofHeroSection() {
+// 공증 자료 이미지는 main_proof 테이블(이미지는 public-assets 버킷 proof/)에서 받는다.
+export default function ProofHeroSection({ proofs }: { proofs: MainProofRow[] }) {
+  // 지그재그 2열 - 짝수 번째(요약)는 왼쪽, 홀수 번째(청산 내역)는 오른쪽 열에 놓는다.
+  const columns = [0, 1].map((c) => proofs.filter((_, i) => i % 2 === c))
+
   return (
     <section style={{ background: '#fff' }}>
       <div className="home-hero">
         <div className="home-hero-wall" aria-label="회원 수익률 공증 자료">
-          {PROOF_COLUMNS.map((col, c) => (
+          {columns.map((col, c) => (
             <div key={c} className="home-proof-col">
               {/* 열 목록을 두 번 이어붙여 끊김 없이 순환. 오른쪽 열은 반 칸 앞서 출발해 지그재그로 엇갈린다. */}
               <div className="home-proof-track" style={c === 1 ? { animationDelay: `calc(var(--proof-dur) / ${-2 * col.length})` } : undefined}>
                 {[...col, ...col].map((p, i) => (
                   <div key={i} className="home-proof" aria-hidden={i >= col.length || undefined}>
-                    {p.src
-                      // eslint-disable-next-line @next/next/no-img-element
-                      ? <img src={p.src} alt={i < col.length ? p.alt : ''} />
-                      : <ImageIcon size={28} color="#C9D6EC" aria-label={i < col.length ? p.alt : undefined} />}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.image_url} alt={i < col.length ? p.alt : ''} />
                   </div>
                 ))}
               </div>

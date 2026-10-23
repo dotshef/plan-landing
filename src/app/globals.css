@@ -643,14 +643,6 @@ a {
   width: 64px;
   height: 64px;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #F5B822;
-  color: #111827;
-  font-size: 17px;
-  font-weight: 800;
 }
 
 .home-why-apply {
@@ -809,6 +801,13 @@ a {
     --hero-lead-size: 15px;
     --hero-badge-size: 12px;
     --hero-feature-size: 13px;
+    /* 특징 카드를 숨기므로 문구가 한 줄을 다 쓴다 */
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "copy" "wall" "form";
+  }
+
+  .home-hero-features {
+    display: none;
   }
 
   .home-hero-ln {
@@ -940,7 +939,6 @@ a {
   .home-why-num {
     width: 48px;
     height: 48px;
-    font-size: 15px;
   }
 
   .home-principles {

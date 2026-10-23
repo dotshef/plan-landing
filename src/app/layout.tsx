@@ -5,6 +5,7 @@ import Script from 'next/script'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import HideOnAdmin from '@/components/layout/HideOnAdmin'
 import NaverWcs from '@/components/tracking/NaverWcs'
 import PageViewTracker from '@/components/tracking/PageViewTracker'
 import { Analytics } from "@vercel/analytics/next"
@@ -155,7 +156,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Suspense>
         <Header />
         <main>{children}</main>
-        <Footer />
+        <HideOnAdmin>
+          <Footer />
+        </HideOnAdmin>
         <Analytics />
       </body>
     </html>

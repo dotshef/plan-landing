@@ -6,15 +6,19 @@ import MarketIndexCardsSection from '@/components/landing/MarketIndexCardsSectio
 import StickyLeadBar from '@/components/landing/StickyLeadBar'
 import TrialFormModal from '@/components/landing/TrialFormModal'
 import { getPopularStocks } from '@/data/registry'
+import { listMainProofs } from '@/lib/main/proofs'
 
 // DB(야간 스냅샷) 기반 → 요청 시 렌더. 빌드 프리렌더 시 DB 호출 방지.
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  const popular = await getPopularStocks()
+  const [popular, proofs] = await Promise.all([
+    getPopularStocks(),
+    listMainProofs().catch(() => []),
+  ])
   return (
     <div style={{ background: '#F5F7FB' }}>
-      <ProofHeroSection />
+      <ProofHeroSection proofs={proofs} />
       <SearchReportsSection stocks={popular} />
       <WhyPlanSection />
       <PrinciplesSection />

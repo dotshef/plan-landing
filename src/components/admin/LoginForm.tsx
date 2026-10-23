@@ -24,7 +24,7 @@ export default function LoginForm() {
         setError(result.error ?? '로그인에 실패했습니다.')
         return
       }
-      window.location.href = result.mustChangePassword ? '/admin/password' : '/admin/trial'
+      window.location.href = result.mustChangePassword ? '/admin/password' : '/admin'
     } catch {
       setError('네트워크 오류가 발생했습니다.')
     } finally {
@@ -39,7 +39,7 @@ export default function LoginForm() {
   }
 
   return (
-    <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#F5F7FB' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#F5F7FB' }}>
       <form onSubmit={handleSubmit} style={{ width: 380, maxWidth: '100%', background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18, padding: 32 }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6CF2', marginBottom: 6 }}>PLAN ADMIN</div>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', margin: '0 0 24px' }}>관리자 로그인</h1>

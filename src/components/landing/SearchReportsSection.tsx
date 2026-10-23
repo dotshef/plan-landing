@@ -15,7 +15,7 @@ export default async function SearchReportsSection({ stocks }: { stocks: Popular
               <h2 style={{ margin: 0, fontSize: 'var(--home-h2s-size, 28px)', lineHeight: 1.4, fontWeight: 800, letterSpacing: '-0.03em', color: '#111827' }}>
                 내 종목,<br />지금 <span style={{ color: '#1B6CF2' }}>필요한 판단</span>을 확인하세요
               </h2>
-              <p style={{ margin: '8px 0 0', fontSize: 15, color: '#6B7684' }}>실시간 시세, 수급, AI 분석까지 무료로</p>
+              <p style={{ margin: '8px 0 0', fontSize: 15, color: '#6B7684' }}>종목 분석 리포트 무료로 받아보기</p>
             </div>
             <StockSearch stocks={stocks} />
           </div>
@@ -34,7 +34,6 @@ export default async function SearchReportsSection({ stocks }: { stocks: Popular
                       <div className="home-report-name" style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>
                         {r.name} <span className="home-report-code" style={{ fontSize: 12, color: '#8B95A1', fontWeight: 500 }}>{r.code}</span>
                       </div>
-                      <div style={{ fontSize: 12, color: '#6B7684' }}>주가 전망 리포트</div>
                     </div>
                     {r.hot && (
                       <span className="home-report-hot" style={{ padding: '3px 8px', borderRadius: 6, background: '#FCEEED', color: '#E8342B', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>가장 많이 조회</span>

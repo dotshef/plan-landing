@@ -1,0 +1,334 @@
+/* 관리자 폼 필드 - 커스텀 드롭다운(Select) · 기간 달력(DateRangePicker). 톤은 ui.ts 의 inputStyle 과 맞춘다. */
+
+/* ── 트리거(입력칸 모양 버튼) ── */
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1.5px solid #e5e8eb;
+  border-radius: 10px;
+  background: #f8fafc;
+  font-size: 14px;
+  font-family: inherit;
+  color: #191f28;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+}
+
+.trigger:hover {
+  border-color: #d1d6db;
+}
+
+.trigger:focus-visible,
+.triggerOpen,
+.triggerOpen:hover {
+  outline: none;
+  border-color: #1b6cf2;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(27, 108, 242, 0.12);
+}
+
+.triggerText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholder {
+  color: #b0b8c1;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.triggerIcon {
+  flex-shrink: 0;
+  color: #8b95a1;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: #8b95a1;
+  transition: transform 0.18s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: #1b6cf2;
+}
+
+/* ── 팝오버 공통 ── */
+.popover {
+  z-index: 200; /* AdminModal(100) 위 */
+  background: #fff;
+  border: 1px solid #e5e8eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(17, 40, 90, 0.14);
+}
+
+/* ── Select 옵션 목록 ── */
+.list {
+  padding: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333d4b;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.optionActive {
+  background: #f5f7fb;
+}
+
+.optionSelected {
+  font-weight: 700;
+  color: #1b6cf2;
+}
+
+.optionSelected.optionActive {
+  background: #eaf1fe;
+}
+
+/* ── DateRangePicker ── */
+.rangeField {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.clearBtn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  border: none;
+  border-radius: 50%;
+  background: #e5e8eb;
+  color: #6b7684;
+  cursor: pointer;
+}
+
+.clearBtn:hover {
+  background: #d1d6db;
+  color: #333d4b;
+}
+
+.rangePopover {
+  display: flex;
+}
+
+.presets {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 108px;
+  padding: 12px 8px;
+  border-right: 1px solid #f2f4f6;
+}
+
+.preset {
+  height: 34px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #4e5968;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.preset:hover {
+  background: #f5f7fb;
+}
+
+.presetActive,
+.presetActive:hover {
+  font-weight: 800;
+  color: #1b6cf2;
+  background: #eaf1fe;
+}
+
+.calendarWrap {
+  padding: 14px 16px 12px;
+}
+
+.rangeFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #f2f4f6;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4e5968;
+}
+
+.footerReset {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid #e5e8eb;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-family: inherit;
+  color: #4e5968;
+  cursor: pointer;
+}
+
+.footerReset:hover {
+  background: #f5f7fb;
+}
+
+/* react-day-picker 테마. :global(.rdp-root) 를 붙여 라이브러리 기본 변수보다 우선하게 한다. */
+.calendar:global(.rdp-root) {
+  --rdp-accent-color: #1b6cf2;
+  --rdp-accent-background-color: #eaf1fe;
+  --rdp-day-height: 38px;
+  --rdp-day-width: 38px;
+  --rdp-day_button-height: 36px;
+  --rdp-day_button-width: 36px;
+  --rdp-day_button-border-radius: 10px;
+  --rdp-selected-border: none;
+  --rdp-disabled-opacity: 0.3;
+  --rdp-outside-opacity: 0.35;
+  --rdp-months-gap: 24px;
+  --rdp-nav-height: 36px;
+  --rdp-nav_button-height: 32px;
+  --rdp-nav_button-width: 32px;
+  --rdp-weekday-opacity: 1;
+  --rdp-weekday-padding: 6px 0;
+  font-size: 13.5px;
+  color: #333d4b;
+}
+
+.calendar :global(.rdp-month_caption) {
+  justify-content: center;
+}
+
+.calendar :global(.rdp-caption_label) {
+  font-size: 15px;
+  font-weight: 800;
+  color: #191f28;
+}
+
+.calendar :global(.rdp-button_previous),
+.calendar :global(.rdp-button_next) {
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.calendar :global(.rdp-button_previous:hover:not(:disabled)),
+.calendar :global(.rdp-button_next:hover:not(:disabled)) {
+  background: #f2f4f6;
+}
+
+.calendar :global(.rdp-button_previous:disabled),
+.calendar :global(.rdp-button_next:disabled) {
+  cursor: not-allowed;
+}
+
+.calendar :global(.rdp-chevron) {
+  width: 16px;
+  height: 16px;
+  fill: #4e5968;
+}
+
+.calendar :global(.rdp-weekday) {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8b95a1;
+}
+
+.calendar :global(.rdp-weekday:first-child) {
+  color: #f04452;
+}
+
+.calendar :global(.rdp-day_button) {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.calendar :global(.rdp-day_button:disabled) {
+  cursor: not-allowed;
+}
+
+.calendar :global(.rdp-day:not(.rdp-selected):not(.rdp-disabled) .rdp-day_button:hover) {
+  background: #f2f4f6;
+}
+
+.calendar :global(.rdp-today:not(.rdp-outside)) {
+  font-weight: 800;
+}
+
+.calendar :global(.rdp-selected) {
+  font-size: inherit;
+  font-weight: 700;
+}
+
+.calendar :global(.rdp-range_start .rdp-day_button),
+.calendar :global(.rdp-range_end .rdp-day_button) {
+  color: #fff;
+  background: #1b6cf2;
+}
+
+.calendar :global(.rdp-range_middle .rdp-day_button) {
+  color: #1b6cf2;
+}
+
+@media (max-width: 639px) {
+  .rangePopover {
+    flex-direction: column;
+  }
+
+  .presets {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: auto;
+    padding: 12px 12px 10px;
+    border-right: none;
+    border-bottom: 1px solid #f2f4f6;
+  }
+
+  .preset {
+    height: 30px;
+    padding: 0 10px;
+    border: 1px solid #e5e8eb;
+  }
+
+  .presetActive,
+  .presetActive:hover {
+    border-color: #1b6cf2;
+  }
+}

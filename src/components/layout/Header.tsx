@@ -7,6 +7,8 @@ import { openTrialModal } from '@/components/landing/TrialFormModal'
 
 export default function Header() {
   const pathname = usePathname()
+  // 관리자 화면은 자체 LNB 셸을 쓴다
+  if (pathname?.startsWith('/admin')) return null
   // stock 페이지(/stock/[code])에서는 해당 종목 리포트로 연결
   const stockMatch = pathname?.match(/^\/stock\/([^/]+)/)
   const reportHref = stockMatch ? `/report/${stockMatch[1]}` : '/report'

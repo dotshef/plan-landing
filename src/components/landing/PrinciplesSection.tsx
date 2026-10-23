@@ -34,12 +34,15 @@ export default function PrinciplesSection() {
                 style={{ objectFit: 'cover' }}
               />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#60A5FA' }}>운영원칙 {p.no}</div>
-              <div style={{ fontSize: 'var(--home-h3-size, 30px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#fff' }}>{p.title}</div>
-              <p style={{ margin: 0, fontSize: 16, lineHeight: 1.8, color: '#93A6C9' }}>
-                {p.body[0]}<br className="home-hide-m" /> {p.body[1]}
-              </p>
+            {/* 텍스트 블록은 내용 폭만큼만 잡아 칸 중앙에 두고, 블록 안 문단은 좌측 정렬을 유지한다. */}
+            <div style={{ display: 'flex', justifyContent: 'center', minWidth: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, minWidth: 0 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: '#60A5FA' }}>운영원칙 {p.no}</div>
+                <div style={{ fontSize: 'var(--home-h3-size, 30px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#fff' }}>{p.title}</div>
+                <p style={{ margin: 0, fontSize: 16, lineHeight: 1.8, color: '#93A6C9' }}>
+                  {p.body[0]}<br className="home-hide-m" /> {p.body[1]}
+                </p>
+              </div>
             </div>
           </div>
         ))}
