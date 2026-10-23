@@ -681,50 +681,17 @@ a {
   outline-offset: 3px;
 }
 
-/* 표와 문자 화면을 같은 grid 칸에 겹쳐 놓는다 - 칸 높이가 둘 중 큰 쪽을 따라가 아래 안내문을 가리지 않는다 */
+/* 매매일지·문자 화면이 한 장으로 합쳐진 이미지 - 클릭하면 원본이 새 탭에서 열린다 */
 .home-journal {
-  display: grid;
-  margin-top: 24px;
-}
-
-.home-journal-table,
-.home-journal-phone {
-  grid-area: 1 / 1;
-  min-width: 0;
-}
-
-.home-journal-table {
-  width: 78%;
-  align-self: start;
-  background: #fff;
-  border: 1px solid #DCE3EE;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 8px 22px rgba(17, 40, 90, 0.06);
-}
-
-.home-journal-sheet-link {
   display: block;
+  margin-top: 24px;
+  border-radius: 10px;
   cursor: zoom-in;
 }
 
-.home-journal-sheet-link:focus-visible {
+.home-journal:focus-visible {
   outline: 2px solid #217346;
-  outline-offset: -2px;
-}
-
-.home-journal-phone {
-  position: relative;
-  z-index: 1;
-  width: 36%;
-  margin-top: 108px;
-  justify-self: end;
-  align-self: start;
-  background: #fff;
-  border: 4px solid #1E293B;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 16px 36px rgba(17, 24, 39, 0.18);
+  outline-offset: 2px;
 }
 
 /* 운영 원칙 */
@@ -752,18 +719,11 @@ a {
 }
 
 .home-principle-photo {
+  position: relative;
   height: 340px;
   border-radius: 20px;
+  overflow: hidden;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: #93A6C9;
-  font-size: 14px;
-  font-weight: 600;
 }
 
 @media (max-width: 1024px) {
@@ -990,20 +950,6 @@ a {
 
   .home-principle-photo {
     height: 200px;
-  }
-}
-
-@media (max-width: 640px) {
-  /* 좁은 화면: 표는 꽉 채우고 문자 화면은 표 아래쪽에 겹쳐 띄운다 */
-  .home-journal-table {
-    width: 100%;
-  }
-
-  .home-journal-phone {
-    width: min(40%, 160px);
-    margin-top: 96px;
-    border-width: 3px;
-    border-radius: 18px;
   }
 }
 

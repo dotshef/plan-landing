@@ -193,10 +193,6 @@
   font-size: 24px;
 }
 
-.proofShot {
-  height: 150px;
-}
-
 /* 소득 구조 3단계 */
 .steps {
   display: grid;
@@ -389,10 +385,6 @@
 
   .proofHead {
     font-size: 19px;
-  }
-
-  .proofShot {
-    height: 120px;
   }
 
   .steps {

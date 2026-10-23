@@ -1,18 +1,18 @@
-import { ImageIcon } from 'lucide-react'
+import Image from 'next/image'
 
-// 운영 원칙 - photo 는 현장 사진 수령 전까지 자리표시 문구로 노출된다.
+// 운영 원칙 - 현장 사진은 고정 높이 박스에 cover 로 잘라 채운다.
 const PRINCIPLES = [
   {
     no: '01',
     title: '하나의 판단에도 충분한 근거를',
     body: ['시장 흐름을 함께 점검하고 의견을 나누며,', '데이터와 현장 경험을 바탕으로 분석합니다.'],
-    photo: '투자 설명회·강연 현장 사진',
+    photo: { src: '/images/principle-lecture.jpg', alt: '투자 설명회 현장: 강연자가 주식·배당·ETF 분산투자를 설명하는 모습' },
   },
   {
     no: '02',
     title: '투자자의 눈높이에서 답을 찾습니다',
     body: ['어려운 시장 흐름도 이해하기 쉽게 설명하고,', '직접 소통하며 투자에 필요한 기준을 나눕니다.'],
-    photo: '전문가 분석 회의 사진',
+    photo: { src: '/images/principle-meeting.jpg', alt: '전문가 분석 회의: 화면의 주가 차트를 짚으며 시장 흐름을 설명하는 모습' },
   },
 ]
 
@@ -26,8 +26,13 @@ export default function PrinciplesSection() {
         {PRINCIPLES.map((p, i) => (
           <div key={p.no} className={`home-principle${i % 2 ? ' home-principle-rev' : ''}`}>
             <div className="home-principle-photo">
-              <ImageIcon size={34} strokeWidth={1.5} color="rgba(255,255,255,.35)" />
-              <span>{p.photo}</span>
+              <Image
+                src={p.photo.src}
+                alt={p.photo.alt}
+                fill
+                sizes="(max-width: 1024px) 100vw, 640px"
+                style={{ objectFit: 'cover' }}
+              />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, minWidth: 0 }}>
               <div style={{ fontSize: 15, fontWeight: 800, color: '#60A5FA' }}>운영원칙 {p.no}</div>

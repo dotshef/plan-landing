@@ -1,11 +1,14 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Playfair_Display } from 'next/font/google'
-import { Wallet, CreditCard, ShieldCheck, ArrowRight, type LucideIcon } from 'lucide-react'
+import { Wallet, CreditCard, ShieldCheck, ArrowRight } from 'lucide-react'
 import FadeUp from '@/components/common/FadeUp'
 import PageLeadForm from '@/components/common/PageLeadForm'
 import StickyLeadBar from '@/components/landing/StickyLeadBar'
+import { listIncomeProofs } from '@/lib/income/proofs'
 import s from './income.module.css'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: '투자그룹 플랜 - 두 번째 월급',
@@ -37,11 +40,8 @@ const C = {
 
 const chip: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', padding: '4px 10px', borderRadius: 6, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }
 
-const PROOFS: { who: string; Icon: LucideIcon; head: string; shot: string; tags: string[] }[] = [
-  { who: '가정주부 · 50대 · 가입 5개월', Icon: Wallet, head: '내 이름으로 된\n첫 통장이 생겼다', shot: '[생활 사진 · 새로 꾸민 주방]', tags: ['#남편_월급만_보던_삶_끝', '#내_용돈은_내가'] },
-  { who: '직장인 · 40대 · 가입 4개월', Icon: CreditCard, head: '월말 카드값\n걱정이 사라졌다', shot: '[생활 사진 · 퇴근 후 가족 저녁]', tags: ['#빠듯함이_여유로', '#퇴근_후가_편해짐'] },
-  { who: '자영업자 · 50대 · 가입 6개월', Icon: ShieldCheck, head: '장사 안 되는 날도\n버틸 힘이 생겼다', shot: '[생활 사진 · 가게 앞 한 컷]', tags: ['#비상금_6개월치', '#불안이_줄었다'] },
-]
+// 사례 카드 아이콘 - DB 행 순서대로 돌려 쓴다
+const PROOF_ICONS = [Wallet, CreditCard, ShieldCheck]
 
 const STEPS = [
   { no: '01', title: '나에게 딱 맞춤 전략', desc: '소득·지출·목표에 맞춰 내 상황에 꼭 맞는 돈 관리 방향부터 세웁니다.' },
@@ -177,7 +177,9 @@ function Coin({ no, index }: { no: string; index: number }) {
   )
 }
 
-export default function IncomePage() {
+export default async function IncomePage() {
+  const proofs = await listIncomeProofs().catch(() => [])
+
   return (
     <div style={{ background: '#fff', color: C.ink }}>
       {/* 1. 히어로 */}
@@ -305,7 +307,8 @@ export default function IncomePage() {
         </div>
       </section>
 
-      {/* 3. 실제 결과 */}
+      {/* 3. 실제 결과 (사례가 없으면 섹션 숨김) */}
+      {proofs.length > 0 && (
       <section className={s.sec} style={{ background: C.bgSoft }}>
         <div className={s.wrap}>
           <div className={s.secHead}>
@@ -318,31 +321,38 @@ export default function IncomePage() {
             </div>
           </div>
           <div className={s.proofs}>
-            {PROOFS.map((p) => (
-              <article key={p.who} className={s.proof} style={{ background: '#fff', border: `1px solid ${C.line}`, borderRadius: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {proofs.map((p, i) => {
+              const Icon = PROOF_ICONS[i % PROOF_ICONS.length]
+              return (
+              <article key={p.id} className={s.proof} style={{ background: '#fff', border: `1px solid ${C.line}`, borderRadius: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 13, color: C.gray }}>{p.who}</span>
+                  <span style={{ fontSize: 13, color: C.gray }}>{p.job} · {p.age_group}대 · 가입 {p.member_months}개월</span>
                   <span style={{ ...chip, background: C.greenBg, color: C.greenInk, fontSize: 12 }}>인증 완료</span>
                 </div>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                   <span style={{ width: 44, height: 44, borderRadius: 12, background: C.redBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}>
-                    <p.Icon size={24} color={C.red} strokeWidth={2} aria-hidden />
+                    <Icon size={24} color={C.red} strokeWidth={2} aria-hidden />
                   </span>
-                  <div className={s.proofHead} style={{ fontWeight: 900, lineHeight: 1.3, letterSpacing: '-0.03em', whiteSpace: 'pre-line' }}>{p.head}</div>
+                  <div className={s.proofHead} style={{ fontWeight: 900, lineHeight: 1.3, letterSpacing: '-0.03em', whiteSpace: 'pre-line' }}>{p.title}</div>
                 </div>
-                <div className={s.proofShot} style={{ background: '#EEF1F5', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: C.gray }}>
-                  {p.shot}
+                {/* 8:5 프레임 고정 - 비율이 다른 이미지는 가운데 기준으로 잘림 */}
+                <div style={{ aspectRatio: '8 / 5', border: `1px solid ${C.line}`, borderRadius: 12, overflow: 'hidden' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={p.image_url} alt={`${p.job} ${p.age_group}대 회원 계좌 입금 내역`} loading="lazy"
+                    style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                   {p.tags.map((t) => (
-                    <span key={t} style={{ fontSize: 13, fontWeight: 700, color: C.blue, background: C.blue50, padding: '5px 10px', borderRadius: 999 }}>{t}</span>
+                    <span key={t} style={{ fontSize: 13, fontWeight: 700, color: C.blue, background: C.blue50, padding: '5px 10px', borderRadius: 999 }}>#{t.replace(/^#/, '')}</span>
                   ))}
                 </div>
               </article>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
+      )}
 
       {/* 4. 소득을 만드는 구조 */}
       <section className={s.sec}>

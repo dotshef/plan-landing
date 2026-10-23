@@ -25,31 +25,16 @@ export default function WhyPlanSection() {
               <div style={{ fontSize: 15, color: '#4E5968' }}>손절까지 숨기지 않는 추천 기록 그대로</div>
               <h3 style={{ margin: '6px 0 0', fontSize: 'var(--home-h3-size, 24px)', fontWeight: 800, letterSpacing: '-0.02em', color: '#111827' }}>실제 매매일지와 추천 문자</h3>
 
-              <div className="home-journal">
-                <div className="home-journal-table">
-                  <a className="home-journal-sheet-link" href="/images/plan-excel-journal-example.png" target="_blank" rel="noopener noreferrer">
-                    <Image
-                      src="/images/plan-excel-journal-example.png"
-                      alt="엑셀 매매일지 가상 예시: 매수일, 종목명, 매수가, 매도가, 수익률과 매도·손절 내역. 클릭하면 원본 이미지가 새 탭에서 열립니다."
-                      width={1448}
-                      height={1086}
-                      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 70vw, 420px"
-                      style={{ display: 'block', width: '100%', height: 'auto' }}
-                    />
-                  </a>
-                </div>
-
-                <div className="home-journal-phone">
-                  <Image
-                    src="/images/plan-galaxy-sms-example.png"
-                    alt="갤럭시 문자 화면 예시: 가상 종목 플랜테크의 매수 관점, 목표가 도달, 손절가 이탈 안내"
-                    width={887}
-                    height={1774}
-                    sizes="(max-width: 640px) 160px, 200px"
-                    style={{ display: 'block', width: '100%', height: 'auto' }}
-                  />
-                </div>
-              </div>
+              <a className="home-journal" href="/images/plan-journal-sms-example.jpg" target="_blank" rel="noopener noreferrer">
+                <Image
+                  src="/images/plan-journal-sms-example.jpg"
+                  alt="엑셀 매매일지와 추천 문자 화면 예시: 일자·종목명·매수가·매도가·수익률 내역과 투자그룹 플랜의 매수 시그널 문자. 클릭하면 원본 이미지가 새 탭에서 열립니다."
+                  width={1024}
+                  height={721}
+                  sizes="(max-width: 1024px) 90vw, 560px"
+                  style={{ display: 'block', width: '100%', height: 'auto' }}
+                />
+              </a>
               <div style={{ fontSize: 12.5, color: '#B0B8C1', marginTop: 18 }}>※ 매매일지와 문자는 가상 예시이며, 종목·가격·수익률은 실제 투자 기록이 아닙니다.</div>
             </div>
 
