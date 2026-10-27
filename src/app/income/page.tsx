@@ -334,9 +334,9 @@ export default async function IncomePage() {
             </p>
           </div>
           <div style={{ flex: '1 1 520px', minWidth: 0, background: '#F2F3F6', borderRadius: 24, padding: 'clamp(16px, 3vw, 28px)', display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {BENEFITS.map((b, i) => (
+            {BENEFITS.map((b) => (
               <div key={b.no} className={s.benefit} style={{ background: '#fff', borderRadius: 18, display: 'flex', alignItems: 'center' }}>
-                <GoldCoin no={b.no} idPrefix={`coin${i}`} className={`${s.num} ${s.benefitCirc}`} />
+                <GoldCoin no={b.no} className={`${s.num} ${s.benefitCirc}`} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className={s.benefitTitle} style={{ fontWeight: 800 }}>{b.title}</div>
                   <div className={s.benefitDesc} style={{ color: C.gray, marginTop: 4 }}>{b.desc}</div>

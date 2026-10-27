@@ -46,7 +46,7 @@ export default function WhyPlanSection() {
               <ol className="home-why-benefit-list">
                 {BENEFITS.map(({ title, desc }, i) => (
                   <li key={title} className="home-why-benefit-card">
-                    <GoldCoin no={String(i + 1).padStart(2, '0')} idPrefix={`whyCoin${i}`} className="home-why-num" />
+                    <GoldCoin no={String(i + 1).padStart(2, '0')} className="home-why-num" />
                     <div style={{ minWidth: 0 }}>
                       <div style={{ fontSize: 17, fontWeight: 800, color: '#111827' }}>{title}</div>
                       <div style={{ fontSize: 14, color: '#6B7684', marginTop: 4 }}>{desc}</div>
