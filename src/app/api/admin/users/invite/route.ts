@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db/server'
 import { generateTempPassword, hashPassword } from '@/lib/admin/password'
-import { requireAdmin } from '@/lib/admin/session'
+import { can, requireAdmin } from '@/lib/admin/session'
 import { sendInviteMail } from '@/lib/admin/invite'
+import { isAdminRole } from '@/lib/admin/roles'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -12,8 +13,9 @@ const TEMP_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7일
 export async function POST(req: Request) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+  if (!can(admin, 'users')) return NextResponse.json({ error: '권한이 없습니다.' }, { status: 403 })
 
-  let body: { email?: unknown; name?: unknown }
+  let body: { email?: unknown; name?: unknown; role?: unknown }
   try {
     body = await req.json()
   } catch {
@@ -25,6 +27,10 @@ export async function POST(req: Request) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ error: '올바른 이메일을 입력해주세요.' }, { status: 400 })
   }
+  if (!isAdminRole(body.role)) {
+    return NextResponse.json({ error: '역할을 선택해주세요.' }, { status: 400 })
+  }
+  const role = body.role
 
   const { data: existing } = await db()
     .from('user')
@@ -41,6 +47,7 @@ export async function POST(req: Request) {
     .insert({
       email,
       name,
+      role,
       password_hash: await hashPassword(tempPassword),
       must_change_password: true,
       temp_password_expires_at: new Date(Date.now() + TEMP_TTL_MS).toISOString(),

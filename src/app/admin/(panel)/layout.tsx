@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getAdmin } from '@/lib/admin/session'
+import { getAdmin, permissionsOf } from '@/lib/admin/session'
 import AdminNav from '@/components/admin/AdminNav'
 import s from '@/components/admin/admin.module.css'
 
@@ -15,7 +15,7 @@ export default async function AdminPanelLayout({ children }: { children: React.R
 
   return (
     <div className={s.shell}>
-      <AdminNav email={admin.email} name={admin.name} />
+      <AdminNav email={admin.email} name={admin.name} role={admin.role} permissions={permissionsOf(admin)} />
       <div className={s.main}>
         <div className={s.content}>{children}</div>
       </div>

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
+import { ROLE_LABEL, type AdminRole } from '@/lib/admin/roles'
 import InviteAdminModal from './InviteAdminModal'
 import { Toast, useToast } from './Toast'
 
@@ -9,6 +10,7 @@ interface AdminRow {
   id: number
   email: string
   name: string | null
+  role: AdminRole
   must_change_password: boolean
   temp_password_expires_at: string | null
   last_login_at: string | null
@@ -61,6 +63,21 @@ export default function UsersManager() {
     await load()
   }
 
+  async function handleRoleChange(user: AdminRow) {
+    const next: AdminRole = user.role === 'admin' ? 'member' : 'admin'
+    const note = next === 'member' ? '\nMember는 고객 신청 내역과 관리자 관리 메뉴에 접근할 수 없습니다.' : ''
+    if (!window.confirm(`${user.email}의 역할을 ${ROLE_LABEL[next]}(으)로 변경할까요?${note}`)) return
+    const res = await fetch(`/api/admin/users/${user.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: next }),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (res.ok) showToast(true, `${user.email}의 역할을 ${ROLE_LABEL[next]}(으)로 변경했습니다.`)
+    else showToast(false, data.error ?? '역할 변경에 실패했습니다.')
+    await load()
+  }
+
   async function handleDelete(user: AdminRow) {
     if (!window.confirm(`${user.email} 관리자를 삭제할까요?`)) return
     const res = await fetch(`/api/admin/users/${user.id}`, { method: 'DELETE' })
@@ -83,16 +100,16 @@ export default function UsersManager() {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
           <thead>
             <tr style={{ background: '#F8FAFC' }}>
-              {['이메일', '이름', '상태', '마지막 로그인', '등록일', ''].map((h) => (
+              {['이메일', '이름', '역할', '상태', '마지막 로그인', '등록일', ''].map((h) => (
                 <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12.5, color: '#8B95A1', fontWeight: 600, borderBottom: '1px solid #F2F4F6' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} style={{ padding: 24, textAlign: 'center', color: '#8B95A1' }}>불러오는 중…</td></tr>
+              <tr><td colSpan={7} style={{ padding: 24, textAlign: 'center', color: '#8B95A1' }}>불러오는 중…</td></tr>
             ) : users.length === 0 ? (
-              <tr><td colSpan={6} style={{ padding: 24, textAlign: 'center', color: '#8B95A1' }}>등록된 관리자가 없습니다.</td></tr>
+              <tr><td colSpan={7} style={{ padding: 24, textAlign: 'center', color: '#8B95A1' }}>등록된 관리자가 없습니다.</td></tr>
             ) : users.map((u) => {
               const tempExpired = u.must_change_password && u.temp_password_expires_at
                 && new Date(u.temp_password_expires_at) <= new Date()
@@ -102,6 +119,11 @@ export default function UsersManager() {
                     {u.email}{u.id === me && <span style={{ marginLeft: 6, fontSize: 11, color: '#1B6CF2', fontWeight: 800 }}>나</span>}
                   </td>
                   <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6', color: '#4E5968' }}>{u.name ?? '-'}</td>
+                  <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6' }}>
+                    <span style={{ padding: '3px 8px', borderRadius: 6, fontSize: 11.5, fontWeight: 700, background: u.role === 'admin' ? '#E8F1FE' : '#F2F4F6', color: u.role === 'admin' ? '#1B6CF2' : '#6B7684' }}>
+                      {ROLE_LABEL[u.role]}
+                    </span>
+                  </td>
                   <td style={{ padding: '13px 16px', borderBottom: '1px solid #F2F4F6' }}>
                     {u.must_change_password ? (
                       <span style={{ padding: '3px 8px', borderRadius: 6, fontSize: 11.5, fontWeight: 700, background: tempExpired ? '#FCEEED' : '#FFF4E0', color: tempExpired ? '#E8342B' : '#92610A' }}>
@@ -119,6 +141,11 @@ export default function UsersManager() {
                     <button onClick={() => handleReset(u)} style={{ ...btnStyle('ghost'), height: 32, padding: '0 10px', fontSize: 12, marginRight: 6 }}>
                       임시 비번 재발급
                     </button>
+                    {u.id !== me && (
+                      <button onClick={() => handleRoleChange(u)} style={{ ...btnStyle('ghost'), height: 32, padding: '0 10px', fontSize: 12, marginRight: 6 }}>
+                        {u.role === 'admin' ? 'Member로 변경' : 'Admin으로 변경'}
+                      </button>
+                    )}
                     {u.id !== me && (
                       <button onClick={() => handleDelete(u)} style={{ ...btnStyle('danger'), height: 32, padding: '0 10px', fontSize: 12 }}>
                         삭제

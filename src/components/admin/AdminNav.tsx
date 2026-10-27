@@ -7,17 +7,19 @@ import {
   FileCheck, Gift, Inbox, LayoutDashboard, LogOut, Menu, MessageSquareQuote, TrendingUp, UserRound, Users, Wallet, X,
   type LucideIcon,
 } from 'lucide-react'
+import { ROLE_LABEL, type AdminRole, type Permission } from '@/lib/admin/roles'
 import s from './admin.module.css'
 
-interface MenuItem { href: string; label: string; icon: LucideIcon }
+// permission이 있는 메뉴는 해당 권한이 있을 때만 노출(실제 차단은 페이지·API의 can()이 담당)
+interface MenuItem { href: string; label: string; icon: LucideIcon; permission?: Permission }
 
 const MENU: { group: string | null; items: MenuItem[] }[] = [
   { group: null, items: [{ href: '/admin', label: '대시보드', icon: LayoutDashboard }] },
   {
     group: '신청 관리',
     items: [
-      { href: '/admin/leads/main', label: '메인 페이지 신청', icon: Inbox },
-      { href: '/admin/leads/income', label: '두 번째 월급 페이지 신청', icon: Wallet },
+      { href: '/admin/leads/main', label: '메인 페이지 신청', icon: Inbox, permission: 'leads' },
+      { href: '/admin/leads/income', label: '두 번째 월급 페이지 신청', icon: Wallet, permission: 'leads' },
     ],
   },
   {
@@ -32,7 +34,7 @@ const MENU: { group: string | null; items: MenuItem[] }[] = [
   {
     group: '계정',
     items: [
-      { href: '/admin/users', label: '관리자 관리', icon: Users },
+      { href: '/admin/users', label: '관리자 관리', icon: Users, permission: 'users' },
       { href: '/admin/me', label: '내 정보 관리', icon: UserRound },
     ],
   },
@@ -43,9 +45,21 @@ function isActive(pathname: string, href: string): boolean {
 }
 
 // 관리자 LNB. 데스크톱은 왼쪽 고정, 모바일은 상단 바의 메뉴 버튼으로 여는 드로어.
-export default function AdminNav({ email, name }: { email: string; name: string | null }) {
+export default function AdminNav({ email, name, role, permissions }: {
+  email: string
+  name: string | null
+  role: AdminRole
+  permissions: Permission[]
+}) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+
+  const menu = MENU
+    .map(({ group, items }) => ({
+      group,
+      items: items.filter((item) => !item.permission || permissions.includes(item.permission)),
+    }))
+    .filter(({ items }) => items.length > 0)
 
   async function handleLogout() {
     await fetch('/api/admin/logout', { method: 'POST' }).catch(() => {})
@@ -74,7 +88,7 @@ export default function AdminNav({ email, name }: { email: string; name: string 
         </div>
 
         <nav className={s.nav}>
-          {MENU.map(({ group, items }) => (
+          {menu.map(({ group, items }) => (
             <div key={group ?? 'root'} className={s.group}>
               {group && <div className={s.groupLabel}>{group}</div>}
               {items.map(({ href, label, icon: Icon }) => {
@@ -95,7 +109,12 @@ export default function AdminNav({ email, name }: { email: string; name: string 
         </nav>
 
         <div className={s.account}>
-          <div className={s.accountName}>{name || '관리자'}</div>
+          <div className={s.accountName}>
+            {name || '관리자'}
+            <span style={{ marginLeft: 6, fontSize: 11, fontWeight: 700, color: role === 'admin' ? '#1B6CF2' : '#8B95A1' }}>
+              {ROLE_LABEL[role]}
+            </span>
+          </div>
           <div className={s.accountEmail}>{email}</div>
           <button type="button" className={s.logout} onClick={handleLogout}>
             <LogOut size={14} /> 로그아웃

@@ -3,6 +3,7 @@
 import { useCallback, useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 
+import { ROLE_LABEL, type AdminRole } from '@/lib/admin/roles'
 import PasswordChangeModal from './PasswordChangeModal'
 import { Toast, useToast } from './Toast'
 import { btnStyle, card, hintStyle, inputStyle, labelStyle, pageDesc, pageTitle } from './ui'
@@ -16,9 +17,10 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   )
 }
 
-export default function ProfileManager({ email, name: initialName, createdAt, lastLoginAt }: {
+export default function ProfileManager({ email, name: initialName, role, createdAt, lastLoginAt }: {
   email: string
   name: string | null
+  role: AdminRole
   createdAt: string
   lastLoginAt: string | null
 }) {
@@ -64,6 +66,7 @@ export default function ProfileManager({ email, name: initialName, createdAt, la
       <div style={card}>
         <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 4 }}>계정 정보</div>
         <InfoRow label="이메일" value={email} />
+        <InfoRow label="역할" value={ROLE_LABEL[role]} />
         <InfoRow label="등록일" value={createdAt.slice(0, 10)} />
         <InfoRow label="마지막 로그인" value={lastLoginAt ? lastLoginAt.slice(0, 16).replace('T', ' ') : '-'} />
 

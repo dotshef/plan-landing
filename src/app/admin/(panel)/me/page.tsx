@@ -13,6 +13,7 @@ export default async function AdminMePage() {
     <ProfileManager
       email={admin.email}
       name={admin.name}
+      role={admin.role}
       createdAt={admin.created_at}
       lastLoginAt={admin.last_login_at}
     />

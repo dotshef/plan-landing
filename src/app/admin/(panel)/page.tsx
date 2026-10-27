@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ChevronRight } from 'lucide-react'
 import { db } from '@/lib/db/server'
-import { requireAdmin, toKstTimestamp } from '@/lib/admin/session'
+import { can, requireAdmin, toKstTimestamp } from '@/lib/admin/session'
 import { card, pageDesc, pageTitle } from '@/components/admin/ui'
 
 export const dynamic = 'force-dynamic'
@@ -61,6 +61,16 @@ export default async function AdminDashboardPage() {
   if (!admin) redirect('/admin/login')
 
   const { today: todayStart, week: weekStart } = kstRangeStarts()
+
+  // member는 고객 신청 접근 권한이 없다 - 건수 카드(신청자 목록으로 연결)도 노출하지 않는다
+  if (!can(admin, 'leads')) {
+    return (
+      <div>
+        <h1 style={pageTitle}>안녕하세요, {admin.name || '관리자'}님</h1>
+        <p style={pageDesc}>{todayStart.slice(0, 10)} · 왼쪽 메뉴에서 관리할 항목을 선택하세요.</p>
+      </div>
+    )
+  }
 
   const [reportToday, reportWeek, incomeToday, incomeWeek] = await Promise.all([
     // report_request는 /trial·/sector 등 다른 페이지 신청도 함께 담는다 - 메인(source_page='main')만 센다

@@ -2,8 +2,9 @@ import 'server-only'
 import { createHash, randomBytes } from 'node:crypto'
 import { cookies } from 'next/headers'
 import { db } from '@/lib/db/server'
+import { PERMISSIONS, type AdminRole, type Permission } from './roles'
 
-// 관리자 세션. 인가 판정은 이 모듈(getAdmin/requireAdmin) 한 곳에서만 한다.
+// 관리자 세션. 인가 판정은 이 모듈(getAdmin/requireAdmin/can) 한 곳에서만 한다.
 // proxy.ts는 쿠키 유무만 보는 UX 보조이며 실제 검증을 하지 않는다.
 // 계정 테이블은 "user"(hard delete), 세션은 user_session(FK cascade).
 
@@ -14,6 +15,7 @@ export interface AdminUser {
   id: number
   email: string
   name: string | null
+  role: AdminRole
   must_change_password: boolean
   temp_password_expires_at: string | null
   fail_count: number
@@ -87,7 +89,7 @@ export async function getAdmin(): Promise<AdminUser | null> {
   // 조회 시점 경합 대비 maybeSingle로 방어한다.
   const { data: user } = await db()
     .from('user')
-    .select('id, email, name, must_change_password, temp_password_expires_at, fail_count, locked_until, last_login_at, created_at')
+    .select('id, email, name, role, must_change_password, temp_password_expires_at, fail_count, locked_until, last_login_at, created_at')
     .eq('id', session.user_id as number)
     .maybeSingle()
   return (user as AdminUser | null) ?? null
@@ -102,4 +104,21 @@ export async function requireAdmin(opts: { allowMustChange?: boolean } = {}): Pr
   if (!admin) return null
   if (admin.must_change_password && !opts.allowMustChange) return null
   return admin
+}
+
+// 역할별 권한. member는 고객 신청(개인정보)과 관리자 계정 관리에 접근할 수 없다.
+// 역할은 매 요청 getAdmin()이 DB에서 읽으므로 변경 즉시 반영된다(세션 재발급 불필요).
+const ROLE_PERMISSIONS: Record<AdminRole, readonly Permission[]> = {
+  admin: ['leads', 'users'],
+  member: [],
+}
+
+/** 권한 판정. 알 수 없는 역할 값은 권한 없음으로 본다. */
+export function can(admin: Pick<AdminUser, 'role'>, permission: Permission): boolean {
+  return ROLE_PERMISSIONS[admin.role]?.includes(permission) ?? false
+}
+
+/** 해당 관리자가 가진 권한 목록 - 화면(LNB) 메뉴 노출용. */
+export function permissionsOf(admin: Pick<AdminUser, 'role'>): Permission[] {
+  return PERMISSIONS.filter((p) => can(admin, p))
 }

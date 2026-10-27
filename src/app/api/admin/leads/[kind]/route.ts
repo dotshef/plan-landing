@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/admin/session'
+import { can, requireAdmin } from '@/lib/admin/session'
 import { LEAD_KINDS, LEAD_PAGE_SIZE, listLeads, parseLeadQuery, type LeadKind } from '@/lib/admin/leads'
 
 export const runtime = 'nodejs'
@@ -10,6 +10,7 @@ export const dynamic = 'force-dynamic'
 export async function GET(req: Request, ctx: { params: Promise<{ kind: string }> }) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
+  if (!can(admin, 'leads')) return NextResponse.json({ error: '권한이 없습니다.' }, { status: 403 })
 
   const { kind } = await ctx.params
   if (!LEAD_KINDS.includes(kind as LeadKind)) {
