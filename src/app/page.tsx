@@ -7,20 +7,22 @@ import StickyLeadBar from '@/components/landing/StickyLeadBar'
 import TrialFormModal from '@/components/landing/TrialFormModal'
 import { getPopularStocks } from '@/data/registry'
 import { listMainProofs } from '@/lib/main/proofs'
+import { getSiteImage } from '@/lib/site/images'
 
 // DB(야간 스냅샷) 기반 → 요청 시 렌더. 빌드 프리렌더 시 DB 호출 방지.
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  const [popular, proofs] = await Promise.all([
+  const [popular, proofs, journal] = await Promise.all([
     getPopularStocks(),
     listMainProofs().catch(() => []),
+    getSiteImage('main_journal_sms'),
   ])
   return (
     <div style={{ background: '#F5F7FB' }}>
       <ProofHeroSection proofs={proofs} />
       <SearchReportsSection stocks={popular} />
-      <WhyPlanSection />
+      <WhyPlanSection journal={journal} />
       <PrinciplesSection />
       <div style={{ padding: '40px 0 24px' }}>
         <MarketIndexCardsSection />

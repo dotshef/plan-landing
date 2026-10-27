@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import { Playfair_Display } from 'next/font/google'
 import { Wallet, CreditCard, ShieldCheck, ArrowRight } from 'lucide-react'
 import FadeUp from '@/components/common/FadeUp'
@@ -7,6 +6,7 @@ import GoldCoin from '@/components/common/GoldCoin'
 import PageLeadForm from '@/components/common/PageLeadForm'
 import StickyLeadBar from '@/components/landing/StickyLeadBar'
 import { listIncomeProofs } from '@/lib/income/proofs'
+import { getSiteImage } from '@/lib/site/images'
 import s from './income.module.css'
 
 export const dynamic = 'force-dynamic'
@@ -115,7 +115,10 @@ function Medal() {
 }
 
 export default async function IncomePage() {
-  const proofs = await listIncomeProofs().catch(() => [])
+  const [proofs, deposit] = await Promise.all([
+    listIncomeProofs().catch(() => []),
+    getSiteImage('income_deposit'),
+  ])
 
   return (
     <div style={{ background: '#fff', color: C.ink }}>
@@ -161,13 +164,13 @@ export default async function IncomePage() {
                   </div>
                 </div>
                 <div style={{ marginTop: 18, borderRadius: 14, overflow: 'hidden' }}>
-                  <Image
-                    src="/images/plan-deposit-notifications-example.png"
-                    alt="스마트폰 입금 알림 가상 예시: 파란색 배경에 노란색·파란색 은행 알림 두 개가 표시되며, 은행 아이콘과 개인정보·금액은 블러 처리되어 있습니다."
-                    width={1586}
-                    height={992}
-                    sizes="(max-width: 960px) 90vw, 440px"
-                    loading="eager"
+                  {/* 관리자 '페이지 이미지 관리'에서 교체(site_image income_deposit). width·height는 로드 전 비율 자리 확보용 */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={deposit.image_url}
+                    alt={deposit.alt}
+                    width={deposit.width}
+                    height={deposit.height}
                     style={{ display: 'block', width: '100%', height: 'auto' }}
                   />
                 </div>

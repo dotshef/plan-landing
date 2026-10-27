@@ -1,6 +1,6 @@
-import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import GoldCoin from '@/components/common/GoldCoin'
+import type { SiteImage } from '@/lib/site/images'
 import { TrialModalTrigger } from './TrialFormModal'
 
 const MEMBER_COUNT = '3,500명'
@@ -11,7 +11,8 @@ const BENEFITS = [
   { title: '장전·장후 시황 브리핑', desc: '시장 흐름과 핵심 이슈를 매일 정리' },
 ]
 
-export default function WhyPlanSection() {
+// journal: 관리자 '페이지 이미지 관리'에서 교체하는 매매일지·문자 이미지(site_image main_journal_sms)
+export default function WhyPlanSection({ journal }: { journal: SiteImage }) {
   return (
     <section style={{ background: '#F5F7FB' }}>
       <div className="home-shell" style={{ padding: 'var(--home-section-padding-tail, 24px 28px 88px)' }}>
@@ -26,13 +27,15 @@ export default function WhyPlanSection() {
               <div style={{ fontSize: 15, color: '#4E5968' }}>손절까지 숨기지 않는 추천 기록 그대로</div>
               <h3 style={{ margin: '6px 0 0', fontSize: 'var(--home-h3-size, 24px)', fontWeight: 800, letterSpacing: '-0.02em', color: '#111827' }}>실제 매매일지와 추천 문자</h3>
 
-              <a className="home-journal" href="/images/plan-journal-sms-example.jpg" target="_blank" rel="noopener noreferrer">
-                <Image
-                  src="/images/plan-journal-sms-example.jpg"
-                  alt="엑셀 매매일지와 추천 문자 화면 예시: 일자·종목명·매수가·매도가·수익률 내역과 투자그룹 플랜의 매수 시그널 문자. 클릭하면 원본 이미지가 새 탭에서 열립니다."
-                  width={1024}
-                  height={721}
-                  sizes="(max-width: 1024px) 90vw, 560px"
+              <a className="home-journal" href={journal.image_url} target="_blank" rel="noopener noreferrer">
+                {/* Storage 공개 URL - next/image 미사용(ProofHeroSection과 동일). width·height는 로드 전 비율 자리 확보용 */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={journal.image_url}
+                  alt={journal.alt}
+                  width={journal.width}
+                  height={journal.height}
+                  loading="lazy"
                   style={{ display: 'block', width: '100%', height: 'auto' }}
                 />
               </a>

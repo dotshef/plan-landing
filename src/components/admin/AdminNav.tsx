@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  FileCheck, Gift, Inbox, LayoutDashboard, LogOut, Menu, MessageSquareQuote, TrendingUp, UserRound, Users, Wallet, X,
+  FileCheck, Gift, ImageIcon, Inbox, LayoutDashboard, LogOut, Menu, MessageSquareQuote, TrendingUp, UserRound, Users, Wallet, X,
   type LucideIcon,
 } from 'lucide-react'
 import { ROLE_LABEL, type AdminRole, type Permission } from '@/lib/admin/roles'
@@ -27,6 +27,7 @@ const MENU: { group: string | null; items: MenuItem[] }[] = [
     items: [
       { href: '/admin/proofs', label: '공증 자료 관리', icon: FileCheck },
       { href: '/admin/income-reviews', label: '두번째 월급 후기 관리', icon: MessageSquareQuote },
+      { href: '/admin/site-images', label: '페이지 이미지 관리', icon: ImageIcon },
       { href: '/admin/trial', label: '7일 체험 관리', icon: Gift },
       { href: '/admin/sector', label: '주도 섹터', icon: TrendingUp },
     ],
