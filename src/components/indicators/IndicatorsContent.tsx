@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import PageLeadForm from '@/components/common/PageLeadForm'
 
-// 자료 목록 — 정적 상수. 선택값(1개)은 indicator_items로 접수된다.
+// 자료 목록 - 정적 상수. 선택값(1개)은 indicator_items로 접수된다.
 const INDICATORS: { name: string; desc: string; icon: LucideIcon }[] = [
   { name: '증시 캘린더', desc: '놓치면 안 되는 일정', icon: CalendarDays },
   { name: '엑스레이 지표', desc: '캔들에 안 보이는 것', icon: Radar },
@@ -20,7 +20,7 @@ const INDICATORS: { name: string; desc: string; icon: LucideIcon }[] = [
   { name: '피보나치 되돌림', desc: '지지·저항 구간', icon: Ruler },
 ]
 
-// 하단 슬라이딩 스트립 이미지 — public/images/meterials/ 의 실제 파일명.
+// 하단 슬라이딩 스트립 이미지 - public/images/meterials/ 의 실제 파일명.
 const MATERIALS: { file: string; alt: string }[] = [
   { file: '조건검색식.jpg', alt: '조건검색식 설정 화면' },
   { file: '지표설치.jpg', alt: '보조지표 설치 화면' },
@@ -43,7 +43,7 @@ export default function IndicatorsContent() {
 
   return (
     <div style={{ background: '#1E2E5A' }}>
-      {/* 상단 — 네이비 배경 위 떠 있는 신청 카드 */}
+      {/* 상단 - 네이비 배경 위 떠 있는 신청 카드 */}
       <div style={{ position: 'relative', overflow: 'hidden', padding: '64px 24px 60px' }}>
         <div
           aria-hidden
@@ -74,7 +74,7 @@ export default function IndicatorsContent() {
           </h1>
           <p style={{ fontSize: 17, color: '#6B7684', margin: 0 }}>설정 방법부터 활용 기준까지 한 번에</p>
 
-          {/* 자료 선택 — 전체 목록 그리드 */}
+          {/* 자료 선택 - 전체 목록 그리드 */}
           <div style={{ background: '#F8FAFC', borderRadius: 13, padding: '20px 22px', margin: '26px 0' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: '#6B7684', margin: '0 0 13px' }}>받아보실 자료를 하나 선택하세요</p>
             <div className="ind-grid">
@@ -117,7 +117,7 @@ export default function IndicatorsContent() {
             </div>
           </div>
 
-          {/* 신청 폼 — 카드 내부의 별도 카드. 다른 페이지와 비슷한 폭으로 제한 */}
+          {/* 신청 폼 - 카드 내부의 별도 카드. 다른 페이지와 비슷한 폭으로 제한 */}
           <div style={{ maxWidth: 500, margin: '0 auto' }}>
             <PageLeadForm
               sourcePage="indicators"
@@ -131,7 +131,7 @@ export default function IndicatorsContent() {
         </div>
       </div>
 
-      {/* 자료 미리보기 — 좌우로 흐르는 이미지 스트립 */}
+      {/* 자료 미리보기 - 좌우로 흐르는 이미지 스트립 */}
       <div style={{ position: 'relative', background: '#1E2E5A', overflow: 'hidden', padding: '56px 0 64px' }}>
         <div
           aria-hidden

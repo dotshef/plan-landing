@@ -4,6 +4,8 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { X } from 'lucide-react'
 
+import { ADMIN_ROLES, ROLE_LABEL, type AdminRole } from '@/lib/admin/roles'
+
 const inputStyle: React.CSSProperties = {
   width: '100%', height: 44, padding: '0 12px', border: '1.5px solid #E5E8EB', borderRadius: 10,
   fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box', background: '#F8FAFC',
@@ -11,6 +13,11 @@ const inputStyle: React.CSSProperties = {
 
 const labelStyle: React.CSSProperties = {
   display: 'block', fontSize: 12.5, fontWeight: 700, color: '#4E5968', marginBottom: 6,
+}
+
+const ROLE_DESC: Record<AdminRole, string> = {
+  admin: '모든 메뉴 (고객 신청 내역·관리자 관리 포함)',
+  member: '콘텐츠 관리만 (고객 신청 내역·관리자 관리 제외)',
 }
 
 export default function InviteAdminModal({
@@ -24,12 +31,13 @@ export default function InviteAdminModal({
 }) {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
+  const [role, setRole] = useState<AdminRole>('member')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open) return
-    setEmail(''); setName(''); setError(null)
+    setEmail(''); setName(''); setRole('member'); setError(null)
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
     const prev = document.body.style.overflow
@@ -46,7 +54,7 @@ export default function InviteAdminModal({
       const res = await fetch('/api/admin/users/invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name }),
+        body: JSON.stringify({ email, name, role }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) { setError(data.error ?? '초대에 실패했습니다.'); return }
@@ -105,6 +113,27 @@ export default function InviteAdminModal({
                     id="invite-name" type="text" value={name} onChange={(e) => setName(e.target.value)}
                     placeholder="홍길동" style={inputStyle}
                   />
+                </div>
+                <div role="radiogroup" aria-labelledby="invite-role-label">
+                  <div id="invite-role-label" style={labelStyle}>역할 (필수)</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {ADMIN_ROLES.map((r) => {
+                      const selected = role === r
+                      return (
+                        <button
+                          key={r} type="button" role="radio" aria-checked={selected} onClick={() => setRole(r)}
+                          style={{
+                            display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, padding: '10px 12px',
+                            borderRadius: 10, border: `1.5px solid ${selected ? '#1B6CF2' : '#E5E8EB'}`,
+                            background: selected ? '#F3F8FF' : '#fff', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
+                          }}
+                        >
+                          <span style={{ fontSize: 13.5, fontWeight: 800, color: selected ? '#1B6CF2' : '#191F28' }}>{ROLE_LABEL[r]}</span>
+                          <span style={{ fontSize: 12, color: '#6B7684' }}>{ROLE_DESC[r]}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
                 {error && (
                   <div style={{ padding: '10px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: '#FCEEED', color: '#E8342B' }}>

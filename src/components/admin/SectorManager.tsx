@@ -49,7 +49,7 @@ function btn(kind: 'primary' | 'ghost' | 'danger' | 'publish', disabled = false)
   return { ...base, background: '#fff', color: '#4E5968', border: '1px solid #E5E8EB' }
 }
 
-/** 분기 선택 드롭다운 — 네이티브 select 대신 div 기반 */
+/** 분기 선택 드롭다운 - 네이티브 select 대신 div 기반 */
 function QuarterSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const [open, setOpen] = useState(false)
   return (
@@ -94,7 +94,7 @@ function QuarterSelect({ value, onChange }: { value: string; onChange: (v: strin
   )
 }
 
-/** 종목 검색 입력 — 기존 /api/search 재활용 */
+/** 종목 검색 입력 - 기존 /api/search 재활용 */
 function StockSearch({ onPick, disabled }: { onPick: (hit: SearchHit) => void; disabled: boolean }) {
   const [q, setQ] = useState('')
   const [hits, setHits] = useState<SearchHit[]>([])
@@ -364,7 +364,7 @@ export default function SectorManager() {
   const [busy, setBusy] = useState<string | null>(null) // 'save'|'sector'|'backfill'|'validate'|'publish'
 
   const load = useCallback(async (revalidate = false) => {
-    // 최초 로딩 상태는 useState(true)가 담당 — 이펙트 내 동기 setState 회피
+    // 최초 로딩 상태는 useState(true)가 담당 - 이펙트 내 동기 setState 회피
     try {
       const res = await fetch('/api/admin/sector/report')
       const data = await res.json().catch(() => ({}))
@@ -516,7 +516,7 @@ export default function SectorManager() {
         </p>
         {validation && (
           <p style={{ margin: '14px 0 0', fontSize: 12.5, color: '#8B95A1', lineHeight: 1.7 }}>
-            보유 데이터 시작일 — 시세: <b>{validation.dataStart.price ?? '없음'}</b> · 수급: <b>{validation.dataStart.investor ?? '없음'}</b>
+            보유 데이터 시작일 - 시세: <b>{validation.dataStart.price ?? '없음'}</b> · 수급: <b>{validation.dataStart.investor ?? '없음'}</b>
             {' '}| 분기 거래일(달력 기준): 당분기 {validation.calendarDays.cur}일 · 직전분기 {validation.calendarDays.prev}일
           </p>
         )}
@@ -590,7 +590,7 @@ export default function SectorManager() {
                           {i.level === 'error'
                             ? <OctagonX size={14} strokeWidth={2.2} style={{ flexShrink: 0 }} />
                             : <TriangleAlert size={14} strokeWidth={2.2} style={{ flexShrink: 0 }} />}
-                          {c.name}({c.code}) — {i.message}
+                          {c.name}({c.code}) - {i.message}
                         </div>
                       )),
                     )}

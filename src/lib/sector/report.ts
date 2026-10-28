@@ -1,7 +1,7 @@
 import 'server-only'
 import { db } from '@/lib/db/server'
 
-// sector_report 로딩 헬퍼 — 관리자 API·퍼블릭 페이지 공용.
+// sector_report 로딩 헬퍼 - 관리자 API·퍼블릭 페이지 공용.
 
 export interface SectorStockRow {
   code: string
@@ -77,7 +77,7 @@ function shape(raw: Record<string, unknown>): ReportRow {
   return { ...(raw as unknown as Omit<ReportRow, 'sectors'>), sectors }
 }
 
-/** 최신 보고서(상태 무관) — 관리자 편집 대상. */
+/** 최신 보고서(상태 무관) - 관리자 편집 대상. */
 export async function loadLatestReport(): Promise<ReportRow | null> {
   const { data, error } = await db()
     .from('sector_report')
@@ -89,7 +89,7 @@ export async function loadLatestReport(): Promise<ReportRow | null> {
   return data ? shape(data as Record<string, unknown>) : null
 }
 
-/** 최신 published 보고서 — 퍼블릭 /sector 렌더 대상. */
+/** 최신 published 보고서 - 퍼블릭 /sector 렌더 대상. */
 export async function loadPublishedReport(): Promise<ReportRow | null> {
   const { data, error } = await db()
     .from('sector_report')

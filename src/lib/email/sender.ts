@@ -25,7 +25,7 @@ export interface MailInput {
 
 /**
  * Resend REST API로 메일을 발송한다. to 미지정 시 EMAIL_TO에게.
- * 실패하면 throw — 실패를 어떻게 다룰지(응답 코드/무시)는 호출자가 결정한다.
+ * 실패하면 throw - 실패를 어떻게 다룰지(응답 코드/무시)는 호출자가 결정한다.
  */
 export async function sendMail({ label, subject, text, html, to }: MailInput): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY

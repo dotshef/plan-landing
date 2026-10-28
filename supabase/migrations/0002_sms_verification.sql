@@ -1,6 +1,6 @@
--- 0002_sms_verification.sql — 휴대폰 SMS 인증 (알리고)
+-- 0002_sms_verification.sql - 휴대폰 SMS 인증 (알리고)
 -- 접근 제어: 서버 서비스롤 전용. RLS 미사용(v1, 0001과 동일).
--- 인증번호는 평문 저장 금지 — HMAC 해시만 저장.
+-- 인증번호는 평문 저장 금지 - HMAC 해시만 저장.
 
 create table if not exists phone_verification (
   id          bigserial   primary key,

@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: { params: Promise<{ code: str
   const { code } = await params
   const name = await getStockName(code).catch(() => null)
   const label = name ? `${name}(${code})` : code
-  const title = `${label} 종목 분석 — 시세·수급·재무 | 투자그룹 플랜`
+  const title = `${label} 종목 분석 - 시세·수급·재무 | 투자그룹 플랜`
   const description = `${label}의 실시간 시세, 외국인·기관 수급, 재무제표, AI 분석을 한눈에. 전문가 리포트를 무료로 확인하세요.`
   return {
     title,

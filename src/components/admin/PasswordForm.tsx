@@ -26,7 +26,7 @@ export default function PasswordForm({ email, forced }: { email: string; forced:
         setError(result.error ?? '비밀번호 변경에 실패했습니다.')
         return
       }
-      window.location.href = '/admin/trial'
+      window.location.href = '/admin'
     } catch {
       setError('네트워크 오류가 발생했습니다.')
     } finally {
@@ -43,7 +43,7 @@ export default function PasswordForm({ email, forced }: { email: string; forced:
   const canSubmit = !busy && current && next && confirm
 
   return (
-    <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#F5F7FB' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#F5F7FB' }}>
       <form onSubmit={handleSubmit} style={{ width: 380, maxWidth: '100%', background: '#fff', border: '1px solid #EEF1F6', borderRadius: 18, padding: 32 }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6CF2', marginBottom: 6 }}>PLAN ADMIN</div>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', margin: '0 0 8px' }}>비밀번호 재설정</h1>

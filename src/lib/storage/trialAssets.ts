@@ -2,7 +2,7 @@ import 'server-only'
 import { randomUUID } from 'node:crypto'
 import { db } from '@/lib/db/server'
 
-// 추천주 7일 체험 동적 이미지 — Supabase Storage(public-assets 버킷, public read).
+// 추천주 7일 체험 동적 이미지 - Supabase Storage(public-assets 버킷, public read).
 // 업로드·삭제는 서버 라우트에서 service_role로만 수행한다(클라이언트 직접 업로드 금지).
 
 export const TRIAL_BUCKET = 'public-assets'
@@ -53,7 +53,7 @@ export async function uploadTrialAsset(input: {
   if (!ext) throw new Error('JPG·PNG·WebP 이미지만 업로드할 수 있습니다.')
   if (input.file.size > MAX_FILE_BYTES) throw new Error('파일 크기는 5MB 이하여야 합니다.')
 
-  // 발송 기록 세트는 하나만 — 문자 캡처·차트 각 1장으로 제한. 참여자 후기는 개수 제한 없음.
+  // 발송 기록 세트는 하나만 - 문자 캡처·차트 각 1장으로 제한. 참여자 후기는 개수 제한 없음.
   if (input.kind === 'sms' || input.kind === 'chart') {
     const { count } = await db()
       .from('trial_asset')
@@ -85,7 +85,7 @@ export async function uploadTrialAsset(input: {
     .select('*')
     .single()
   if (error || !data) {
-    // 행 삽입 실패 시 방금 올린 오브젝트 정리(실패해도 무시 — 고아 오브젝트 허용)
+    // 행 삽입 실패 시 방금 올린 오브젝트 정리(실패해도 무시 - 고아 오브젝트 허용)
     await db().storage.from(TRIAL_BUCKET).remove([path]).then(() => {}, () => {})
     throw new Error('이미지 정보를 저장하지 못했습니다.')
   }

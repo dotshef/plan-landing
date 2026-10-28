@@ -8,7 +8,7 @@ import StickyLeadBar from '@/components/landing/StickyLeadBar'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: '추천주 7일 무료 체험 — 투자그룹 플랜',
+  title: '추천주 7일 무료 체험 - 투자그룹 플랜',
   description: '딱 7일, 추천주가 문자로 옵니다. 보유 종목 상담 1회, 매매 타이밍 알림 7일. 7일 뒤 자동 종료됩니다.',
   alternates: { canonical: '/trial' },
 }
@@ -32,7 +32,7 @@ const SCHEDULE = [
 const sectionTitle: React.CSSProperties = { fontSize: 26, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em', margin: '0 0 8px', textAlign: 'center' }
 const sectionSub: React.CSSProperties = { fontSize: 15, color: '#6B7684', margin: 0, textAlign: 'center' }
 
-// 자료 업로드 전 빈 슬롯 — 섹션을 숨기지 않고 아이콘·안내문으로 자리를 채운다.
+// 자료 업로드 전 빈 슬롯 - 섹션을 숨기지 않고 아이콘·안내문으로 자리를 채운다.
 function EmptySlot({ Icon, name, desc, minHeight }: { Icon: LucideIcon; name: string; desc: string; minHeight: number }) {
   return (
     <div style={{ minHeight, border: '2px dashed #CBD5E1', borderRadius: 14, background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 20, textAlign: 'center' }}>
@@ -47,7 +47,7 @@ export default async function TrialPage() {
   const assets = await listTrialAssets().catch(() => [])
   const reviews = assets.filter((a) => a.kind === 'review')
 
-  // 발송 기록 세트 — 문자 캡처·차트 각 1장, 세트 하나만 노출.
+  // 발송 기록 세트 - 문자 캡처·차트 각 1장, 세트 하나만 노출.
   const pair = {
     sms: assets.find((a) => a.kind === 'sms'),
     chart: assets.find((a) => a.kind === 'chart'),

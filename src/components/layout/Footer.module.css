@@ -1,7 +1,7 @@
 .footer {
   --footer-max-width: 1320px;
   --footer-padding-x: 28px;
-  /* 본문과의 간격(기존 margin-top 80px)을 padding 으로 흡수 — margin 은 투명이라
+  /* 본문과의 간격(기존 margin-top 80px)을 padding 으로 흡수 - margin 은 투명이라
      body 배경(#F5F7FB)이 비쳐 푸터 위에 색이 다른 띠가 생겼다. */
   --footer-padding-top: 48px;
   --footer-padding-bottom: 34px;

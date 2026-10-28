@@ -13,12 +13,16 @@ interface Props {
   subtitle?: string
   submitLabel: string
   successMessage?: string
-  /** 카드 테두리·그림자 없이 본문만 렌더 — 부모가 이미 카드 컨테이너일 때 사용. */
+  /** 카드 테두리·그림자 없이 본문만 렌더 - 부모가 이미 카드 컨테이너일 때 사용. */
   bare?: boolean
+  /** 제목 오른쪽 태그(예: 선착순 마감). */
+  badge?: React.ReactNode
+  /** 모바일(≤768px)에서 인증번호·동의 행을 인증번호 발송 후에만 노출 - 첫 화면 폼 높이를 줄인다. */
+  progressive?: boolean
 }
 
-/** 신규 페이지(체험·자료·섹터) 공용 세로형 신청 폼 — 기존 리드 플로우(SMS 인증·Turnstile) 그대로. */
-export default function PageLeadForm({ sourcePage, indicatorItems, title, subtitle, submitLabel, successMessage, bare }: Props) {
+/** 신규 페이지(체험·자료·섹터) 공용 세로형 신청 폼 - 기존 리드 플로우(SMS 인증·Turnstile) 그대로. */
+export default function PageLeadForm({ sourcePage, indicatorItems, title, subtitle, submitLabel, successMessage, bare, badge, progressive }: Props) {
   const {
     form, setForm,
     submitted, submitting, errors,
@@ -41,6 +45,7 @@ export default function PageLeadForm({ sourcePage, indicatorItems, title, subtit
   }
 
   const canSubmit = !submitting && form.privacy && form.agree && verified
+  const revealClass = progressive && !codeSent ? 'plf-reveal-idle' : undefined
 
   if (submitted) {
     return (
@@ -60,7 +65,10 @@ export default function PageLeadForm({ sourcePage, indicatorItems, title, subtit
 
   return (
     <div style={bare ? undefined : { background: '#fff', border: '1.5px solid #1B6CF2', borderRadius: 18, padding: 26, boxShadow: '0 8px 24px rgba(27,108,242,.10)' }}>
-      <div style={{ fontSize: 18, fontWeight: 800, color: '#111827', marginBottom: 4 }}>{title}</div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+        <div style={{ fontSize: 18, fontWeight: 800, color: '#111827' }}>{title}</div>
+        {badge}
+      </div>
       {subtitle && <div style={{ fontSize: 13, color: '#6B7684', marginBottom: 4 }}>{subtitle}</div>}
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#8B95A1', margin: '6px 0 16px' }}>
         <Lock size={12} color="#B0B8C1" /> 입력하신 정보는 발송 용도로만 사용되며 안전하게 보호됩니다.
@@ -102,7 +110,7 @@ export default function PageLeadForm({ sourcePage, indicatorItems, title, subtit
           </div>
           {errors.phone && <div style={{ fontSize: 12.5, color: '#E8342B', fontWeight: 600 }}>{errors.phone}</div>}
 
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div className={revealClass} style={{ display: 'flex', gap: 8 }}>
             <div style={{ position: 'relative', flex: 1 }}>
               <input
                 type="text" inputMode="numeric" value={code}
@@ -132,7 +140,7 @@ export default function PageLeadForm({ sourcePage, indicatorItems, title, subtit
           </div>
           {errors.code && <div style={{ fontSize: 12.5, color: '#E8342B', fontWeight: 600 }}>{errors.code}</div>}
 
-          <div style={{ display: 'flex', gap: 18, alignItems: 'center', flexWrap: 'wrap', margin: '4px 0' }}>
+          <div className={revealClass} style={{ display: 'flex', gap: 18, alignItems: 'center', flexWrap: 'wrap', margin: '4px 0' }}>
             <ConsentCheck checked={form.privacy} onToggle={() => setForm({ ...form, privacy: !form.privacy })} onView={() => setModal('privacy')} label="개인정보 동의" />
             <ConsentCheck checked={form.agree} onToggle={() => setForm({ ...form, agree: !form.agree })} onView={() => setModal('agree')} label="마케팅 동의" />
           </div>

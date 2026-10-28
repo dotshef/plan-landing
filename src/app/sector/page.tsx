@@ -8,7 +8,7 @@ import StickyLeadBar from '@/components/landing/StickyLeadBar'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: '이번 분기 주목받는 섹터 — 투자그룹 플랜',
+  title: '이번 분기 주목받는 섹터 - 투자그룹 플랜',
   description: '영업이익·업종 PER·거래대금·외국인 순매수 데이터 기준으로 정리한 분기 섹터 리포트.',
   alternates: { canonical: '/sector' },
 }
@@ -19,7 +19,7 @@ interface NewsItem {
   published_at: string | null
 }
 
-// 섹터별 최신 뉴스 최대 5건 — 렌더 시점 실시간 조회(스냅샷 아님)
+// 섹터별 최신 뉴스 최대 5건 - 렌더 시점 실시간 조회(스냅샷 아님)
 async function loadNews(codes: string[]): Promise<NewsItem[]> {
   if (codes.length === 0) return []
   const { data } = await db()
@@ -32,11 +32,11 @@ async function loadNews(codes: string[]): Promise<NewsItem[]> {
 }
 
 const fmtPct = (v: number | null) =>
-  v == null ? '—' : `${v > 0 ? '+' : ''}${v.toFixed(1)}%`
-const fmtPer = (v: number | null) => (v == null ? '—' : `${v.toFixed(1)}배`)
+  v == null ? '-' : `${v > 0 ? '+' : ''}${v.toFixed(1)}%`
+const fmtPer = (v: number | null) => (v == null ? '-' : `${v.toFixed(1)}배`)
 // foreign_net_amount 단위: 백만원 → 억원
 const fmtEok = (v: number | null) => {
-  if (v == null) return '—'
+  if (v == null) return '-'
   const eok = Math.round(v / 100)
   return `${eok > 0 ? '+' : ''}${eok.toLocaleString('ko-KR')}억`
 }
@@ -63,7 +63,7 @@ function OpTrendChart({ trend }: { trend: SectorRow['op_trend'] }) {
         const cx = (W / items.length) * (i + 0.5)
         if (t.value == null) {
           return (
-            <text key={t.label} x={cx} y={baseY - 6} fontSize="10" fill="#B0B8C1" textAnchor="middle" fontFamily="sans-serif">—</text>
+            <text key={t.label} x={cx} y={baseY - 6} fontSize="10" fill="#B0B8C1" textAnchor="middle" fontFamily="sans-serif">-</text>
           )
         }
         const h = (Math.abs(t.value) / span) * chartH

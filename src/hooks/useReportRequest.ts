@@ -103,14 +103,14 @@ function readStoredAdAttribution(): AdAttribution {
 
 export interface ReportRequestExtra {
   /** 신청이 발생한 페이지. 미지정 시 'main'. */
-  sourcePage?: 'main' | 'trial' | 'indicators' | 'sector'
+  sourcePage?: 'main' | 'trial' | 'indicators' | 'sector' | 'income'
   /** '영상 속 자료 받기'에서 선택한 지표/자료명. */
   indicatorItems?: string | null
 }
 
 /**
  * 무료 리포트 신청 폼의 상태·검증·휴대폰 인증·제출 로직.
- * 세로형 ApplicationPanel과 가로형 CompactLeadFormSection, 신규 페이지 폼이 공유한다.
+ * 세로형 ApplicationPanel과 하단 고정 바(StickyLeadBar), 페이지 폼(PageLeadForm)이 공유한다.
  */
 export function useReportRequest(defaultStock = '', extra?: ReportRequestExtra) {
   const [form, setForm] = useState({ name: '', phone: '', stock: defaultStock, privacy: true, agree: true })
@@ -190,7 +190,7 @@ export function useReportRequest(defaultStock = '', extra?: ReportRequestExtra) 
           tokenResolverRef.current?.reject(new Error('turnstile-interactive-timeout'))
           tokenResolverRef.current = null
         },
-        // 체크박스가 표시되는 순간 — 사용자가 완료할 시간을 갖도록 15초 타임아웃 해제
+        // 체크박스가 표시되는 순간 - 사용자가 완료할 시간을 갖도록 15초 타임아웃 해제
         'before-interactive-callback': () => {
           clearTokenTimeout()
           setErrors((p) => ({ ...p, code: '보안 확인이 표시되었습니다. 확인을 완료하면 자동으로 진행됩니다' }))
@@ -243,7 +243,7 @@ export function useReportRequest(defaultStock = '', extra?: ReportRequestExtra) 
     setSending(true)
     setErrors((p) => ({ ...p, phone: '', code: '' }))
     try {
-      // 봇 방지 토큰 획득 — 실패(로드 실패 포함) 시 발송 차단
+      // 봇 방지 토큰 획득 - 실패(로드 실패 포함) 시 발송 차단
       let turnstileToken: string
       try {
         turnstileToken = await getTurnstileToken()
@@ -353,7 +353,7 @@ export function useReportRequest(defaultStock = '', extra?: ReportRequestExtra) 
         window.dataLayer.push({ event: 'consultation_complete' })
       }
 
-      // Google Ads 향상된 전환 — 전화번호를 E.164 형식 user_data로 설정 (전환 이벤트보다 먼저 호출)
+      // Google Ads 향상된 전환 - 전화번호를 E.164 형식 user_data로 설정 (전환 이벤트보다 먼저 호출)
       if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
         const e164 = '+82' + form.phone.replace(/[^0-9]/g, '').replace(/^0/, '')
         window.gtag('set', 'user_data', { phone_number: e164 })

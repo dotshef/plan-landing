@@ -10,7 +10,7 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-// 방문 사이트 반영 — 서버 재검증 → 지표 계산 → 스냅샷 저장 → 공개 전환.
+// 방문 사이트 반영 - 서버 재검증 → 지표 계산 → 스냅샷 저장 → 공개 전환.
 // UI 비활성화와 별개로 여기서 다시 검증한다(요구사항: "계산이 불가하도록 서버에서 처리").
 export async function POST() {
   const admin = await requireAdmin()
@@ -25,7 +25,7 @@ export async function POST() {
     return NextResponse.json({ error: '코스피 평균 PER을 먼저 입력해주세요.' }, { status: 400 })
   }
 
-  // report.quarter는 발표 분기 — 검증·지표 계산은 직전 분기 기준
+  // report.quarter는 발표 분기 - 검증·지표 계산은 직전 분기 기준
   const q = prevQuarter({ year: report.year, quarter: report.quarter })
 
   // 1) 서버 재검증

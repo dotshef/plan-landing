@@ -3,17 +3,64 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import PasswordChangeModal from './PasswordChangeModal'
+import {
+  FileCheck, Gift, ImageIcon, Inbox, LayoutDashboard, LogOut, Menu, MessageSquareQuote, TrendingUp, UserRound, Users, Wallet, X,
+  type LucideIcon,
+} from 'lucide-react'
+import { ROLE_LABEL, type AdminRole, type Permission } from '@/lib/admin/roles'
+import s from './admin.module.css'
 
-const MENU = [
-  { href: '/admin/trial', label: '7일 체험 관리' },
-  { href: '/admin/sector', label: '주도 섹터' },
-  { href: '/admin/users', label: '관리자 관리' },
+// permission이 있는 메뉴는 해당 권한이 있을 때만 노출(실제 차단은 페이지·API의 can()이 담당)
+interface MenuItem { href: string; label: string; icon: LucideIcon; permission?: Permission }
+
+const MENU: { group: string | null; items: MenuItem[] }[] = [
+  { group: null, items: [{ href: '/admin', label: '대시보드', icon: LayoutDashboard }] },
+  {
+    group: '신청 관리',
+    items: [
+      { href: '/admin/leads/main', label: '메인 페이지 신청', icon: Inbox, permission: 'leads' },
+      { href: '/admin/leads/income', label: '두 번째 월급 페이지 신청', icon: Wallet, permission: 'leads' },
+    ],
+  },
+  {
+    group: '콘텐츠',
+    items: [
+      { href: '/admin/proofs', label: '공증 자료 관리', icon: FileCheck },
+      { href: '/admin/income-reviews', label: '두번째 월급 후기 관리', icon: MessageSquareQuote },
+      { href: '/admin/site-images', label: '페이지 이미지 관리', icon: ImageIcon },
+      { href: '/admin/trial', label: '7일 체험 관리', icon: Gift },
+      { href: '/admin/sector', label: '주도 섹터', icon: TrendingUp },
+    ],
+  },
+  {
+    group: '계정',
+    items: [
+      { href: '/admin/users', label: '관리자 관리', icon: Users, permission: 'users' },
+      { href: '/admin/me', label: '내 정보 관리', icon: UserRound },
+    ],
+  },
 ]
 
-export default function AdminNav({ email }: { email: string }) {
+function isActive(pathname: string, href: string): boolean {
+  return href === '/admin' ? pathname === href : pathname === href || pathname.startsWith(`${href}/`)
+}
+
+// 관리자 LNB. 데스크톱은 왼쪽 고정, 모바일은 상단 바의 메뉴 버튼으로 여는 드로어.
+export default function AdminNav({ email, name, role, permissions }: {
+  email: string
+  name: string | null
+  role: AdminRole
+  permissions: Permission[]
+}) {
   const pathname = usePathname()
-  const [passwordOpen, setPasswordOpen] = useState(false)
+  const [open, setOpen] = useState(false)
+
+  const menu = MENU
+    .map(({ group, items }) => ({
+      group,
+      items: items.filter((item) => !item.permission || permissions.includes(item.permission)),
+    }))
+    .filter(({ items }) => items.length > 0)
 
   async function handleLogout() {
     await fetch('/api/admin/logout', { method: 'POST' }).catch(() => {})
@@ -21,42 +68,60 @@ export default function AdminNav({ email }: { email: string }) {
   }
 
   return (
-    <div style={{ background: '#fff', borderBottom: '1px solid #E5E8EB' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px', display: 'flex', alignItems: 'center', gap: 4, height: 56, flexWrap: 'wrap' }}>
-        <span style={{ fontSize: 13, fontWeight: 800, color: '#1B6CF2', marginRight: 14 }}>PLAN ADMIN</span>
-        {MENU.map((m) => {
-          const active = pathname.startsWith(m.href)
-          return (
-            <Link
-              key={m.href} href={m.href}
-              style={{
-                padding: '8px 14px', borderRadius: 10, fontSize: 14, textDecoration: 'none',
-                fontWeight: active ? 800 : 600,
-                color: active ? '#1B6CF2' : '#4E5968',
-                background: active ? '#EAF1FE' : 'transparent',
-              }}
-            >
-              {m.label}
-            </Link>
-          )
-        })}
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 12.5, color: '#8B95A1' }}>{email}</span>
-          <button
-            onClick={() => setPasswordOpen(true)}
-            style={{ border: '1px solid #E5E8EB', background: '#fff', borderRadius: 8, padding: '6px 12px', fontSize: 12.5, fontWeight: 700, color: '#4E5968', cursor: 'pointer' }}
-          >
-            비밀번호 변경
-          </button>
-          <button
-            onClick={handleLogout}
-            style={{ border: '1px solid #E5E8EB', background: '#fff', borderRadius: 8, padding: '6px 12px', fontSize: 12.5, fontWeight: 700, color: '#4E5968', cursor: 'pointer' }}
-          >
-            로그아웃
+    <>
+      <div className={s.topbar}>
+        <Link href="/admin" className={s.brand}>PLAN ADMIN</Link>
+        <button type="button" className={s.menuBtn} onClick={() => setOpen(true)} aria-label="메뉴 열기">
+          <Menu size={22} />
+        </button>
+      </div>
+
+      {open && <div className={s.backdrop} onClick={() => setOpen(false)} />}
+
+      <aside className={`${s.lnb} ${open ? s.lnbOpen : ''}`}>
+        <div className={s.brand} style={{ justifyContent: 'space-between' }}>
+          <Link href="/admin" onClick={() => setOpen(false)} style={{ color: 'inherit', textDecoration: 'none' }}>PLAN ADMIN</Link>
+          {open && (
+            <button type="button" className={s.menuBtn} onClick={() => setOpen(false)} aria-label="메뉴 닫기">
+              <X size={20} />
+            </button>
+          )}
+        </div>
+
+        <nav className={s.nav}>
+          {menu.map(({ group, items }) => (
+            <div key={group ?? 'root'} className={s.group}>
+              {group && <div className={s.groupLabel}>{group}</div>}
+              {items.map(({ href, label, icon: Icon }) => {
+                const active = isActive(pathname, href)
+                return (
+                  <Link
+                    key={href} href={href} onClick={() => setOpen(false)}
+                    className={`${s.item} ${active ? s.itemActive : ''}`}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    <Icon size={18} strokeWidth={active ? 2.4 : 2} />
+                    {label}
+                  </Link>
+                )
+              })}
+            </div>
+          ))}
+        </nav>
+
+        <div className={s.account}>
+          <div className={s.accountName}>
+            {name || '관리자'}
+            <span style={{ marginLeft: 6, fontSize: 11, fontWeight: 700, color: role === 'admin' ? '#1B6CF2' : '#8B95A1' }}>
+              {ROLE_LABEL[role]}
+            </span>
+          </div>
+          <div className={s.accountEmail}>{email}</div>
+          <button type="button" className={s.logout} onClick={handleLogout}>
+            <LogOut size={14} /> 로그아웃
           </button>
         </div>
-      </div>
-      <PasswordChangeModal open={passwordOpen} email={email} onClose={() => setPasswordOpen(false)} />
-    </div>
+      </aside>
+    </>
   )
 }

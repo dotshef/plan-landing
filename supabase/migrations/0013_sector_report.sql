@@ -1,4 +1,4 @@
--- 0013_sector_report.sql — 4분기 섹터 보고서·섹터·종목
+-- 0013_sector_report.sql - 4분기 섹터 보고서·섹터·종목
 -- 접근 제어: 서버 서비스롤 전용. RLS 미사용(v1).
 -- 지표 스냅샷은 "방문 사이트 반영" 시점에만 계산·확정된다(편집 중 퍼블릭 표시값 불변).
 
@@ -25,7 +25,7 @@ create table if not exists sector (
   op_growth_rate            numeric,                   -- 영업이익 증가율 % (QoQ, 누적 차분 기반)
   sector_per                numeric,                   -- 업종 PER (TTM, 분기말 종가 ÷ TTM EPS 평균)
   trading_value_growth_rate numeric,                   -- 거래대금 증가율 %
-  foreign_net_amount        numeric,                   -- 외국인 순매수 금액 합산(백만원 — KIS frgn_ntby_tr_pbmn 단위)
+  foreign_net_amount        numeric,                   -- 외국인 순매수 금액 합산(백만원 - KIS frgn_ntby_tr_pbmn 단위)
   op_trend                  jsonb,                     -- [{ "label": "3Q26", "value": 12345 }] 차트용
   unique (report_id, name)
 );

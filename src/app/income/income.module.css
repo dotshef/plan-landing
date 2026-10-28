@@ -1,0 +1,449 @@
+/* 두 번째 월급(/income) - 레이아웃·반응형·기관명 타이포그래피. */
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.ln {
+  white-space: nowrap;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.kicker {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1B6EF3;
+  letter-spacing: 0.06em;
+}
+
+.h2 {
+  margin: 10px 0 0;
+  font-size: 38px;
+  line-height: 1.35;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  color: #111827;
+}
+
+.lead {
+  font-size: 17px;
+  line-height: 1.75;
+  color: #374151;
+}
+
+.sec {
+  padding: 96px 0;
+}
+
+/* 히어로 */
+.hero {
+  display: flex;
+  gap: 56px;
+  align-items: center;
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.heroCopy {
+  flex: 1 1 560px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.heroCard {
+  flex: 1 1 440px;
+  min-width: 0;
+}
+
+.h1 {
+  margin: 0;
+  font-size: 48px;
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  color: #111827;
+}
+
+.feature {
+  padding: 28px;
+}
+
+.featureBig {
+  font-size: 28px;
+}
+
+/* 수상 박스 */
+.awardBox {
+  position: relative;
+  padding: 32px 40px;
+  border-radius: 26px;
+}
+
+.awardRow {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.certWrap {
+  position: relative;
+  flex: none;
+  /* 오른쪽으로 걸친 메달 + 여백 */
+  margin-right: 48px;
+}
+
+.cert {
+  width: 270px;
+}
+
+.awardMid {
+  flex: 1;
+  min-width: 0;
+  order: -1;
+  text-align: left;
+}
+
+.awardBrand {
+  display: flex;
+  gap: 12px 18px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.awardForbes {
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: #111;
+}
+
+.awardOrganizer {
+  white-space: nowrap;
+}
+
+.awardTitle {
+  font-family: var(--font-pretendard), 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+  color: #2A1B00;
+}
+
+.awardSub {
+  font-size: 16px;
+}
+
+/* 인증서 우측 하단에 걸치는 메달 */
+.medal {
+  position: absolute;
+  right: -26px;
+  bottom: -22px;
+  width: 88px;
+  height: 110px;
+}
+
+/* 숫자 밴드 */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 26px 16px;
+  border-radius: 22px;
+}
+
+.statNum {
+  font-size: 40px;
+}
+
+.statLbl {
+  font-size: 14px;
+}
+
+/* 실제 결과 */
+.secHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.proofs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.proof {
+  padding: 22px;
+}
+
+.proofHead {
+  font-size: 24px;
+}
+
+/* 소득 구조 3단계 */
+.steps {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.step {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stepNo {
+  width: 56px;
+  height: 56px;
+  font-size: 18px;
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: 21px;
+}
+
+.stepDesc {
+  margin: 8px 0 0;
+  font-size: 15px;
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+}
+
+/* 혜택 3종 */
+.benefitsRow {
+  display: flex;
+  gap: 48px;
+  align-items: center;
+}
+
+.benefit {
+  padding: 20px;
+  gap: 18px;
+}
+
+.benefitCirc {
+  width: 76px;
+  height: 76px;
+}
+
+.benefitTitle {
+  font-size: 19px;
+}
+
+.benefitDesc {
+  font-size: 15px;
+}
+
+@media (max-width: 900px) {
+  .wrap {
+    padding: 0 16px;
+  }
+
+  .sec {
+    padding: 56px 0;
+  }
+
+  .h2 {
+    font-size: 24px;
+  }
+
+  .kicker {
+    font-size: 12px;
+  }
+
+  .lead {
+    font-size: 14px;
+  }
+
+  .hero {
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 28px;
+    padding-bottom: 36px;
+  }
+
+  .heroCopy,
+  .heroCard {
+    flex: none;
+    width: 100%;
+  }
+
+  .h1 {
+    font-size: 28px;
+    line-height: 1.35;
+  }
+
+  .hero .lead .ln {
+    display: block;
+    white-space: normal;
+  }
+
+  .feature {
+    padding: 18px;
+  }
+
+  .featureBig {
+    font-size: 24px;
+  }
+
+  .awardBox {
+    padding: 22px 16px;
+    border-radius: 20px;
+  }
+
+  .awardRow {
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .certWrap {
+    margin-right: 0;
+  }
+
+  .cert {
+    width: 220px;
+  }
+
+  .awardMid {
+    width: 100%;
+    order: 2;
+    text-align: center;
+  }
+
+  .awardBrand {
+    justify-content: center;
+    gap: 10px 16px;
+  }
+
+  .awardForbes {
+    font-size: 30px;
+  }
+
+  .awardTitle {
+    font-size: 22px;
+  }
+
+  .awardSub {
+    font-size: 13px;
+  }
+
+  .medal {
+    right: -20px;
+    bottom: -16px;
+    width: 68px;
+    height: 85px;
+  }
+
+  .stats {
+    padding: 18px 8px;
+    border-radius: 16px;
+  }
+
+  .statNum {
+    font-size: 24px;
+  }
+
+  .statLbl {
+    font-size: 11px;
+  }
+
+  .secHead {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  /* 모바일은 세로 정렬 */
+  .proofs {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .proof {
+    padding: 16px;
+  }
+
+  .proofHead {
+    font-size: 19px;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .arrow {
+    display: none;
+  }
+
+  .step {
+    padding: 18px;
+    flex-direction: row;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .stepNo {
+    width: 44px;
+    height: 44px;
+    font-size: 15px;
+    flex: none;
+  }
+
+  .stepTitle {
+    font-size: 17px;
+  }
+
+  .stepDesc {
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .benefitsRow {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .benefitsRow > * {
+    flex: none !important;
+    width: 100%;
+  }
+
+  .benefit {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .benefitCirc {
+    width: 52px;
+    height: 52px;
+  }
+
+  .benefitTitle {
+    font-size: 16px;
+  }
+
+  .benefitDesc {
+    font-size: 13px;
+  }
+}

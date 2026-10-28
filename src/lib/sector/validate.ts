@@ -34,7 +34,7 @@ export interface SectorCheck {
 export interface ValidationResult {
   deployable: boolean
   sectors: SectorCheck[]
-  /** 보유 데이터 시작일(달력 종목 기준) — 계산 가능한 분기 판단용 */
+  /** 보유 데이터 시작일(달력 종목 기준) - 계산 가능한 분기 판단용 */
   dataStart: { price: string | null; investor: string | null }
   /** 분기 거래일 수 (달력 기준) */
   calendarDays: { cur: number; prev: number }
@@ -143,7 +143,7 @@ export async function validateSectors(q: QuarterRef, sectors: SectorInput[]): Pr
       const issues: StockIssue[] = []
       const cum = opMap.get(stock.code) ?? new Map<string, number | null>()
 
-      // 1) 영업이익 존재 — 단독 분기값을 만들 수 있는가
+      // 1) 영업이익 존재 - 단독 분기값을 만들 수 있는가
       const opCur = soloFromCumulative(cum, q)
       const opPrev = soloFromCumulative(cum, qPrev)
       if (opCur == null) {
@@ -180,7 +180,7 @@ export async function validateSectors(q: QuarterRef, sectors: SectorInput[]): Pr
         if (invPrev < calPrev) issues.push({ level: 'error', message: `${prevLabel} 외국인 순매수 데이터가 불완전합니다 (${invPrev}/${calPrev}일)` })
       }
 
-      // 3) TTM EPS (업종 PER) — 경고만, 반영은 차단하지 않음
+      // 3) TTM EPS (업종 PER) - 경고만, 반영은 차단하지 않음
       const eps = epsMap.get(stock.code) ?? new Map<string, number | null>()
       const ttmEps = ttmFromCumulative(eps, q)
       if (ttmEps == null) {

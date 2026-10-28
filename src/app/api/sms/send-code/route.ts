@@ -6,6 +6,7 @@ import { verifyTurnstile } from '@/lib/turnstile/verify'
 import { maybeAlertHighVolume } from '@/lib/sms/volumeAlert'
 import { hasRecentReportRequest } from '@/lib/reportRequest/duplicate'
 import { normalizePhone } from '@/lib/phone'
+import { clientIp } from '@/lib/clientIp'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -30,15 +31,8 @@ function normalize(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
 }
 
-/** 프록시 헤더에서 클라이언트 IP를 추출한다 (x-forwarded-for 첫 번째 값 우선). */
-function clientIp(req: Request): string {
-  const xff = req.headers.get('x-forwarded-for')
-  if (xff) return xff.split(',')[0].trim()
-  return req.headers.get('x-real-ip')?.trim() || 'unknown'
-}
-
 export async function POST(req: Request) {
-  const ip = clientIp(req)
+  const ip = clientIp(req) ?? 'unknown'
   const userAgent = req.headers.get('user-agent') ?? 'unknown'
   const referer = req.headers.get('referer') ?? 'none'
 
@@ -149,7 +143,7 @@ export async function POST(req: Request) {
     )
   }
 
-  // 발송량 급증 시 경보(로그+메일)만 — 차단하지 않음
+  // 발송량 급증 시 경보(로그+메일)만 - 차단하지 않음
   await maybeAlertHighVolume()
 
   return NextResponse.json({ ok: true, ttlMs: CODE_TTL_MS })

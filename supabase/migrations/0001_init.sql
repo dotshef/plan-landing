@@ -1,4 +1,4 @@
--- 0001_init.sql — 초기 스키마 (docs/design/db-schema.md 기준)
+-- 0001_init.sql - 초기 스키마 (docs/design/db-schema.md 기준)
 -- 데이터 흐름: KIS → 야간 Vercel Cron → Supabase → 클라이언트(항상 DB만 읽음)
 -- 접근 제어: 서버 서비스롤 전용. RLS 미사용(v1). kis_token은 시크릿.
 
@@ -83,7 +83,7 @@ create table if not exists investor_trend_daily (
   primary key (code, date)
 );
 
--- 프로그램매매 (종목별은 전체 순매수 합계만 제공 — 차익/비차익 분리 없음).
+-- 프로그램매매 (종목별은 전체 순매수 합계만 제공 - 차익/비차익 분리 없음).
 create table if not exists program_trade_daily (
   code       text   not null references stock(code),
   date       date   not null,
@@ -103,7 +103,7 @@ create table if not exists fundamental (
   as_of             timestamptz not null     -- 수집 기준시각(장마감)
 );
 
--- 손익계산서 (연간/분기). eps 없음 — 실측상 응답에 미포함(재무비율 소속).
+-- 손익계산서 (연간/분기). eps 없음 - 실측상 응답에 미포함(재무비율 소속).
 create table if not exists income_statement (
   code             text    not null references stock(code),
   period_type      char(1) not null,         -- 'A' 연간 | 'Q' 분기 (FID_DIV_CLS_CODE 0/1)
@@ -145,7 +145,7 @@ create table if not exists news (
 );
 create index if not exists news_code_published_idx on news (code, published_at desc);
 
--- 투자의견 이벤트 (증권사 × 발표일). 두 API가 같은 테이블에 upsert — PK로 중복 흡수.
+-- 투자의견 이벤트 (증권사 × 발표일). 두 API가 같은 테이블에 upsert - PK로 중복 흡수.
 create table if not exists invest_opinion (
   code         text   not null references stock(code),
   opinion_date date   not null,               -- 발표일
