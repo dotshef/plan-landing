@@ -1,7 +1,7 @@
 import 'server-only'
 import { db } from '@/lib/db/server'
 
-// 관리자 신청(리드) 조회 - 메인 페이지(report_request, source_page='main')·두 번째 월급(income_request).
+// 관리자 신청(리드) 조회 - 메인(report_request 전체: main·trial·sector·indicators 폼)·두 번째 월급(income_request).
 // 신청 시각(requested_at)은 KST 벽시계(timestamp)라 날짜 필터도 KST 문자열로 비교한다.
 
 export type LeadKind = 'main' | 'income'
@@ -9,11 +9,14 @@ export const LEAD_KINDS: LeadKind[] = ['main', 'income']
 
 export const LEAD_PAGE_SIZE = 50
 
+export type LeadSourcePage = 'main' | 'trial' | 'indicators' | 'sector'
+
 export interface LeadRow {
   id: number
   name: string
   phone: string
   stock: string | null // 메인 페이지 폼에만 있음(관심 종목)
+  source_page: LeadSourcePage | null // 신청 폼 - report_request에만 있음(income은 null)
   traffic_source: 'google' | 'naver' | 'unknown'
   ad_keyword: string | null
   ad_campaign_id: string | null
@@ -57,7 +60,7 @@ function nextDay(date: string): string {
 
 export async function listLeads(kind: LeadKind, query: LeadQuery): Promise<{ rows: LeadRow[]; total: number }> {
   let q = kind === 'main'
-    ? db().from('report_request').select(`${COMMON_COLUMNS}, stock`, { count: 'exact' }).eq('source_page', 'main')
+    ? db().from('report_request').select(`${COMMON_COLUMNS}, stock, source_page`, { count: 'exact' })
     : db().from('income_request').select(COMMON_COLUMNS, { count: 'exact' })
 
   if (query.from) q = q.gte('requested_at', `${query.from} 00:00:00`)
@@ -80,7 +83,7 @@ export async function listLeads(kind: LeadKind, query: LeadQuery): Promise<{ row
     .range(start, start + LEAD_PAGE_SIZE - 1)
   if (error) throw new Error(`${kind} leads select: ${error.message}`)
 
-  const rows = ((data ?? []) as unknown as (Omit<LeadRow, 'stock'> & { stock?: string | null })[])
-    .map((r) => ({ ...r, stock: r.stock ?? null }))
+  const rows = ((data ?? []) as unknown as (Omit<LeadRow, 'stock' | 'source_page'> & Partial<Pick<LeadRow, 'stock' | 'source_page'>>)[])
+    .map((r) => ({ ...r, stock: r.stock ?? null, source_page: r.source_page ?? null }))
   return { rows, total: count ?? 0 }
 }

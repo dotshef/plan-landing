@@ -15,7 +15,7 @@ export default async function AdminMainLeadsPage() {
     <LeadManager
       kind="main"
       title="메인 페이지 신청 관리"
-      description="메인 페이지에서 접수된 신청입니다."
+      description="두 번째 월급 페이지를 제외한 모든 페이지(메인·7일 체험·4분기 섹터·자료 받기)에서 접수된 신청입니다."
       showStock
     />
   )

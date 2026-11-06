@@ -13,8 +13,6 @@ const DAY_MS = 24 * 60 * 60 * 1000
 
 type Filter = { op: 'gte' | 'eq'; column: string; value: string | boolean }
 
-const MAIN_SOURCE: Filter = { op: 'eq', column: 'source_page', value: 'main' }
-
 /** 테이블 행 수(필터는 AND). 조회 실패 시 null(화면에 '-'). */
 async function count(table: string, ...filters: Filter[]): Promise<number | null> {
   let q = db().from(table).select('id', { count: 'exact', head: true })
@@ -73,9 +71,9 @@ export default async function AdminDashboardPage() {
   }
 
   const [reportToday, reportWeek, incomeToday, incomeWeek] = await Promise.all([
-    // report_request는 /trial·/sector 등 다른 페이지 신청도 함께 담는다 - 메인(source_page='main')만 센다
-    count('report_request', MAIN_SOURCE, { op: 'gte', column: 'requested_at', value: todayStart }),
-    count('report_request', MAIN_SOURCE, { op: 'gte', column: 'requested_at', value: weekStart }),
+    // report_request 전체(메인·/trial·/sector·/indicators) - 메인 신청 목록과 같은 기준
+    count('report_request', { op: 'gte', column: 'requested_at', value: todayStart }),
+    count('report_request', { op: 'gte', column: 'requested_at', value: weekStart }),
     count('income_request', { op: 'gte', column: 'requested_at', value: todayStart }),
     count('income_request', { op: 'gte', column: 'requested_at', value: weekStart }),
   ])

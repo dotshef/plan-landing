@@ -14,6 +14,7 @@ interface Lead {
   name: string
   phone: string
   stock: string | null
+  source_page: 'main' | 'trial' | 'indicators' | 'sector' | null
   traffic_source: 'google' | 'naver' | 'unknown'
   ad_keyword: string | null
   ad_campaign_id: string | null
@@ -30,6 +31,14 @@ const SOURCE_LABEL: Record<Lead['traffic_source'], { text: string; bg: string; c
   google: { text: '구글', bg: '#EAF1FE', color: '#1B6CF2' },
   naver: { text: '네이버', bg: '#E6F8EE', color: '#03A94D' },
   unknown: { text: '기타', bg: '#F2F4F6', color: '#6B7684' },
+}
+
+// 신청 폼(source_page) - 메인 목록은 income을 뺀 모든 페이지 신청을 함께 보여준다
+const FORM_LABEL: Record<NonNullable<Lead['source_page']>, string> = {
+  main: '메인',
+  trial: '7일 체험',
+  sector: '4분기 섹터',
+  indicators: '자료 받기',
 }
 
 const SOURCE_OPTIONS: SelectOption[] = [
@@ -137,7 +146,8 @@ export default function LeadManager({ kind, title, description, showStock }: {
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const filtered = Object.values(applied).some(Boolean)
-  const cols = showStock ? 9 : 8
+  const showForm = kind === 'main'
+  const cols = 8 + (showStock ? 1 : 0) + (showForm ? 1 : 0)
 
   return (
     <div className={s.wide}>
@@ -172,12 +182,13 @@ export default function LeadManager({ kind, title, description, showStock }: {
       </div>
 
       <div style={{ ...card, padding: 0, overflowX: 'auto' }}>
-        <table style={{ width: '100%', minWidth: showStock ? 1180 : 1080, borderCollapse: 'collapse', fontSize: 13.5 }}>
+        <table style={{ width: '100%', minWidth: 1080 + (showStock ? 100 : 0) + (showForm ? 90 : 0), borderCollapse: 'collapse', fontSize: 13.5 }}>
           <thead>
             <tr style={{ background: '#F8FAFC' }}>
               <th style={th}>신청 시각</th>
               <th style={th}>이름</th>
               <th style={th}>연락처</th>
+              {showForm && <th style={th}>신청 폼</th>}
               {showStock && <th style={th}>관심 종목</th>}
               <th style={th}>유입</th>
               <th style={th}>키워드</th>
@@ -206,6 +217,11 @@ export default function LeadManager({ kind, title, description, showStock }: {
                   <td style={{ ...td, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
                     <a href={`tel:${l.phone}`} style={{ color: '#333D4B', textDecoration: 'none' }}>{formatPhone(l.phone)}</a>
                   </td>
+                  {showForm && (
+                    <td style={{ ...td, color: '#4E5968', whiteSpace: 'nowrap' }}>
+                      {l.source_page ? FORM_LABEL[l.source_page] ?? l.source_page : '-'}
+                    </td>
+                  )}
                   {showStock && <td style={{ ...td, color: '#4E5968' }}>{l.stock ?? '-'}</td>}
                   <td style={td}>
                     <span style={{ padding: '3px 8px', borderRadius: 6, fontSize: 11.5, fontWeight: 700, background: src.bg, color: src.color, whiteSpace: 'nowrap' }}>
