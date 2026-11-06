@@ -1,11 +1,12 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
-import { Search } from 'lucide-react'
+import { Download, Search } from 'lucide-react'
 
 import DateRangePicker from './DateRangePicker'
 import Pagination from './Pagination'
 import Select, { type SelectOption } from './Select'
+import { Toast, useToast } from './Toast'
 import s from './admin.module.css'
 import { btnStyle, card, inputStyle, pageDesc, pageTitle } from './ui'
 
@@ -70,7 +71,63 @@ function landingPath(url: string): string {
   }
 }
 
-type FetchResult = { leads: Lead[]; total: number; pageSize: number } | { error: string }
+/** 오늘 날짜(KST) YYYY-MM-DD - 파일명용 */
+function kstToday(): string {
+  return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(new Date())
+}
+
+/**
+ * 현재 화면에 보이는 행만 .xlsx로 저장. exceljs는 버튼을 누를 때만 불러온다.
+ * 모든 셀을 문자열로 넣어 연락처 앞 0·긴 캠페인 ID가 숫자로 바뀌지 않고, '='로 시작하는 값도 수식으로 실행되지 않는다.
+ */
+async function downloadLeadsExcel(leads: Lead[], fileName: string, opts: { showForm: boolean; showStock: boolean }) {
+  const { Workbook } = await import('exceljs')
+  const wb = new Workbook()
+  const ws = wb.addWorksheet('신청')
+
+  ws.columns = [
+    { header: '신청 시각', key: 'requested_at', width: 20 },
+    { header: '이름', key: 'name', width: 12 },
+    { header: '연락처', key: 'phone', width: 16 },
+    ...(opts.showForm ? [{ header: '신청 폼', key: 'form', width: 12 }] : []),
+    ...(opts.showStock ? [{ header: '관심 종목', key: 'stock', width: 24 }] : []),
+    { header: '유입', key: 'source', width: 8 },
+    { header: '키워드', key: 'keyword', width: 24 },
+    { header: '캠페인 라벨', key: 'campaign_label', width: 16 },
+    { header: '캠페인 ID', key: 'campaign_id', width: 16 },
+    { header: '랜딩 페이지', key: 'landing_url', width: 60 },
+  ]
+
+  for (const l of leads) {
+    ws.addRow({
+      requested_at: l.requested_at.slice(0, 19).replace('T', ' '),
+      name: l.name,
+      phone: formatPhone(l.phone),
+      form: l.source_page ? FORM_LABEL[l.source_page] ?? l.source_page : '',
+      stock: l.stock ?? '',
+      source: (SOURCE_LABEL[l.traffic_source] ?? SOURCE_LABEL.unknown).text,
+      keyword: l.ad_keyword ?? '',
+      campaign_label: l.ad_campaign_label ?? '',
+      campaign_id: l.ad_campaign_id ?? '',
+      landing_url: l.landing_url ?? '',
+    })
+  }
+
+  const header = ws.getRow(1)
+  header.font = { bold: true }
+  header.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F4F6' } }
+  ws.views = [{ state: 'frozen', ySplit: 1 }]
+
+  const buffer = await wb.xlsx.writeBuffer()
+  const url = URL.createObjectURL(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }))
+  const a = document.createElement('a')
+  a.href = url
+  a.download = fileName
+  a.click()
+  setTimeout(() => URL.revokeObjectURL(url), 0) // 다운로드 시작 후 해제
+}
+
+type FetchResult ={ leads: Lead[]; total: number; pageSize: number } | { error: string }
 
 async function fetchLeads(kind: string, filters: Filters, page: number): Promise<FetchResult> {
   const params = new URLSearchParams({ page: String(page) })
@@ -99,6 +156,8 @@ export default function LeadManager({ kind, title, description, showStock }: {
   const [pageSize, setPageSize] = useState(50)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [downloading, setDownloading] = useState(false)
+  const { toast, showToast } = useToast()
   const seq = useRef(0) // 늦게 도착한 이전 응답 무시용
 
   // 상태 반영은 응답 콜백(then)에서만 - 이펙트 내 동기 setState 회피.
@@ -148,6 +207,21 @@ export default function LeadManager({ kind, title, description, showStock }: {
   const filtered = Object.values(applied).some(Boolean)
   const showForm = kind === 'main'
   const cols = 8 + (showStock ? 1 : 0) + (showForm ? 1 : 0)
+  const canDownload = !loading && !error && leads.length > 0 && !downloading
+
+  // 현재 페이지(최대 pageSize행)만 내려받는다
+  async function handleDownload() {
+    setDownloading(true)
+    try {
+      const label = kind === 'main' ? '메인페이지신청' : '두번째월급신청'
+      await downloadLeadsExcel(leads, `plankor_${label}_${kstToday()}_${page}페이지.xlsx`, { showForm, showStock })
+    } catch (e) {
+      console.error('[admin/leads] excel download failed:', e)
+      showToast(false, '엑셀 파일을 만들지 못했습니다.')
+    } finally {
+      setDownloading(false)
+    }
+  }
 
   return (
     <div className={s.wide}>
@@ -174,6 +248,13 @@ export default function LeadManager({ kind, title, description, showStock }: {
         {filtered && (
           <button type="button" onClick={handleReset} style={{ ...btnStyle('ghost'), height: 44 }}>초기화</button>
         )}
+        <button
+          type="button" onClick={handleDownload} disabled={!canDownload}
+          title="현재 페이지에 보이는 신청만 내려받습니다"
+          style={{ ...btnStyle('ghost', !canDownload), height: 44, marginLeft: 'auto' }}
+        >
+          <Download size={15} /> {downloading ? '만드는 중…' : '엑셀 다운로드'}
+        </button>
       </form>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 10px', fontSize: 13, color: '#6B7684' }}>
@@ -246,6 +327,7 @@ export default function LeadManager({ kind, title, description, showStock }: {
       </div>
 
       <Pagination page={page} totalPages={totalPages} disabled={loading} onChange={handlePage} />
+      <Toast toast={toast} />
     </div>
   )
 }
