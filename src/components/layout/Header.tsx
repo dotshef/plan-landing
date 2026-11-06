@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { openTrialModal } from '@/components/landing/TrialFormModal'
 
 export default function Header() {
   const pathname = usePathname()
@@ -12,8 +11,6 @@ export default function Header() {
   // stock 페이지(/stock/[code])에서는 해당 종목 리포트로 연결
   const stockMatch = pathname?.match(/^\/stock\/([^/]+)/)
   const reportHref = stockMatch ? `/report/${stockMatch[1]}` : '/report'
-  // 메인은 추천주 체험 신청 모달을 연다
-  const isHome = pathname === '/'
   const ctaStyle: React.CSSProperties = {
     height: 'var(--header-cta-height, 50px)', padding: 'var(--header-cta-padding, 0 28px)',
     border: '2px solid var(--color-brand, #1B6CF2)', borderRadius: 12,
@@ -28,15 +25,9 @@ export default function Header() {
           <Image src="/images/plan-logo.png" alt="투자그룹 플랜" width={34} height={34} style={{ borderRadius: 9, width: 'var(--header-logo-size, 34px)', height: 'var(--header-logo-size, 34px)' }} />
         </Link>
         <div style={{ marginLeft: 'auto' }}>
-          {isHome ? (
-            <button type="button" onClick={openTrialModal} className="stock-report-cta" style={{ ...ctaStyle, fontFamily: 'inherit' }}>
-              추천주 7일 무료 체험
-            </button>
-          ) : (
-            <Link href={reportHref} className="stock-report-cta" style={ctaStyle}>
-              무료 리포트 신청
-            </Link>
-          )}
+          <Link href={reportHref} className="stock-report-cta" style={ctaStyle}>
+            무료 리포트 신청
+          </Link>
         </div>
       </div>
     </header>

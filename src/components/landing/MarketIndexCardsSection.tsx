@@ -19,8 +19,8 @@ export default async function MarketIndexCardsSection() {
               <div style={{ fontSize: 12.5, fontWeight: 700, marginTop: 3, color: ix.isRise ? '#E8342B' : '#3182f6' }}>
                 {ix.isRise ? '▲' : '▼'} {Math.abs(ix.change).toFixed(2)} ({Math.abs(ix.changeRate).toFixed(2)}%)
               </div>
-              <div style={{ height: 90, margin: '8px -15px 0' }}>
-                <SparklineChart data={ix.sparkline} isRise={ix.isRise} height={90} />
+              <div style={{ height: 46, margin: '8px -15px 0' }}>
+                <SparklineChart data={ix.sparkline} isRise={ix.isRise} height={46} />
               </div>
             </div>
           ))}
