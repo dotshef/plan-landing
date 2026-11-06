@@ -53,6 +53,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko" className={`${pretendard.variable} ${maruBuri.variable}`}>
       <body className="font-sans">
+        {/* 플랜 구분 (acct=plan2|plan4 → mlv_acct 쿠키) - GTM보다 먼저 실행되도록 beforeInteractive */}
+        <Script id="mlv-acct" strategy="beforeInteractive">
+          {`(function () {
+              var m = location.search.match(/[?&]acct=(plan2|plan4)(?:&|$)/);
+              if (m) {
+                document.cookie = 'mlv_acct=' + m[1] + '; path=/; max-age=2592000; SameSite=Lax';
+              }
+              var c = document.cookie.match(/(?:^|;\\s*)mlv_acct=(plan2|plan4)/);
+              window.dataLayer = window.dataLayer || [];
+              window.dataLayer.push({ mlv_acct: c ? c[1] : 'none' });
+            })();`}
+        </Script>
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
@@ -82,6 +94,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','GTM-WK69TC4R');`}
         </Script>
+        {/* Google Tag Manager (GTM-NWQC5NPD) - 고객 제공 코드: gtm.js 이벤트는 위 GTM-WK69TC4R 스니펫이 공유 dataLayer에 push */}
+        <Script
+          src="https://www.googletagmanager.com/gtm.js?id=GTM-NWQC5NPD"
+          strategy="afterInteractive"
+        />
         {/* OpenAI Ads measurement pixel */}
         <Script id="openai-ads-pixel-init" strategy="afterInteractive">
           {`window.oaiq = window.oaiq || function () {
